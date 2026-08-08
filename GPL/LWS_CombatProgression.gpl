@@ -1,0 +1,46 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LivingWorldSandbox - Northern Expansion fatal-hit attribution.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Function LWS_CombatCredit ( agent Attacker, agent Defender, integer FinalDamage )
+Declare
+    integer DefenderHP;
+Begin
+    if ( FinalDamage <= 0 )
+        return;
+    if ( $IsValidGamePiece ( Attacker ) == FALSE )
+        return;
+    if ( $IsValidGamePiece ( Defender ) == FALSE )
+        return;
+    if ( $HasAttribute ( "original_type", Attacker ) == FALSE )
+        return;
+    if ( Attacker's "original_type" != "Monster" )
+        return;
+
+    $LWS_EnsureMonsterState ( Attacker );
+
+    if ( $GetUnitPlayerNumber ( Attacker ) == $GetUnitPlayerNumber ( Defender ))
+        return;
+
+    DefenderHP = $GetAttribute ( Defender, #ATTRIB_HP );
+    if (( DefenderHP <= 0 ) || ( DefenderHP > FinalDamage ))
+        return;
+
+    if ( Defender's "type" == "lair" )
+        begin
+            if ( $HasAttribute ( "LWS_DiagnosticLairsIgnored", Attacker ))
+                Attacker's "LWS_DiagnosticLairsIgnored" += 1;
+            return;
+        end
+
+    if ( Defender's "type" == "building" )
+        begin
+            if ( $HasAttribute ( "LWS_DiagnosticBuildings", Attacker ))
+                Attacker's "LWS_DiagnosticBuildings" += 1;
+            return;
+        end
+
+    $LWS_RecordUnitKill ( Attacker );
+    if ( $HasAttribute ( "LWS_DiagnosticKills", Attacker ))
+        Attacker's "LWS_DiagnosticKills" += 1;
+End

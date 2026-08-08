@@ -72,3 +72,14 @@ Generate the packages and copy the complete contents of
 
 The diagnostic adds 7777 treasury gold when all checks pass, or 111 gold when
 one or more checks fail. The detailed result is also written with `DebugOut`.
+
+## Phase 1 monster state
+
+Each starter monster receives its own idempotent progression state at spawn:
+`LWS_Level`, per-level and total kill counters, destroyed-building count,
+progression class, and perk storage. Giant Rats, Skeletons, and Goblin Fighters
+use the starter kill thresholds `1 / 2 / 3 / 4 thereafter`. Their visible native
+experience level is synchronized with `LWS_Level`; stat growth, perks, and loot
+remain disabled. The combat diagnostic verifies initialization and the first
+level-up, then leaves the test rat beside nine enemy peasants for observable
+AI-driven progression up to level 5.

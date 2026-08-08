@@ -1,0 +1,78 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LivingWorldSandbox - per-agent monster progression state.
+// Phase 1 stores state only. Classification, leveling, stat growth, perks, and loot are implemented later.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Function LWS_EnsureMonsterState ( agent Monster )
+Declare
+Begin
+    if ( $IsValidGamePiece ( Monster ) == FALSE )
+        return;
+    if ( $HasAttribute ( "original_type", Monster ) == FALSE )
+        return;
+    if ( Monster's "original_type" != "Monster" )
+        return;
+
+    // Add fields independently so this function can repair partial state without resetting progress.
+    if ( $HasAttribute ( "LWS_StateVersion", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_StateVersion", "integer", 1 );
+    if ( $HasAttribute ( "LWS_Level", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_Level", "integer", 1 );
+    if ( $HasAttribute ( "LWS_KillsThisLevel", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_KillsThisLevel", "integer", 0 );
+    if ( $HasAttribute ( "LWS_TotalKills", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_TotalKills", "integer", 0 );
+    if ( $HasAttribute ( "LWS_BuildingsDestroyed", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_BuildingsDestroyed", "integer", 0 );
+    if ( $HasAttribute ( "LWS_ProgressClass", Monster ) == FALSE )
+        begin
+            // Phase 1 starts with the three baseline starter monster families.
+            // SDK-derived automatic classification for stronger monsters follows separately.
+            if (( Monster's "title" == "GiantRat" ) ||
+                ( Monster's "title" == "Skeleton" ) ||
+                ( Monster's "title" == "Goblin_Fighter" ))
+                $AddAttribute ( Monster, "LWS_ProgressClass", "integer", 1 );
+            else
+                $AddAttribute ( Monster, "LWS_ProgressClass", "integer", 0 );
+        end
+    if ( $HasAttribute ( "LWS_Perks", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_Perks", "integer", 0 );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_StarterKillsRequired ( integer Level ) is integer
+Declare
+Begin
+    if ( Level <= 1 )
+        return 1;
+    if ( Level == 2 )
+        return 2;
+    if ( Level == 3 )
+        return 3;
+    return 4;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_RecordUnitKill ( agent Monster )
+Declare
+    integer KillsRequired;
+Begin
+    $LWS_EnsureMonsterState ( Monster );
+
+    // Unclassified monsters keep their state but do not progress yet.
+    if ( Monster's "LWS_ProgressClass" != 1 )
+        return;
+
+    Monster's "LWS_TotalKills" += 1;
+    Monster's "LWS_KillsThisLevel" += 1;
+    KillsRequired = $LWS_StarterKillsRequired ( Monster's "LWS_Level" );
+
+    if ( Monster's "LWS_KillsThisLevel" >= KillsRequired )
+        begin
+            Monster's "LWS_KillsThisLevel" -= KillsRequired;
+            Monster's "LWS_Level" += 1;
+            $SetAttribute ( Monster, #ATTRIB_ExperienceLevel, Monster's "LWS_Level" );
+            $CreateEffector ( Monster, "level_up", 0 );
+            $DebugOut ( 911, "LWS monster reached level", Monster's "LWS_Level" );
+        end
+End

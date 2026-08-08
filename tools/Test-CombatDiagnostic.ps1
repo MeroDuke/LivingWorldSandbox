@@ -5,6 +5,8 @@ $ErrorActionPreference = 'Stop'
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $definitionPath = Join-Path $repositoryRoot 'LWSCombatDiagnostic.mqxml'
 $hookPath = Join-Path $repositoryRoot 'GPL\LWS_CombatDiagnostics.gpl'
+$combatPath = Join-Path $repositoryRoot 'GPL\LWS_CombatProgression.gpl'
+$statePath = Join-Path $repositoryRoot 'GPL\LWS_MonsterState.gpl'
 $generatorPath = Join-Path $repositoryRoot 'tools\New-CombatOverride.ps1'
 $bytecodePath = Join-Path $repositoryRoot 'Data\LWSCombatDiagnostic.bcd'
 
@@ -22,7 +24,28 @@ if ($quest.DataConfiguration.Dataset.Load.GPL.Target -ne 'Data/LWSCombatDiagnost
 }
 
 $hookSource = Get-Content -LiteralPath $hookPath -Raw
-$requiredHookPatterns = @(
+$combatSource = Get-Content -LiteralPath $combatPath -Raw
+$stateSource = Get-Content -LiteralPath $statePath -Raw
+$requiredStatePatterns = @(
+    'Function\s+LWS_EnsureMonsterState',
+    'original_type',
+    'LWS_StateVersion',
+    'LWS_Level',
+    'LWS_KillsThisLevel',
+    'LWS_TotalKills',
+    'LWS_BuildingsDestroyed',
+    'LWS_ProgressClass',
+    'LWS_Perks',
+    'Function\s+LWS_StarterKillsRequired',
+    'Function\s+LWS_RecordUnitKill',
+    '#ATTRIB_ExperienceLevel'
+)
+foreach ($pattern in $requiredStatePatterns) {
+    if ($stateSource -notmatch $pattern) {
+        throw "Missing monster state pattern: $pattern"
+    }
+}
+$requiredCombatPatterns = @(
     'Function\s+LWS_CombatCredit',
     'FinalDamage\s*<=\s*0',
     'original_type',
@@ -32,6 +55,19 @@ $requiredHookPatterns = @(
     'Defender''s\s+"type"\s*==\s*"building"',
     'LWS_DiagnosticKills',
     'LWS_DiagnosticBuildings',
+    'LWS_RecordUnitKill'
+)
+foreach ($pattern in $requiredCombatPatterns) {
+    if ($combatSource -notmatch $pattern) {
+        throw "Missing combat progression pattern: $pattern"
+    }
+}
+
+$requiredHookPatterns = @(
+    '\$LWS_EnsureMonsterState\s*\(\s*Attacker\s*\)',
+    'LWS_DiagnosticKills',
+    'LWS_DiagnosticBuildings',
+    'PeasantCount\s*<\s*9',
     '\$LWS_RunCombatDiagnostic\s*\(\s*AIRootAgent\s*,\s*Palace\s*\)'
 )
 foreach ($pattern in $requiredHookPatterns) {
