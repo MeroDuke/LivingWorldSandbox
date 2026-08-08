@@ -3,60 +3,6 @@
 // No production progression, stat growth, perk, or loot behavior belongs in this file.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Function LWS_CombatCredit ( agent Attacker, agent Defender, integer FinalDamage )
-Declare
-    integer DefenderHP;
-Begin
-    if ( FinalDamage <= 0 )
-        return;
-
-    if ( $IsValidGamePiece ( Attacker ) == FALSE )
-        return;
-    if ( $IsValidGamePiece ( Defender ) == FALSE )
-        return;
-
-    // Monster identity cannot be inferred from Type alone: Skeleton, for example, uses Type "mystery".
-    if ( $HasAttribute ( "original_type", Attacker ) == FALSE )
-        return;
-    if ( Attacker's "original_type" != "Monster" )
-        return;
-
-    $LWS_EnsureMonsterState ( Attacker );
-
-    // Units owned by the same player are friendly for this first attribution boundary.
-    if ( $GetUnitPlayerNumber ( Attacker ) == $GetUnitPlayerNumber ( Defender ))
-        return;
-
-    DefenderHP = $GetAttribute ( Defender, #ATTRIB_HP );
-    if (( DefenderHP <= 0 ) || ( DefenderHP > FinalDamage ))
-        return;
-
-    if ( $HasAttribute ( "LWS_DiagnosticKills", Attacker ) == FALSE )
-        $AddAttribute ( Attacker, "LWS_DiagnosticKills", "integer", 0 );
-    if ( $HasAttribute ( "LWS_DiagnosticBuildings", Attacker ) == FALSE )
-        $AddAttribute ( Attacker, "LWS_DiagnosticBuildings", "integer", 0 );
-    if ( $HasAttribute ( "LWS_DiagnosticLairsIgnored", Attacker ) == FALSE )
-        $AddAttribute ( Attacker, "LWS_DiagnosticLairsIgnored", "integer", 0 );
-
-    if ( Defender's "type" == "lair" )
-        begin
-            Attacker's "LWS_DiagnosticLairsIgnored" += 1;
-            $DebugOut ( 911, "LWS Phase 0: ignored fatal lair damage" );
-            return;
-        end
-
-    if ( Defender's "type" == "building" )
-        begin
-            Attacker's "LWS_DiagnosticBuildings" += 1;
-            $DebugOut ( 911, "LWS Phase 0: attributed fatal building damage" );
-            return;
-        end
-
-    Attacker's "LWS_DiagnosticKills" += 1;
-    $DebugOut ( 911, "LWS Phase 0: attributed fatal unit damage" );
-End
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWSCombatDiagnostic ()
 Declare
     agent AIRootAgent, Palace;
@@ -81,14 +27,16 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_RunCombatDiagnostic ( agent AIRootAgent, agent Palace )
 Declare
-    agent Attacker, EnemyTarget, FriendlyTarget, LairTarget, BuildingTarget;
+    agent Attacker, EnemyTarget, FriendlyTarget, LairTarget, BuildingTarget, ArenaPeasant;
     coordinate TestLocation;
+    integer OriginalStrength, PeasantCount;
 Begin
     TestLocation = $RandomCoord ( Palace, 300, 500 );
     Attacker = $SpawnUnit ( Palace, "Giant_Rat", TestLocation, #Monster_Player );
     $AddAttribute ( Attacker, "LWS_DiagnosticKills", "integer", 0 );
     $AddAttribute ( Attacker, "LWS_DiagnosticBuildings", "integer", 0 );
     $AddAttribute ( Attacker, "LWS_DiagnosticLairsIgnored", "integer", 0 );
+    OriginalStrength = $GetAttribute ( Attacker, #ATTRIB_Strength );
     $SetAttribute ( Attacker, #ATTRIB_Strength, 1000 );
 
     // Phase 1: every field exists on this individual monster and initialization is idempotent.
@@ -102,7 +50,7 @@ Begin
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( Attacker's "LWS_BuildingsDestroyed" != 0 )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    if ( Attacker's "LWS_ProgressClass" != 0 )
+    if ( Attacker's "LWS_ProgressClass" != 1 )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( Attacker's "LWS_Perks" != 0 )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
@@ -119,6 +67,12 @@ Begin
     $damage ( Attacker, EnemyTarget );
 
     if ( Attacker's "LWS_DiagnosticKills" != 1 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( Attacker's "LWS_TotalKills" != 1 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( Attacker's "LWS_Level" != 2 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $GetAttribute ( Attacker, #ATTRIB_ExperienceLevel ) != 2 )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
     FriendlyTarget = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( TestLocation, 50 ), #Monster_Player );
@@ -154,5 +108,15 @@ Begin
         begin
             $AdjustPlayerData ( Palace, "gold", 111 );
             $DebugOut ( 911, "LWS PHASE 0 COMBAT DIAGNOSTIC: FAIL", AIRootAgent's "LWS_DiagnosticFailures" );
+        end
+
+    // Observable arena: the same surviving rat can naturally hunt nine nearby peasants.
+    // Together with the controlled first kill, ten total kills take a starter from level 1 to level 5.
+    $SetAttribute ( Attacker, #ATTRIB_Strength, OriginalStrength );
+    PeasantCount = 0;
+    while ( PeasantCount < 9 ) do
+        begin
+            ArenaPeasant = $SpawnUnit ( Palace, "Peasant", $RandomCoord ( TestLocation, 50, 220 ), #Player_1 );
+            PeasantCount += 1;
         end
 End

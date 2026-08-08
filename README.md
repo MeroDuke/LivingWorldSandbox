@@ -77,7 +77,9 @@ one or more checks fail. The detailed result is also written with `DebugOut`.
 
 Each starter monster receives its own idempotent progression state at spawn:
 `LWS_Level`, per-level and total kill counters, destroyed-building count,
-progression class, and perk storage. Phase 1 initializes storage only;
-classification, kill progression, stat growth, perks, and loot remain disabled.
-The combat diagnostic also verifies that repeated initialization preserves an
-individual monster's existing values.
+progression class, and perk storage. Giant Rats, Skeletons, and Goblin Fighters
+use the starter kill thresholds `1 / 2 / 3 / 4 thereafter`. Their visible native
+experience level is synchronized with `LWS_Level`; stat growth, perks, and loot
+remain disabled. The combat diagnostic verifies initialization and the first
+level-up, then leaves the test rat beside nine enemy peasants for observable
+AI-driven progression up to level 5.

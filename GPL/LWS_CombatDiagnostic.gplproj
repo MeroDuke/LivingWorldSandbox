@@ -1,4 +1,5 @@
 source="LWS_MonsterState.gpl"
+source="LWS_CombatProgression.gpl"
 source="LivingWorldSandbox.gpl"
 source="LWS_CombatDiagnostics.gpl"
 source="Generated/LWS_MX_Damage.gpl"

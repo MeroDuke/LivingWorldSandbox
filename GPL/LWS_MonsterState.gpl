@@ -25,7 +25,54 @@ Begin
     if ( $HasAttribute ( "LWS_BuildingsDestroyed", Monster ) == FALSE )
         $AddAttribute ( Monster, "LWS_BuildingsDestroyed", "integer", 0 );
     if ( $HasAttribute ( "LWS_ProgressClass", Monster ) == FALSE )
-        $AddAttribute ( Monster, "LWS_ProgressClass", "integer", 0 );
+        begin
+            // Phase 1 starts with the three baseline starter monster families.
+            // SDK-derived automatic classification for stronger monsters follows separately.
+            if (( Monster's "title" == "GiantRat" ) ||
+                ( Monster's "title" == "Skeleton" ) ||
+                ( Monster's "title" == "Goblin_Fighter" ))
+                $AddAttribute ( Monster, "LWS_ProgressClass", "integer", 1 );
+            else
+                $AddAttribute ( Monster, "LWS_ProgressClass", "integer", 0 );
+        end
     if ( $HasAttribute ( "LWS_Perks", Monster ) == FALSE )
         $AddAttribute ( Monster, "LWS_Perks", "integer", 0 );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_StarterKillsRequired ( integer Level ) is integer
+Declare
+Begin
+    if ( Level <= 1 )
+        return 1;
+    if ( Level == 2 )
+        return 2;
+    if ( Level == 3 )
+        return 3;
+    return 4;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_RecordUnitKill ( agent Monster )
+Declare
+    integer KillsRequired;
+Begin
+    $LWS_EnsureMonsterState ( Monster );
+
+    // Unclassified monsters keep their state but do not progress yet.
+    if ( Monster's "LWS_ProgressClass" != 1 )
+        return;
+
+    Monster's "LWS_TotalKills" += 1;
+    Monster's "LWS_KillsThisLevel" += 1;
+    KillsRequired = $LWS_StarterKillsRequired ( Monster's "LWS_Level" );
+
+    if ( Monster's "LWS_KillsThisLevel" >= KillsRequired )
+        begin
+            Monster's "LWS_KillsThisLevel" -= KillsRequired;
+            Monster's "LWS_Level" += 1;
+            $SetAttribute ( Monster, #ATTRIB_ExperienceLevel, Monster's "LWS_Level" );
+            $CreateEffector ( Monster, "level_up", 0 );
+            $DebugOut ( 911, "LWS monster reached level", Monster's "LWS_Level" );
+        end
 End
