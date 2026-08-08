@@ -77,9 +77,16 @@ one or more checks fail. The detailed result is also written with `DebugOut`.
 
 Each starter monster receives its own idempotent progression state at spawn:
 `LWS_Level`, per-level and total kill counters, destroyed-building count,
-progression class, and perk storage. Giant Rats, Skeletons, and Goblin Fighters
-use the starter kill thresholds `1 / 2 / 3 / 4 thereafter`. Their visible native
-experience level is synchronized with `LWS_Level`; stat growth, perks, and loot
-remain disabled. The combat diagnostic verifies initialization and the first
-level-up, then leaves the test rat beside nine enemy peasants for observable
-AI-driven progression up to level 5.
+progression class, and perk storage. Progression class is derived from the
+Northern Expansion `LevelXP` value: starter `1-250`, low `251-550`, medium
+`551-900`, high `901-2000`, and brutal `2001+`; zero-XP special units remain
+unclassified. Kill thresholds are respectively `1/2/3/4`, `2/3/4/5`,
+`4/6/8/10`, `12/16/20/24`, and `20/30/40/50`, with the fourth value repeated
+after level 4. The visible native experience level is synchronized with
+`LWS_Level`; stat growth, perks, and loot remain disabled. The combat diagnostic
+verifies every classification boundary and first-level threshold, then leaves
+the test rat beside nine enemy peasants for observable AI-driven progression.
+It also leaves five level-2 showcase monsters near the Palace: Giant Rat
+(starter), Ratman (low), Troll (medium), Minotaur (high), and Dragon (brutal).
+The diagnostic passes only when each monster reaches level 2 after receiving
+exactly its class-specific number of kill credits.

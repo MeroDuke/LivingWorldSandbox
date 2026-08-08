@@ -3,6 +3,23 @@
 // Phase 1 stores state only. Classification, leveling, stat growth, perks, and loot are implemented later.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+Function LWS_ClassFromLevelXP ( integer LevelXP ) is integer
+Declare
+Begin
+    if ( LevelXP <= 0 )
+        return 0;
+    if ( LevelXP <= 250 )
+        return 1;
+    if ( LevelXP <= 550 )
+        return 2;
+    if ( LevelXP <= 900 )
+        return 3;
+    if ( LevelXP <= 2000 )
+        return 4;
+    return 5;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_EnsureMonsterState ( agent Monster )
 Declare
 Begin
@@ -25,31 +42,52 @@ Begin
     if ( $HasAttribute ( "LWS_BuildingsDestroyed", Monster ) == FALSE )
         $AddAttribute ( Monster, "LWS_BuildingsDestroyed", "integer", 0 );
     if ( $HasAttribute ( "LWS_ProgressClass", Monster ) == FALSE )
-        begin
-            // Phase 1 starts with the three baseline starter monster families.
-            // SDK-derived automatic classification for stronger monsters follows separately.
-            if (( Monster's "title" == "GiantRat" ) ||
-                ( Monster's "title" == "Skeleton" ) ||
-                ( Monster's "title" == "Goblin_Fighter" ))
-                $AddAttribute ( Monster, "LWS_ProgressClass", "integer", 1 );
-            else
-                $AddAttribute ( Monster, "LWS_ProgressClass", "integer", 0 );
-        end
+        $AddAttribute ( Monster, "LWS_ProgressClass", "integer",
+                        $LWS_ClassFromLevelXP ( $GetAttribute ( Monster, #ATTRIB_LevelXP )));
     if ( $HasAttribute ( "LWS_Perks", Monster ) == FALSE )
         $AddAttribute ( Monster, "LWS_Perks", "integer", 0 );
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function LWS_StarterKillsRequired ( integer Level ) is integer
+Function LWS_KillsRequired ( integer ProgressClass, integer Level ) is integer
 Declare
 Begin
-    if ( Level <= 1 )
-        return 1;
-    if ( Level == 2 )
-        return 2;
-    if ( Level == 3 )
-        return 3;
-    return 4;
+    if ( ProgressClass == 1 )
+        begin
+            if ( Level <= 1 ) return 1;
+            if ( Level == 2 ) return 2;
+            if ( Level == 3 ) return 3;
+            return 4;
+        end
+    if ( ProgressClass == 2 )
+        begin
+            if ( Level <= 1 ) return 2;
+            if ( Level == 2 ) return 3;
+            if ( Level == 3 ) return 4;
+            return 5;
+        end
+    if ( ProgressClass == 3 )
+        begin
+            if ( Level <= 1 ) return 4;
+            if ( Level == 2 ) return 6;
+            if ( Level == 3 ) return 8;
+            return 10;
+        end
+    if ( ProgressClass == 4 )
+        begin
+            if ( Level <= 1 ) return 12;
+            if ( Level == 2 ) return 16;
+            if ( Level == 3 ) return 20;
+            return 24;
+        end
+    if ( ProgressClass == 5 )
+        begin
+            if ( Level <= 1 ) return 20;
+            if ( Level == 2 ) return 30;
+            if ( Level == 3 ) return 40;
+            return 50;
+        end
+    return 0;
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,13 +97,13 @@ Declare
 Begin
     $LWS_EnsureMonsterState ( Monster );
 
-    // Unclassified monsters keep their state but do not progress yet.
-    if ( Monster's "LWS_ProgressClass" != 1 )
+    // XP=0 special units remain unclassified and keep state without progressing.
+    if ( Monster's "LWS_ProgressClass" == 0 )
         return;
 
     Monster's "LWS_TotalKills" += 1;
     Monster's "LWS_KillsThisLevel" += 1;
-    KillsRequired = $LWS_StarterKillsRequired ( Monster's "LWS_Level" );
+    KillsRequired = $LWS_KillsRequired ( Monster's "LWS_ProgressClass", Monster's "LWS_Level" );
 
     if ( Monster's "LWS_KillsThisLevel" >= KillsRequired )
         begin
