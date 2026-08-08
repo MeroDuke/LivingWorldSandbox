@@ -1,0 +1,49 @@
+name: Quest build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate quest package
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Validate baseline
+        shell: powershell
+        run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Test-QuestBaseline.ps1
+
+  compile:
+    name: Compile GPL bytecode
+    needs: validate
+    # Never execute pull-request code on the SDK-bearing self-hosted runner.
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && vars.MAJESTY_SDK_RUNNER_ENABLED == 'true')
+    runs-on: [self-hosted, Windows, X64, majesty-sdk]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Compile with the Majesty SDK
+        shell: powershell
+        run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Build-Quest.ps1
+      - name: Validate compiled package
+        shell: powershell
+        run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Test-QuestBaseline.ps1
+      - name: Verify committed bytecode is reproducible
+        shell: powershell
+        run: git diff --exit-code -- Data/LivingWorldSandbox.bcd
+      - name: Upload playable quest package
+        uses: actions/upload-artifact@v7
+        with:
+          name: LivingWorldSandbox-${{ github.sha }}
+          if-no-files-found: error
+          path: |
+            LivingWorldSandbox.mqxml
+            Data/LivingWorldSandbox.bcd
+            Quests/LivingWorldSandbox.q
+            GPL/LivingWorldSandbox.gpl
+            GPL/LivingWorldSandbox.gplproj
+            README.md

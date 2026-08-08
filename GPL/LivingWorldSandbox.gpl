@@ -1,705 +1,78 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Living World H Sandbox v0.6 EXPERIMENTAL
-// Lair-driven progression prototype for Majesty Gold HD / Northern Expansion.
-//
-// Design goals:
-//  * H-sized sandbox quest, no scripted victory.
-//  * Mixed ecosystem: low-tier lairs never disappear from the pool.
-//  * Time + actual hero levels unlock stronger lairs.
-//  * Threat budget uses the game's own lair "difficulty" value.
-//  * True boss lairs are rare and hard-capped at one active boss lair.
-//  * Director only adds ecology when the current world is below budget.
-//  * Initial ecosystem: 6 low-tier lairs + roaming starter monsters at game start.
+// LivingWorldSandbox - minimal quest bootstrap.
+// Baseline only: six starter lairs and twenty-four starter monsters.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Function LivingWorldSandbox ()
 Declare
-    agent AIRootAgent, Palace;
+    agent Palace;
     list Palaces;
 Begin
     Palaces = $ListPalaces ();
     Palace = $ListMember ( Palaces, 1 );
-    AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
 
-    // User quest / sandbox.
-    AIRootAgent's "Quest_Number" = 0;
-
-    // We use day_counter as a private director tick counter.
-    AIRootAgent's "day_counter" = 0;
-
-    // Strict progression state.
-    // 1 = starter wilderness, 2 = low-mid, 3 = mid, 4 = elite, 5 = final boss stage.
-    AIRootAgent's "LWS_Stage" = 1;
-    AIRootAgent's "LWS_BossSpawned" = FALSE;
-    AIRootAgent's "LWS_BossWasAlive" = FALSE;
-
-    // Keep freestyle's safety delay active for lair spawning.
-    AIRootAgent's "Lair_Delay_Override" = TRUE;
-
-    // Seed an already-living world immediately: six starter lairs plus roaming weak monsters.
-    $LWS_SeedInitialWorld ( Palace );
-
-    // Director is self-rescheduling. First pass after 45 seconds.
-    AIRootAgent's "SpecialSpawnScript" = $LWS_Director;
-    $NewThread ( AIRootAgent's "SpecialSpawnScript", 45000 );
+    $LWS_SeedStarterLairs ( Palace );
+    $LWS_SeedStarterMonsters ( Palace );
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Initial ecosystem.
-// Six Tier-1 lairs are present from second zero, so the H map never starts empty.
-// Roaming monsters are deliberately weak: Giant Rats, Skeletons and basic Goblin Fighters.
-Function LWS_SeedInitialWorld ( agent Palace )
+Function LWS_SeedStarterLairs ( agent Palace )
 Declare
-    integer I, Roll;
-    coordinate SpawnLoc;
+    agent SpawnedLair;
+    coordinate SpawnLocation;
+    integer AttemptCount, LairCount, Roll;
 Begin
-    // ----- Six starter lairs -----
-    I = 0;
-    while ( I < 6 ) do
-        begin
-            $LWS_SpawnLair ( Palace, 1 );
-            I += 1;
-        end
+    AttemptCount = 0;
+    LairCount = 0;
 
-    // ----- Twenty-four starter roaming monsters -----
-    // Keep them away from the Palace, but let them be distributed across the large map.
-    I = 0;
-    while ( I < 24 ) do
+    // Placement can fail on occupied or unsuitable terrain. Retry, but never loop forever.
+    while (( LairCount < 6 ) && ( AttemptCount < 60 )) do
         begin
-            SpawnLoc = $RandomCoord ( Palace, 900, -1 );
+            SpawnLocation = $RandomCoord ( Palace, 1200, -1 );
+            Roll = $RandomNumber ( 4 );
+
+            if ( Roll == 0 )
+                SpawnedLair = $SpawnUnit ( Palace, "Goblin_Hovel", SpawnLocation, "MaxHP", #Monster_Player );
+            else if ( Roll == 1 )
+                SpawnedLair = $SpawnUnit ( Palace, "Goblin_Camp", SpawnLocation, "MaxHP", #Monster_Player );
+            else if ( Roll == 2 )
+                SpawnedLair = $SpawnUnit ( Palace, "Animal_Den", SpawnLocation, "MaxHP", #Monster_Player );
+            else
+                SpawnedLair = $SpawnUnit ( Palace, "BrokenSewerMain", SpawnLocation, "MaxHP", #Monster_Player );
+
+            if ( $IsValidGamePiece ( SpawnedLair ))
+                LairCount += 1;
+
+            AttemptCount += 1;
+        end
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_SeedStarterMonsters ( agent Palace )
+Declare
+    agent SpawnedMonster;
+    coordinate SpawnLocation;
+    integer AttemptCount, MonsterCount, Roll;
+Begin
+    AttemptCount = 0;
+    MonsterCount = 0;
+
+    while (( MonsterCount < 24 ) && ( AttemptCount < 120 )) do
+        begin
+            SpawnLocation = $RandomCoord ( Palace, 900, -1 );
             Roll = $RandomNumber ( 6 );
 
-            // 50% Giant Rat, 33% Skeleton, 17% basic Goblin.
+            // 50% Giant Rat, 33% Skeleton, 17% Goblin Fighter.
             if ( Roll < 3 )
-                $SpawnUnit ( Palace, "Giant_Rat", SpawnLoc, #Monster_Player );
+                SpawnedMonster = $SpawnUnit ( Palace, "Giant_Rat", SpawnLocation, #Monster_Player );
             else if ( Roll < 5 )
-                $SpawnUnit ( Palace, "Skeleton", SpawnLoc, #Monster_Player );
+                SpawnedMonster = $SpawnUnit ( Palace, "Skeleton", SpawnLocation, #Monster_Player );
             else
-                $SpawnUnit ( Palace, "Goblin_Fighter", SpawnLoc, #Monster_Player );
+                SpawnedMonster = $SpawnUnit ( Palace, "Goblin_Fighter", SpawnLocation, #Monster_Player );
 
-            I += 1;
+            if ( $IsValidGamePiece ( SpawnedMonster ))
+                MonsterCount += 1;
+
+            AttemptCount += 1;
         end
 End
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function LWS_Director ()
-Declare
-    agent AIRootAgent, Palace, Hero, Lair;
-    list Palaces, Heroes, Lairs, BossLairs;
-    integer HeroCount, TotalLevels, AvgLevel, MaxLevel;
-    integer CurrentThreat, ThreatBudget, LairCount, BossCount;
-    integer Tick, MaxTier, Roll, SpawnDelay, Stage;
-Begin
-    AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
-    Palaces = $ListPalaces ();
-    Palace = $ListMember ( Palaces, 1 );
-
-    AIRootAgent's "day_counter" += 1;
-    Tick = AIRootAgent's "day_counter";
-
-    // ----- Measure actual kingdom strength -----
-    $ListObjects ( Palace, "hero", -1, Heroes, #NoHiddenMap, #MyPlayer );
-    HeroCount = 0;
-    TotalLevels = 0;
-    MaxLevel = 1;
-
-    foreach Hero in Heroes do
-        begin
-            if ( Hero's "subtype" == "hero" )
-                if ( $IsValidGamePiece ( Hero ))
-                    begin
-                        HeroCount += 1;
-                        TotalLevels += $GetAttribute ( Hero, #ATTRIB_ExperienceLevel );
-                        if ( $GetAttribute ( Hero, #ATTRIB_ExperienceLevel ) > MaxLevel )
-                            MaxLevel = $GetAttribute ( Hero, #ATTRIB_ExperienceLevel );
-                    end
-        end
-
-    if ( HeroCount < 1 )
-        AvgLevel = 1;
-    else
-        AvgLevel = TotalLevels / HeroCount;
-
-    // ----- Measure the ecosystem -----
-    // Instead of inventing our own cost for every lair, use Cyberlore's built-in difficulty field.
-    $ListObjects ( Palace, "lair", -1, Lairs, #NoHiddenMap );
-    LairCount = $ListSize ( Lairs );
-    CurrentThreat = 0;
-
-    foreach Lair in Lairs do
-        begin
-            if ( $IsValidGamePiece ( Lair ))
-                CurrentThreat += Lair's "difficulty";
-        end
-
-    // True quest-boss homes are treated separately from normal high-end lairs such as Dragon Lair.
-    BossLairs = $ListTitles ( Lairs, "Witch_King_Tower" );
-    BossCount = $ListSize ( BossLairs );
-    BossLairs = $ListTitles ( Lairs, "Liche_Queen_Lair" );
-    BossCount += $ListSize ( BossLairs );
-
-    // ----- Strict sequential progression -----
-    // Every stage must be reached in order. Time alone cannot skip a stage.
-    Stage = AIRootAgent's "LWS_Stage";
-
-    // Stage 1 -> 2: kingdom has established a basic roster.
-    if ( Stage == 1 )
-        if (( Tick >= 8 ) && ( AvgLevel >= 4 ))
-            begin
-                Stage = 2;
-                AIRootAgent's "LWS_Stage" = 2;
-            end
-
-    // Stage 2 -> 3: only possible after Stage 2 has actually been reached.
-    if ( Stage == 2 )
-        if (( Tick >= 18 ) && ( AvgLevel >= 7 ))
-            begin
-                Stage = 3;
-                AIRootAgent's "LWS_Stage" = 3;
-            end
-
-    // Stage 3 -> 4: elite ecology unlock.
-    if ( Stage == 3 )
-        if (( Tick >= 30 ) && ( AvgLevel >= 11 ))
-            begin
-                Stage = 4;
-                AIRootAgent's "LWS_Stage" = 4;
-            end
-
-    // Stage 4 -> 5: final stage. Requires a genuinely mature kingdom.
-    if ( Stage == 4 )
-        if (( Tick >= 55 ) && ( AvgLevel >= 12 ) && ( MaxLevel >= 16 ))
-            begin
-                Stage = 5;
-                AIRootAgent's "LWS_Stage" = 5;
-            end
-
-    MaxTier = Stage;
-    if ( MaxTier > 4 )
-        MaxTier = 4;
-
-    // ----- Final boss objective -----
-    // The boss can exist only after all four ecosystem stages have been traversed.
-    if ( Stage == 5 )
-        begin
-            if ( BossCount > 0 )
-                AIRootAgent's "LWS_BossWasAlive" = TRUE;
-
-            if (( AIRootAgent's "LWS_BossSpawned" == FALSE ) && ( BossCount < 1 ))
-                begin
-                    $LWS_SpawnLair ( Palace, 5 );
-                    AIRootAgent's "LWS_BossSpawned" = TRUE;
-                end
-
-            // Once the spawned final boss has been observed alive and is later destroyed,
-            // the sandbox objective is complete.
-            if (( AIRootAgent's "LWS_BossSpawned" == TRUE ) &&
-                ( AIRootAgent's "LWS_BossWasAlive" == TRUE ) &&
-                ( BossCount < 1 ))
-                begin
-                    $WinGame ();
-                end
-        end
-
-    // ----- Dynamic threat budget -----
-    // Slow time growth + actual hero strength. Strong starts accelerate gently;
-    // weak starts do not get punished simply because the clock advanced.
-    ThreatBudget = 10 + ( Tick / 4 ) + ( AvgLevel * 2 ) + ( MaxLevel / 2 );
-
-    if ( ThreatBudget > 75 )
-        ThreatBudget = 75;
-
-    // Hard ecology cap protects performance and prevents runaway lair multiplication.
-    // Huge-map v0.3 cap: slightly denser than v0.2, still bounded by ThreatBudget.
-    if ( LairCount < 28 )
-        if ( CurrentThreat < ThreatBudget )
-            begin
-                Roll = $RandomNumber ( 100 );
-
-                if ( MaxTier == 1 )
-                    $LWS_SpawnLair ( Palace, 1 );
-                else if ( MaxTier == 2 )
-                    begin
-                        if ( Roll < 70 )
-                            $LWS_SpawnLair ( Palace, 1 );
-                        else
-                            $LWS_SpawnLair ( Palace, 2 );
-                    end
-                else if ( MaxTier == 3 )
-                    begin
-                        if ( Roll < 45 )
-                            $LWS_SpawnLair ( Palace, 1 );
-                        else if ( Roll < 80 )
-                            $LWS_SpawnLair ( Palace, 2 );
-                        else
-                            $LWS_SpawnLair ( Palace, 3 );
-                    end
-                else if ( MaxTier == 4 )
-                    begin
-                        if ( Roll < 30 )
-                            $LWS_SpawnLair ( Palace, 1 );
-                        else if ( Roll < 60 )
-                            $LWS_SpawnLair ( Palace, 2 );
-                        else if ( Roll < 85 )
-                            $LWS_SpawnLair ( Palace, 3 );
-                        else
-                            $LWS_SpawnLair ( Palace, 4 );
-                    end
-                else
-                    begin
-                        // Stage 4 ecology. Boss spawning is handled separately by the
-                        // strict final-objective block and is never part of normal RNG.
-                        if ( Roll < 27 )
-                            $LWS_SpawnLair ( Palace, 1 );
-                        else if ( Roll < 55 )
-                            $LWS_SpawnLair ( Palace, 2 );
-                        else if ( Roll < 79 )
-                            $LWS_SpawnLair ( Palace, 3 );
-                        else
-                            $LWS_SpawnLair ( Palace, 4 );
-                    end
-            end
-
-    // Re-evaluate every 45-75 seconds. This is intentionally not a wave timer.
-    SpawnDelay = 45000 + $RandomNumber ( 30000 );
-    $NewThread ( AIRootAgent's "SpecialSpawnScript", SpawnDelay );
-End
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function LWS_SpawnLair ( agent Palace, integer Tier )
-Declare
-    integer Roll;
-    coordinate SpawnLoc;
-Begin
-    // Keep dynamically-created lairs away from the Palace. Max distance -1 means any legal farther point.
-    SpawnLoc = $RandomCoord ( Palace, 1200, -1 );
-
-    if ( Tier == 1 )
-        begin
-            Roll = $RandomNumber ( 4 );
-            if ( Roll == 0 )
-                $SpawnUnit ( Palace, "Goblin_Hovel", SpawnLoc, "MaxHP", #Monster_Player );
-            else if ( Roll == 1 )
-                $SpawnUnit ( Palace, "Goblin_Camp", SpawnLoc, "MaxHP", #Monster_Player );
-            else if ( Roll == 2 )
-                $SpawnUnit ( Palace, "Animal_Den", SpawnLoc, "MaxHP", #Monster_Player );
-            else
-                $SpawnUnit ( Palace, "BrokenSewerMain", SpawnLoc, "MaxHP", #Monster_Player );
-        end
-    else if ( Tier == 2 )
-        begin
-            Roll = $RandomNumber ( 7 );
-            if ( Roll == 0 )
-                $SpawnUnit ( Palace, "Sewers", SpawnLoc, "MaxHP", #Monster_Player );
-            else if ( Roll == 1 )
-                $SpawnUnit ( Palace, "Graveyard", SpawnLoc, "MaxHP", #Monster_Player );
-            else if ( Roll == 2 )
-                $SpawnUnit ( Palace, "AncientBarrow", SpawnLoc, "MaxHP", #Monster_Player );
-            else if ( Roll == 3 )
-                $SpawnUnit ( Palace, "RatsNest", SpawnLoc, "MaxHP", #Monster_Player );
-            else if ( Roll == 4 )
-                $SpawnUnit ( Palace, "Ice_Cave", SpawnLoc, "MaxHP", #Monster_Player );
-            else if ( Roll == 5 )
-                $SpawnUnit ( Palace, "GoblinFortress", SpawnLoc, "MaxHP", #Monster_Player );
-            else
-                $SpawnUnit ( Palace, "Ancient_Graveyard", SpawnLoc, "MaxHP", #Monster_Player );
-        end
-    else if ( Tier == 3 )
-        begin
-            Roll = $RandomNumber ( 7 );
-            if ( Roll == 0 )
-                $SpawnUnit ( Palace, "Dark_Castle1", SpawnLoc, "MaxHP", #Monster_Player );
-            else if ( Roll == 1 )
-                $SpawnUnit ( Palace, "Dark_Castle2", SpawnLoc, "MaxHP", #Monster_Player );
-            else if ( Roll == 2 )
-                $SpawnUnit ( Palace, "Dark_Castle3", SpawnLoc, "MaxHP", #Monster_Player );
-            else if ( Roll == 3 )
-                $SpawnUnit ( Palace, "Dark_Castle4", SpawnLoc, "MaxHP", #Monster_Player );
-            else if ( Roll == 4 )
-                $SpawnUnit ( Palace, "Ruined_Altar1", SpawnLoc, "MaxHP", #Monster_Player );
-            else if ( Roll == 5 )
-                $SpawnUnit ( Palace, "Ruined_Keep1", SpawnLoc, "MaxHP", #Monster_Player );
-            else
-                $SpawnUnit ( Palace, "Ruined_Shrine1", SpawnLoc, "MaxHP", #Monster_Player );
-        end
-    else if ( Tier == 4 )
-        begin
-            // These are dangerous normal ecosystem lairs, NOT true boss slots.
-            Roll = $RandomNumber ( 3 );
-            if ( Roll == 0 )
-                $SpawnUnit ( Palace, "Dragon_Lair", SpawnLoc, "MaxHP", #Monster_Player );
-            else if ( Roll == 1 )
-                $SpawnUnit ( Palace, "SnakePit", SpawnLoc, "MaxHP", #Monster_Player );
-            else
-                $SpawnUnit ( Palace, "WightsTomb", SpawnLoc, "MaxHP", #Monster_Player );
-        end
-    else
-        begin
-            // True boss lairs. The director enforces a hard cap of one.
-            Roll = $RandomNumber ( 2 );
-            if ( Roll == 0 )
-                $SpawnUnit ( Palace, "Witch_King_Tower", SpawnLoc, "MaxHP", #Monster_Player );
-            else
-                $SpawnUnit ( Palace, "Liche_Queen_lair", SpawnLoc, "MaxHP", #Monster_Player );
-        end
-End
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Monster progression prototype (v0.6)
-// Normal attack kills grant individual progression. Building destruction can grant a permanent perk.
-// No evolution/unit-type changes: the monster remains the same creature.
-
-Function LWS_InitMonsterProgression ( agent Monster )
-Declare
-    integer BaseXP, ProgressClass;
-Begin
-    if ( Monster's "type" != "monster" )
-        return;
-
-    if ( $HasAttribute ( "LWS_Level", Monster ) == FALSE )
-        begin
-            BaseXP = $GetAttribute ( Monster, #ATTRIB_LevelXP );
-
-            // Cyberlore's own XP value is used as our estimate of base monster power.
-            // Giant Rat ~=150 -> Starter; Minotaur ~=1000 -> High; Dragon ~=2500 -> Brutal.
-            ProgressClass = 1;
-            if ( BaseXP > 200 )
-                ProgressClass = 2;
-            if ( BaseXP > 500 )
-                ProgressClass = 3;
-            if ( BaseXP > 900 )
-                ProgressClass = 4;
-            if ( BaseXP > 1800 )
-                ProgressClass = 5;
-
-            Monster's "LWS_Level" = 1;
-            Monster's "LWS_KillsThisLevel" = 0;
-            Monster's "LWS_TotalKills" = 0;
-            Monster's "LWS_BuildingsDestroyed" = 0;
-            Monster's "LWS_Perks" = 0;
-            Monster's "LWS_ProgressClass" = ProgressClass;
-            Monster's "LWS_BaseMaxHP" = $GetAttribute ( Monster, #ATTRIB_MAXHP );
-        end
-End
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function LWS_KillsForNextLevel ( agent Monster ) is integer
-Declare
-    integer Level, ProgressClass;
-Begin
-    Level = Monster's "LWS_Level";
-    ProgressClass = Monster's "LWS_ProgressClass";
-
-    // Starter: 1,2,3, then 4 kills per further level.
-    if ( ProgressClass == 1 )
-        begin
-            if ( Level == 1 ) return 1;
-            if ( Level == 2 ) return 2;
-            if ( Level == 3 ) return 3;
-            return 4;
-        end
-
-    // Low: slightly wider spacing.
-    if ( ProgressClass == 2 )
-        begin
-            if ( Level == 1 ) return 2;
-            if ( Level == 2 ) return 3;
-            if ( Level == 3 ) return 4;
-            return 5;
-        end
-
-    // Medium.
-    if ( ProgressClass == 3 )
-        begin
-            if ( Level == 1 ) return 4;
-            if ( Level == 2 ) return 6;
-            if ( Level == 3 ) return 8;
-            return 10;
-        end
-
-    // High: Minotaur-class monsters live here. They need many kills even for level 2.
-    if ( ProgressClass == 4 )
-        begin
-            if ( Level == 1 ) return 12;
-            if ( Level == 2 ) return 16;
-            if ( Level == 3 ) return 20;
-            return 24;
-        end
-
-    // Brutal: dragons and comparable monsters.
-    if ( Level == 1 ) return 20;
-    if ( Level == 2 ) return 30;
-    if ( Level == 3 ) return 40;
-    return 50;
-End
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function LWS_MonsterLevelUp ( agent Monster )
-Declare
-    integer Level, HPBonus;
-Begin
-    Level = Monster's "LWS_Level" + 1;
-    Monster's "LWS_Level" = Level;
-    Monster's "LWS_KillsThisLevel" = 0;
-
-    // Small cumulative upgrades. No full heal: only the newly gained max HP is added to current HP.
-    HPBonus = Monster's "LWS_BaseMaxHP" / 20; // ~5% base MaxHP per level
-    if ( HPBonus < 1 )
-        HPBonus = 1;
-
-    $AdjustAttribute ( Monster, #ATTRIB_MAXHP, HPBonus );
-    $AdjustAttribute ( Monster, #ATTRIB_HP, HPBonus );
-    $AdjustAttribute ( Monster, #ATTRIB_HtoH, 2 );
-    $AdjustAttribute ( Monster, #ATTRIB_Ranged, 2 );
-    $AdjustAttribute ( Monster, #ATTRIB_Parry, 1 );
-    $AdjustAttribute ( Monster, #ATTRIB_Dodge, 1 );
-
-    // Strength and magic resistance grow more slowly than accuracy/defense.
-    if (( Level / 2 ) * 2 == Level )
-        $AdjustAttribute ( Monster, #ATTRIB_Strength, 1 );
-    if (( Level / 3 ) * 3 == Level )
-        $AdjustAttribute ( Monster, #ATTRIB_MagicResistance, 1 );
-End
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function LWS_RecordMonsterKill ( agent Monster )
-Declare
-    integer Needed;
-Begin
-    $LWS_InitMonsterProgression ( Monster );
-
-    Monster's "LWS_TotalKills" += 1;
-    Monster's "LWS_KillsThisLevel" += 1;
-
-    Needed = $LWS_KillsForNextLevel ( Monster );
-    if ( Monster's "LWS_KillsThisLevel" >= Needed )
-        $LWS_MonsterLevelUp ( Monster );
-End
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function LWS_BuildingReward ( agent Monster )
-Declare
-    integer Roll;
-Begin
-    $LWS_InitMonsterProgression ( Monster );
-    Monster's "LWS_BuildingsDestroyed" += 1;
-
-    // Building destruction is special: only 40% of destroyed buildings produce a permanent perk.
-    if ( $RandomNumber ( 100 ) >= 40 )
-        return;
-
-    Roll = $RandomNumber ( 7 );
-
-    if ( Roll == 0 )
-        begin
-            // Scavenged arms / brutal experience.
-            $AdjustAttribute ( Monster, #ATTRIB_HtoH, 3 );
-            $AdjustAttribute ( Monster, #ATTRIB_Ranged, 3 );
-            $AdjustAttribute ( Monster, #ATTRIB_Strength, 1 );
-        end
-    else if ( Roll == 1 )
-        begin
-            // Scavenged protection.
-            $AdjustAttribute ( Monster, #ATTRIB_Armor_Basic_Damage, 2 );
-            $AdjustAttribute ( Monster, #ATTRIB_Parry, 2 );
-            $AdjustAttribute ( Monster, #ATTRIB_Dodge, 2 );
-        end
-    else if ( Roll == 2 )
-        begin
-            $AdjustAttribute ( Monster, #ATTRIB_MagicResistance, 5 );
-        end
-    else if ( Roll == 3 )
-        begin
-            // Existing monster-safe spell used by the original game scripts.
-            $LearnSpell ( Monster, "Speed_Monster" );
-        end
-    else if ( Roll == 4 )
-        begin
-            $LearnSpell ( Monster, "Resist_Magic" );
-        end
-    else if ( Roll == 5 )
-        begin
-            $LearnSpell ( Monster, "Fire_Shield" );
-        end
-    else
-        begin
-            // Plain toughness is always safe if a spell reward would be too exotic.
-            $AdjustAttribute ( Monster, #ATTRIB_MAXHP, 5 );
-            $AdjustAttribute ( Monster, #ATTRIB_HP, 5 );
-        end
-
-    Monster's "LWS_Perks" += 1;
-End
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function LWS_CombatCredit ( agent Attacker, agent Defender )
-Declare
-
-Begin
-    if ( $IsValidGamePiece ( Attacker ) == FALSE )
-        return;
-    if ( Attacker's "type" != "monster" )
-        return;
-
-    // Do not award credit for friendly Monster Player accidents.
-    if ( $GetUnitPlayerNumber ( Attacker ) == $GetUnitPlayerNumber ( Defender ) )
-        return;
-
-    if ( Defender's "type" == "building" )
-        begin
-            $LWS_BuildingReward ( Attacker );
-            return;
-        end
-
-    // Lairs are handled by the world progression, not individual monster levelling.
-    if ( Defender's "type" == "lair" )
-        return;
-
-    $LWS_RecordMonsterKill ( Attacker );
-End
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-// IMPORTANT: this is Cyberlore's vanilla normal-attack damage() function with ONE Living World hook
-// inserted immediately before fatal HP subtraction. Keeping the vanilla body intact minimizes combat risk.
-
-function damage(agent attacker, agent defender)
-
-declare
-
-integer dmg,dmg_stopped,t,t2;
-	boolean magic_effect;
-	boolean do_poison,critical_effect;
-
-begin
-	//This is a hack so that the Towers can attack
-	magic_effect = FALSE;
-	if (Attacker's "Type" == "Building")
-		begin
-			dmg = $RandomNumber (Attacker's "Strength") + 1;
-		end
-
-	Else
-		begin
-//			dmg = $randomnumber($getattribute(attacker,#ATTRIB_Strength)) + 1;
-			if (attacker's "subtype" == "hero") //&&
-				begin
-					if (((defender's "type" != "building") && (defender's "type" != "lair")) &&
-						($randomnumber(100) < attacker's "critical_chance"))
-							begin
-								dmg = $getattribute(defender,#ATTRIB_MAXHP);
-								critical_effect = TRUE;
-								if ($hasattribute("resist_critical",defender))
-									if (defender's "resist_critical" == TRUE)
-										dmg = dmg / 6;
-							end
-						else
-							begin
-								dmg = $randomnumber($GetAttribute(attacker, #ATTRIB_weapon_basic_damage)) + 1;
-								dmg += $GetAttribute (attacker, #ATTRIB_weapon_struct_bonus);
-								dmg += $GetAttribute (attacker, #ATTRIB_weapon_magic_bonus);
-								if ($GetAttribute (attacker, #ATTRIB_weapon_magic_bonus) > 0)
-									magic_effect = TRUE;
-								dmg += ($getattribute(attacker,#ATTRIB_Strength) / #strength_div);
-
-								// give a bonus for heroes attacking other heroes
-								if ($getunitplayernumber(attacker) != $getunitPlayerNumber(defender))
-									if ((attacker's "subtype" == "hero") && (defender's "subtype" == "hero"))
-										begin
-											dmg += $getattribute(attacker,#ATTRIB_experienceLevel) / #level_div;
-										end
-							end
-				end
-			else
-				begin
-					if (((defender's "type" != "building") && (defender's "type" != "lair")) &&
-						($randomnumber(100) < attacker's "critical_chance"))
-							begin
-								dmg = $getattribute(defender,#ATTRIB_MAXHP);
-								critical_effect = TRUE;
-								if ($hasattribute("resist_critical",defender))
-									if (defender's "resist_critical" == TRUE)
-										dmg = dmg / 6;
-							end
-						else
-							begin
-								t = $getattribute(attacker,#ATTRIB_strength) / 4;
-								t2 = $getattribute(attacker,#ATTRIB_strength) - t;
-								dmg = $randomnumber(t2) + 1 + t;
-							end
-				end
-		end
-
-		if ((defender's "type" == "building") || (defender's "type" == "lair"))
-			begin
-				dmg = $BuildingDamageModifier ( attacker, defender, dmg );
-			end
-		else
-			begin
-				dmg_stopped = $GetAttribute (defender, #ATTRIB_armor_basic_damage);
-
-				if (defender's "subtype" == "hero")// &&
-						begin
-							dmg_stopped += $GetAttribute (defender, #ATTRIB_armor_struct_bonus);
-							dmg_stopped += $GetAttribute (defender, #ATTRIB_armor_magic_bonus);
-						end
-
-				t = dmg_stopped / 4;
-
-				t2 = $randomnumber(dmg_stopped - t);
-
-//				$debugout(911,"lowdamage",t,"variabledamage",t2,defender's "type");
-				dmg_stopped = t + t2;
-
-				dmg -= dmg_stopped;
-
-			end
-
-	if (dmg < 0) dmg = 0;
-
-	if (dmg > 0)
-		begin
-			if (defender's "type" != "building" && defender's "type" != "lair")
-				begin
-					if (magic_effect)
-						$createeffector(defender,"wound_special",0);
-					else
-						if (critical_effect)
-							$createeffector(defender,"wound_critical",0);
-						else
-							$createeffector(defender,"wounded_large",0);
-
-					$playsound(defender,"gethit");
-
-					if ($getattribute(attacker,#ATTRIB_weaponpoisoned) == 1)
-						begin
-							do_poison = TRUE;
-							if ($hasattribute("Immune_to_poison",defender))
-								if (defender's "immune_to_poison" == TRUE)
-									do_poison = FALSE;
-
-							if (do_poison)
-								$poison_begin(attacker,defender);
-						end
-				end
-			else
-				$playsound(defender,"gethit");
-
-			// does the creature have a special splat?
-			if ($hasattribute("special_splat",attacker))
-				if (attacker's "special_splat" != "")
-					begin
-						$createeffector(defender,attacker's "special_splat",0);
-					end
-
-			// Living World v0.6: credit the monster that lands the fatal normal attack.
-			// This runs BEFORE vanilla HP subtraction, while both attacker and defender are known.
-			if ($GetAttribute(defender,#ATTRIB_HP) <= dmg)
-				$LWS_CombatCredit(attacker, defender);
-
-			$adjustattribute(defender,#ATTRIB_HP,-dmg);
-		end
-
-	// check for defender recoil
-
-end
