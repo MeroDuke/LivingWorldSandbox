@@ -83,7 +83,7 @@ $requiredLootPatterns = @(
     'ChanceRoll\s*>=\s*50',
     '\$AdjustAttribute\s*\(\s*NewOwnerAgent\s*,\s*#ATTRIB_NumHealingPotions\s*,\s*1',
     '\$DeleteInventoryItem\s*\(\s*AttributeID\s*,\s*NewOwnerAgent',
-    '\$SpawnUnit\s*\(\s*Defender\s*,\s*"LWS_HealingPotion"'
+    '\$SpawnUnit\s*\(\s*Defender\s*,\s*"LWS_HealingPotion"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_HealingPotion"'
 )
 foreach ($pattern in $requiredLootPatterns) {
     if ($lootSource -notmatch $pattern) {
@@ -134,7 +134,7 @@ $requiredHookPatterns = @(
     '\$Advance_To_Level\s*\(\s*Paladin\s*,\s*8\s*\)',
     'EnemyCount\s*<\s*6',
     'PotionCount\s*<\s*3',
-    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_HealingPotion"',
+    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_HealingPotion"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_HealingPotion"',
     '\$IsValidGamePiece\s*\(\s*ShowcaseMonster\s*\)',
     '#ATTRIB_NumHealingPotions\s*\)\s*!=\s*\(\s*PotionsBefore\s*\+\s*1',
     '\$SpawnUnit\s*\(\s*Palace\s*,\s*"GoblinOverlord"',

@@ -47,7 +47,9 @@ Begin
     if ( ChanceRoll >= 50 )
         return;
 
-    Drop = $SpawnUnit ( Defender, "LWS_HealingPotion" );
+    // Ground inventory items must carry their generated inventory attribute.
+    // Eval_Items refuses the pickup without this exact override payload.
+    Drop = $SpawnUnit ( Defender, "LWS_HealingPotion", "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_HealingPotion" ), 0 ));
     if ( $IsValidGamePiece ( Drop ) == FALSE )
         return;
     AIRootAgent = $RetrieveAgent ( "GplAIRoot" );

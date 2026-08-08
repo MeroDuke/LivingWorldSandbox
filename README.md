@@ -124,6 +124,8 @@ bottle unit. Healing herbs remain untouched and retain their original
 five-herbs-per-potion behavior. The diagnostic forces one failed and one
 successful drop roll, then verifies pickup increments a Rogue's native potion
 counter by exactly one.
+Ground drops carry Majesty's generated inventory attribute, allowing the
+vanilla `Eval_Items` behavior to retrieve and transfer them normally.
 After PASS it removes the dangerous class/perk showcase monsters and creates a
 separate autonomous arena: one level-8 Paladin at half health, six nearby weak
 monsters (Giant Rats and Skeletons), and three scattered Healing Potion pickups.
