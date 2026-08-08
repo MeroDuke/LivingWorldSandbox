@@ -64,6 +64,7 @@ foreach ($pattern in $requiredCombatPatterns) {
 }
 
 $requiredHookPatterns = @(
+    '\$LWS_EnsureMonsterState\s*\(\s*Attacker\s*\)',
     'LWS_DiagnosticKills',
     'LWS_DiagnosticBuildings',
     'PeasantCount\s*<\s*9',

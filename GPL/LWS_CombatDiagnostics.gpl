@@ -33,6 +33,7 @@ Declare
 Begin
     TestLocation = $RandomCoord ( Palace, 300, 500 );
     Attacker = $SpawnUnit ( Palace, "Giant_Rat", TestLocation, #Monster_Player );
+    $LWS_EnsureMonsterState ( Attacker );
     $AddAttribute ( Attacker, "LWS_DiagnosticKills", "integer", 0 );
     $AddAttribute ( Attacker, "LWS_DiagnosticBuildings", "integer", 0 );
     $AddAttribute ( Attacker, "LWS_DiagnosticLairsIgnored", "integer", 0 );
