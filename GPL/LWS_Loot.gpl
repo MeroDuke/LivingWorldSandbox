@@ -1,0 +1,35 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LivingWorldSandbox - minimal healing potion loot.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Function LWS_TryHealingPotionDrop ( agent Defender, integer FinalDamage, integer ChanceRoll )
+Declare
+    integer DefenderHP;
+    agent Drop, AIRootAgent;
+Begin
+    if ( $IsValidGamePiece ( Defender ) == FALSE )
+        return;
+    if ( $HasAttribute ( "original_type", Defender ) == FALSE )
+        return;
+    if ( Defender's "original_type" != "Monster" )
+        return;
+
+    DefenderHP = $GetAttribute ( Defender, #ATTRIB_HP );
+    if (( DefenderHP <= 0 ) || ( DefenderHP > FinalDamage ))
+        return;
+    if ( $HasAttribute ( "LWS_LootResolved", Defender ))
+        return;
+
+    $AddAttribute ( Defender, "LWS_LootResolved", "boolean", TRUE );
+    if ( ChanceRoll >= 8 )
+        return;
+
+    Drop = $SpawnUnit ( Defender, "Resource_Healplant" );
+    if ( $IsValidGamePiece ( Drop ) == FALSE )
+        return;
+    $AddAttribute ( Drop, "LWS_HealingPotionDrop", "boolean", TRUE );
+
+    AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
+    if ( $HasAttribute ( "LWS_DiagnosticLootDrops", AIRootAgent ))
+        AIRootAgent's "LWS_DiagnosticLootDrops" += 1;
+End

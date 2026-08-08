@@ -112,3 +112,17 @@ diagnostic forces each reward branch and verifies both a failed roll and the cap
 production combat uses random rolls. It leaves a three-perk Goblin Overlord near
 the Palace with 72 HtoH, 19 Strength, 4 armor, 61 Parry, 51 Dodge, and 23 Magic
 Resistance so the combined permanent bonuses can be inspected in the UI.
+
+## Healing potion loot
+
+A monster death has an 8% chance to drop a marker-tagged vanilla healing-herb
+object. Any hero collecting that marked drop receives exactly one native
+`#ATTRIB_NumHealingPotions`, up to the vanilla carrying cap, and can consume it
+through the unchanged Northern Expansion `heal_self` behavior. Unmarked vanilla
+healing herbs retain their original five-herbs-per-potion behavior. The pickup
+callback override is generated at build time from the local read-only SDK and is
+not committed. The diagnostic forces one failed and one successful drop roll,
+then verifies pickup increments a Rogue's native potion counter by exactly one.
+It also leaves a second marked drop beside a Ranger with zero potions so the
+unchanged autonomous collection and later `heal_self` behavior can be observed;
+PASS does not depend on the Ranger choosing to collect it.
