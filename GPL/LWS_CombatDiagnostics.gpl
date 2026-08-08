@@ -1,0 +1,130 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Phase 0 diagnostic hook for the Northern Expansion combat pipeline.
+// No production progression, stat growth, perk, or loot behavior belongs in this file.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Function LWS_CombatCredit ( agent Attacker, agent Defender, integer FinalDamage )
+Declare
+    integer DefenderHP;
+Begin
+    if ( FinalDamage <= 0 )
+        return;
+
+    if ( $IsValidGamePiece ( Attacker ) == FALSE )
+        return;
+    if ( $IsValidGamePiece ( Defender ) == FALSE )
+        return;
+
+    // Monster identity cannot be inferred from Type alone: Skeleton, for example, uses Type "mystery".
+    if ( $HasAttribute ( "original_type", Attacker ) == FALSE )
+        return;
+    if ( Attacker's "original_type" != "Monster" )
+        return;
+
+    // Units owned by the same player are friendly for this first attribution boundary.
+    if ( $GetUnitPlayerNumber ( Attacker ) == $GetUnitPlayerNumber ( Defender ))
+        return;
+
+    DefenderHP = $GetAttribute ( Defender, #ATTRIB_HP );
+    if (( DefenderHP <= 0 ) || ( DefenderHP > FinalDamage ))
+        return;
+
+    if ( $HasAttribute ( "LWS_DiagnosticKills", Attacker ) == FALSE )
+        $AddAttribute ( Attacker, "LWS_DiagnosticKills", "integer", 0 );
+    if ( $HasAttribute ( "LWS_DiagnosticBuildings", Attacker ) == FALSE )
+        $AddAttribute ( Attacker, "LWS_DiagnosticBuildings", "integer", 0 );
+    if ( $HasAttribute ( "LWS_DiagnosticLairsIgnored", Attacker ) == FALSE )
+        $AddAttribute ( Attacker, "LWS_DiagnosticLairsIgnored", "integer", 0 );
+
+    if ( Defender's "type" == "lair" )
+        begin
+            Attacker's "LWS_DiagnosticLairsIgnored" += 1;
+            $DebugOut ( 911, "LWS Phase 0: ignored fatal lair damage" );
+            return;
+        end
+
+    if ( Defender's "type" == "building" )
+        begin
+            Attacker's "LWS_DiagnosticBuildings" += 1;
+            $DebugOut ( 911, "LWS Phase 0: attributed fatal building damage" );
+            return;
+        end
+
+    Attacker's "LWS_DiagnosticKills" += 1;
+    $DebugOut ( 911, "LWS Phase 0: attributed fatal unit damage" );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWSCombatDiagnostic ()
+Declare
+    agent AIRootAgent, Palace;
+    list Palaces;
+Begin
+    // Keep the known-good production bootstrap in the diagnostic quest.
+    $LivingWorldSandbox ();
+
+    Palaces = $ListPalaces ();
+    Palace = $ListMember ( Palaces, 1 );
+    AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
+
+    $AddAttribute ( AIRootAgent, "LWS_DiagnosticPassed", "boolean", FALSE );
+    $AddAttribute ( AIRootAgent, "LWS_DiagnosticFailures", "integer", 0 );
+    $NewThread ( $LWS_RunCombatDiagnostic, 2000, AIRootAgent, Palace );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_RunCombatDiagnostic ( agent AIRootAgent, agent Palace )
+Declare
+    agent Attacker, EnemyTarget, FriendlyTarget, LairTarget, BuildingTarget;
+    coordinate TestLocation;
+Begin
+    TestLocation = $RandomCoord ( Palace, 300, 500 );
+    Attacker = $SpawnUnit ( Palace, "Giant_Rat", TestLocation, #Monster_Player );
+    $AddAttribute ( Attacker, "LWS_DiagnosticKills", "integer", 0 );
+    $AddAttribute ( Attacker, "LWS_DiagnosticBuildings", "integer", 0 );
+    $AddAttribute ( Attacker, "LWS_DiagnosticLairsIgnored", "integer", 0 );
+    $SetAttribute ( Attacker, #ATTRIB_Strength, 1000 );
+
+    EnemyTarget = $SpawnUnit ( Palace, "Peasant", $RandomCoord ( TestLocation, 50 ), #Player_1 );
+    $SetAttribute ( EnemyTarget, #ATTRIB_HP, 1 );
+    $SetAttribute ( EnemyTarget, #ATTRIB_armor_basic_damage, 0 );
+    $damage ( Attacker, EnemyTarget );
+
+    if ( Attacker's "LWS_DiagnosticKills" != 1 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    FriendlyTarget = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( TestLocation, 50 ), #Monster_Player );
+    $SetAttribute ( FriendlyTarget, #ATTRIB_HP, 1 );
+    $SetAttribute ( FriendlyTarget, #ATTRIB_armor_basic_damage, 0 );
+    $damage ( Attacker, FriendlyTarget );
+
+    if ( Attacker's "LWS_DiagnosticKills" != 1 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    LairTarget = $SpawnUnit ( Palace, "Goblin_Hovel", $RandomCoord ( TestLocation, 100 ), "MaxHP", #Player_1 );
+    $SetAttribute ( LairTarget, #ATTRIB_HP, 1 );
+    $damage ( Attacker, LairTarget );
+
+    if ( Attacker's "LWS_DiagnosticLairsIgnored" != 1 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    BuildingTarget = $SpawnUnit ( Palace, "Blacksmith1", $RandomCoord ( TestLocation, 100 ), "MaxHP", #Player_1 );
+    $SetAttribute ( BuildingTarget, #ATTRIB_HP, 1 );
+    $damage ( Attacker, BuildingTarget );
+
+    if ( Attacker's "LWS_DiagnosticBuildings" != 1 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    if ( AIRootAgent's "LWS_DiagnosticFailures" == 0 )
+        begin
+            AIRootAgent's "LWS_DiagnosticPassed" = TRUE;
+            // Visible result that does not depend on autonomous hero or monster behavior.
+            $AdjustPlayerData ( Palace, "gold", 7777 );
+            $DebugOut ( 911, "LWS PHASE 0 COMBAT DIAGNOSTIC: PASS" );
+        end
+    else
+        begin
+            $AdjustPlayerData ( Palace, "gold", 111 );
+            $DebugOut ( 911, "LWS PHASE 0 COMBAT DIAGNOSTIC: FAIL", AIRootAgent's "LWS_DiagnosticFailures" );
+        end
+End

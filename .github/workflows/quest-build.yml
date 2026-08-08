@@ -17,6 +17,9 @@ jobs:
       - name: Validate baseline
         shell: powershell
         run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Test-QuestBaseline.ps1
+      - name: Validate Phase 0 combat diagnostic
+        shell: powershell
+        run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Test-CombatDiagnostic.ps1
 
   compile:
     name: Compile GPL bytecode
@@ -29,12 +32,17 @@ jobs:
       - name: Compile with the Majesty SDK
         shell: powershell
         run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Build-Quest.ps1
+      - name: Compile Phase 0 combat diagnostic
+        shell: powershell
+        run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Build-CombatDiagnostic.ps1
       - name: Validate compiled package
         shell: powershell
-        run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Test-QuestBaseline.ps1
+        run: |
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Test-QuestBaseline.ps1
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Test-CombatDiagnostic.ps1
       - name: Verify committed bytecode is reproducible
         shell: powershell
-        run: git diff --exit-code -- Data/LivingWorldSandbox.bcd
+        run: git diff --exit-code -- Data/LivingWorldSandbox.bcd Data/LWSCombatDiagnostic.bcd
       - name: Upload playable quest package
         uses: actions/upload-artifact@v7
         with:

@@ -42,3 +42,19 @@ compilation runs only for trusted pushes or an explicit manual dispatch.
 
 CI recompiles the GPL source and fails if the committed bytecode is not exactly
 reproducible.
+
+## Phase 0 combat diagnostic
+
+`LWSCombatDiagnostic.mqxml` is a developer-only Northern Expansion quest. It
+loads `Data/LWSCombatDiagnostic.bcd`, preserves the production starter
+ecosystem, and invokes controlled combat-pipeline checks directly without
+waiting for autonomous heroes or monsters to choose a fight.
+
+Copy these files with their directory structure to run it:
+
+- `LWSCombatDiagnostic.mqxml`
+- `Data/LWSCombatDiagnostic.bcd`
+- `Quests/LivingWorldSandbox.q`
+
+The diagnostic adds 7777 treasury gold when all checks pass, or 111 gold when
+one or more checks fail. The detailed result is also written with `DebugOut`.
