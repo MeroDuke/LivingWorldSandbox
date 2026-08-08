@@ -12,6 +12,10 @@ Begin
         return;
     if ( $IsValidGamePiece ( Defender ) == FALSE )
         return;
+
+    // Loot belongs to the defeated monster, independently of who dealt the fatal hit.
+    $LWS_TryHealingPotionDrop ( Defender, FinalDamage, $RandomNumber ( 100 ));
+
     if ( $HasAttribute ( "original_type", Attacker ) == FALSE )
         return;
     if ( Attacker's "original_type" != "Monster" )

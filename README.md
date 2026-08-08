@@ -112,3 +112,26 @@ diagnostic forces each reward branch and verifies both a failed roll and the cap
 production combat uses random rolls. It leaves a three-perk Goblin Overlord near
 the Palace with 72 HtoH, 19 Strength, 4 armor, 61 Parry, 51 Dodge, and 23 Magic
 Resistance so the combined permanent bonuses can be inspected in the UI.
+
+## Healing potion loot
+
+A monster death has an 8% chance to drop a custom Healing Potion
+special item. Any hero collecting it receives exactly one native
+`#ATTRIB_NumHealingPotions`, up to the vanilla carrying cap, and can consume it
+through the unchanged Northern Expansion `heal_self` behavior. The item uses the
+generic vanilla special-item world art because Majesty has no placeable potion
+bottle unit. Healing herbs remain untouched and retain their original
+five-herbs-per-potion behavior. The diagnostic forces one failed and one
+successful drop roll, then verifies pickup increments a Rogue's native potion
+counter by exactly one.
+Ground drops carry Majesty's generated inventory attribute, allowing the
+vanilla `Eval_Items` behavior to retrieve and transfer them normally.
+Heroes already carrying the vanilla maximum of five healing potions ignore
+these drops, leaving them on the ground for another hero.
+After PASS it removes the dangerous class/perk showcase monsters and creates a
+separate autonomous arena: one level-8 Paladin at half health, six nearby weak
+monsters (Giant Rats and Skeletons), and ten scattered Healing Potion pickups.
+The arena includes a completed player-owned Warriors Guild which adopts the
+Paladin as a member, preventing the otherwise homeless hero from leaving the
+map. The arena makes combat and loot visible, but its random outcome cannot
+change PASS/FAIL.

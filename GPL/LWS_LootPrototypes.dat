@@ -1,0 +1,7 @@
+[LWS_HealingPotion]
+    {Special_Item
+        (type Special_Item)
+        (Title LWS_HealingPotion)
+        (BirthScript LWS_HealingPotion_Birth)
+    }
+[end]

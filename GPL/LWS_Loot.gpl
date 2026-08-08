@@ -1,0 +1,58 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LivingWorldSandbox - native healing potion loot.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Function LWS_HealingPotion_Birth ( agent ThisAgent )
+Declare
+Begin
+    $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_HealingPotion_Transfer );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_HealingPotion_Transfer ( agent OldOwnerAgent, agent NewOwnerAgent, integer AttributeID )
+Declare
+Begin
+    if ( $IsValidGamePiece ( NewOwnerAgent ) == FALSE )
+        return;
+
+    // Marketplace purchases and Ranger brewing use this same native counter.
+    if ( $GetAttribute ( NewOwnerAgent, #ATTRIB_NumHealingPotions ) < #Max_Heal_Potions )
+        $AdjustAttribute ( NewOwnerAgent, #ATTRIB_NumHealingPotions, 1 );
+
+    // The world pickup is a consumable carrier, not a persistent custom inventory item.
+    $DeleteInventoryItem ( AttributeID, NewOwnerAgent );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Function LWS_TryHealingPotionDrop ( agent Defender, integer FinalDamage, integer ChanceRoll )
+Declare
+    integer DefenderHP;
+    agent Drop, AIRootAgent;
+Begin
+    if ( $IsValidGamePiece ( Defender ) == FALSE )
+        return;
+    if ( $HasAttribute ( "original_type", Defender ) == FALSE )
+        return;
+    if ( Defender's "original_type" != "Monster" )
+        return;
+
+    DefenderHP = $GetAttribute ( Defender, #ATTRIB_HP );
+    if (( DefenderHP <= 0 ) || ( DefenderHP > FinalDamage ))
+        return;
+    if ( $HasAttribute ( "LWS_LootResolved", Defender ))
+        return;
+
+    $AddAttribute ( Defender, "LWS_LootResolved", "boolean", TRUE );
+    if ( ChanceRoll >= 8 )
+        return;
+
+    // Ground inventory items must carry their generated inventory attribute.
+    // Eval_Items refuses the pickup without this exact override payload.
+    Drop = $SpawnUnit ( Defender, "LWS_HealingPotion", "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_HealingPotion" ), 0 ));
+    if ( $IsValidGamePiece ( Drop ) == FALSE )
+        return;
+    AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
+    if ( $HasAttribute ( "LWS_DiagnosticLootDrops", AIRootAgent ))
+        AIRootAgent's "LWS_DiagnosticLootDrops" += 1;
+End

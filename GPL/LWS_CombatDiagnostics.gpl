@@ -17,11 +17,97 @@ Begin
 
     $AddAttribute ( AIRootAgent, "LWS_DiagnosticPassed", "boolean", FALSE );
     $AddAttribute ( AIRootAgent, "LWS_DiagnosticFailures", "integer", 0 );
+    $AddAttribute ( AIRootAgent, "LWS_DiagnosticLootDrops", "integer", 0 );
 
     // This is a short deterministic integration check, so run it synchronously.
     // Majesty threads must be started through an agent function attribute; passing
     // a bare function to NewThread compiles but does not execute reliably at runtime.
     $LWS_RunCombatDiagnostic ( AIRootAgent, Palace );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_RunLootDiagnostic ( agent AIRootAgent, agent Palace, coordinate TestLocation ) is boolean
+Declare
+    agent NoDropVictim, DropVictim, LootDrop, LootHero;
+    integer PotionsBefore;
+Begin
+    NoDropVictim = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( TestLocation, 80, 160 ), #Monster_Player );
+    if ( $IsValidGamePiece ( NoDropVictim ) == FALSE )
+        return FALSE;
+    $SetAttribute ( NoDropVictim, #ATTRIB_HP, 1 );
+    $LWS_TryHealingPotionDrop ( NoDropVictim, 1, 99 );
+    if ( $HasAttribute ( "LWS_LootResolved", NoDropVictim ) == FALSE )
+        return FALSE;
+    if ( AIRootAgent's "LWS_DiagnosticLootDrops" != 0 )
+        return FALSE;
+
+    DropVictim = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( TestLocation, 80, 160 ), #Monster_Player );
+    if ( $IsValidGamePiece ( DropVictim ) == FALSE )
+        return FALSE;
+    $SetAttribute ( DropVictim, #ATTRIB_HP, 1 );
+    $LWS_TryHealingPotionDrop ( DropVictim, 1, 0 );
+    if ( AIRootAgent's "LWS_DiagnosticLootDrops" != 1 )
+        return FALSE;
+
+    LootDrop = $SpawnUnit ( DropVictim, "LWS_HealingPotion", "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_HealingPotion" ), 0 ));
+    if ( $IsValidGamePiece ( LootDrop ) == FALSE )
+        return FALSE;
+
+    LootHero = $SpawnUnit ( Palace, "Rogue", $RandomCoord ( TestLocation, 80, 160 ), #Player_1 );
+    if ( $IsValidGamePiece ( LootHero ) == FALSE )
+        return FALSE;
+    $SetAttribute ( LootHero, #ATTRIB_NumHealingPotions, 0 );
+    PotionsBefore = $GetAttribute ( LootHero, #ATTRIB_NumHealingPotions );
+    $TransferInventoryItem ( "LWS_HealingPotion", LootDrop, LootHero );
+    $LWS_HealingPotion_Transfer ( LootDrop, LootHero, $MakeInventoryAttribute ( "LWS_HealingPotion" ));
+    $DeleteGamePiece ( LootDrop );
+
+    if ( $GetAttribute ( LootHero, #ATTRIB_NumHealingPotions ) != ( PotionsBefore + 1 ))
+        return FALSE;
+    if ( $IsValidGamePiece ( LootDrop ))
+        return FALSE;
+    $DeleteGamePiece ( LootHero );
+    return TRUE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_SetupPotionArena ( agent Palace )
+Declare
+    agent WarriorsGuild, Paladin, Enemy, PotionDrop;
+    coordinate ArenaLocation;
+    integer EnemyCount, PotionCount;
+Begin
+    ArenaLocation = $RandomCoord ( Palace, 700, 900 );
+    WarriorsGuild = $SpawnUnit ( Palace, "Warriors_Guild", ArenaLocation, "MaxHP", #Player_1 );
+    if ( $IsValidGamePiece ( WarriorsGuild ) == FALSE )
+        return;
+
+    Paladin = $SpawnUnit ( WarriorsGuild, "Paladin", $RandomCoord ( WarriorsGuild, 40, 80 ), #Player_1 );
+    if ( $IsValidGamePiece ( Paladin ) == FALSE )
+        return;
+    if ( Paladin's "home" == $NullAgent ())
+        $Adopt ( WarriorsGuild, Paladin );
+
+    $Advance_To_Level ( Paladin, 8 );
+    $SetAttribute ( Paladin, #ATTRIB_HP, $GetAttribute ( Paladin, #ATTRIB_MaxHP ) / 2 );
+    $SetAttribute ( Paladin, #ATTRIB_NumHealingPotions, 0 );
+
+    EnemyCount = 0;
+    while ( EnemyCount < 6 ) do
+        begin
+            if (( EnemyCount % 2 ) == 0 )
+                Enemy = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( Paladin, 60, 150 ), #Monster_Player );
+            else
+                Enemy = $SpawnUnit ( Palace, "Skeleton", $RandomCoord ( Paladin, 60, 150 ), #Monster_Player );
+            EnemyCount += 1;
+        end
+
+    PotionCount = 0;
+    while ( PotionCount < 10 ) do
+        begin
+            PotionDrop = $SpawnUnit ( Paladin, "LWS_HealingPotion", $RandomCoord ( Paladin, 30, 100 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_HealingPotion" ), 0 ));
+            PotionCount += 1;
+        end
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -215,6 +301,7 @@ Begin
     if ( PerkTester's "LWS_BuildingsDestroyed" != 5 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( PerkTester's "LWS_Perks" != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $GetAttribute ( PerkTester, #ATTRIB_HtoH ) != ( OldHtoH + 2 )) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    $DeleteGamePiece ( PerkTester );
         end
 
     // Observable arena: the same surviving rat can naturally hunt nine nearby peasants.
@@ -231,21 +318,29 @@ Begin
     ShowcaseMonster = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
     if ( $LWS_PrepareClassShowcase ( ShowcaseMonster, 1, 1 ) == FALSE )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $IsValidGamePiece ( ShowcaseMonster )) $DeleteGamePiece ( ShowcaseMonster );
 
     ShowcaseMonster = $SpawnUnit ( Palace, "Ratman", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
     if ( $LWS_PrepareClassShowcase ( ShowcaseMonster, 2, 2 ) == FALSE )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $IsValidGamePiece ( ShowcaseMonster )) $DeleteGamePiece ( ShowcaseMonster );
 
     ShowcaseMonster = $SpawnUnit ( Palace, "Troll", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
     if ( $LWS_PrepareClassShowcase ( ShowcaseMonster, 3, 4 ) == FALSE )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $IsValidGamePiece ( ShowcaseMonster )) $DeleteGamePiece ( ShowcaseMonster );
 
     ShowcaseMonster = $SpawnUnit ( Palace, "Minotaur", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
     if ( $LWS_PrepareClassShowcase ( ShowcaseMonster, 4, 12 ) == FALSE )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $IsValidGamePiece ( ShowcaseMonster )) $DeleteGamePiece ( ShowcaseMonster );
 
     ShowcaseMonster = $SpawnUnit ( Palace, "Dragon", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
     if ( $LWS_PrepareClassShowcase ( ShowcaseMonster, 5, 20 ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $IsValidGamePiece ( ShowcaseMonster )) $DeleteGamePiece ( ShowcaseMonster );
+
+    if ( $LWS_RunLootDiagnostic ( AIRootAgent, Palace, TestLocation ) == FALSE )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
     if ( AIRootAgent's "LWS_DiagnosticFailures" == 0 )
@@ -260,4 +355,7 @@ Begin
             $AdjustPlayerData ( Palace, "gold", 111 );
             $DebugOut ( 911, "LWS PROGRESSION CLASS DIAGNOSTIC: FAIL", AIRootAgent's "LWS_DiagnosticFailures" );
         end
+
+    // Autonomous, observable loot arena; its random combat outcome cannot change PASS/FAIL.
+    $LWS_SetupPotionArena ( Palace );
 End

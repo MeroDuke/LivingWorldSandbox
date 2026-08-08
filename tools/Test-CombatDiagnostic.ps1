@@ -7,8 +7,12 @@ $definitionPath = Join-Path $repositoryRoot 'LWSCombatDiagnostic.mqxml'
 $hookPath = Join-Path $repositoryRoot 'GPL\LWS_CombatDiagnostics.gpl'
 $combatPath = Join-Path $repositoryRoot 'GPL\LWS_CombatProgression.gpl'
 $buildingRewardsPath = Join-Path $repositoryRoot 'GPL\LWS_BuildingRewards.gpl'
+$lootPath = Join-Path $repositoryRoot 'GPL\LWS_Loot.gpl'
+$lootPrototypePath = Join-Path $repositoryRoot 'GPL\LWS_LootPrototypes.dat'
+$descriptionPath = Join-Path $repositoryRoot 'Data\LWS_Descriptions.xml'
 $statePath = Join-Path $repositoryRoot 'GPL\LWS_MonsterState.gpl'
 $generatorPath = Join-Path $repositoryRoot 'tools\New-CombatOverride.ps1'
+$itemGeneratorPath = Join-Path $repositoryRoot 'tools\New-ItemEvaluationOverride.ps1'
 $bytecodePath = Join-Path $repositoryRoot 'Data\LWSCombatDiagnostic.bcd'
 
 [xml]$definition = Get-Content -LiteralPath $definitionPath -Raw
@@ -27,6 +31,9 @@ if ($quest.DataConfiguration.Dataset.Load.GPL.Target -ne 'Data/LWSCombatDiagnost
 $hookSource = Get-Content -LiteralPath $hookPath -Raw
 $combatSource = Get-Content -LiteralPath $combatPath -Raw
 $buildingRewardsSource = Get-Content -LiteralPath $buildingRewardsPath -Raw
+$lootSource = Get-Content -LiteralPath $lootPath -Raw
+$lootPrototypeSource = Get-Content -LiteralPath $lootPrototypePath -Raw
+$descriptionSource = Get-Content -LiteralPath $descriptionPath -Raw
 $stateSource = Get-Content -LiteralPath $statePath -Raw
 $requiredStatePatterns = @(
     'Function\s+LWS_EnsureMonsterState',
@@ -69,6 +76,30 @@ foreach ($pattern in $requiredBuildingRewardPatterns) {
         throw "Missing building reward pattern: $pattern"
     }
 }
+$requiredLootPatterns = @(
+    'Function\s+LWS_TryHealingPotionDrop',
+    'Function\s+LWS_HealingPotion_Birth',
+    'Function\s+LWS_HealingPotion_Transfer',
+    'LWS_LootResolved',
+    'ChanceRoll\s*>=\s*8',
+    '\$AdjustAttribute\s*\(\s*NewOwnerAgent\s*,\s*#ATTRIB_NumHealingPotions\s*,\s*1',
+    '\$DeleteInventoryItem\s*\(\s*AttributeID\s*,\s*NewOwnerAgent',
+    '\$SpawnUnit\s*\(\s*Defender\s*,\s*"LWS_HealingPotion"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_HealingPotion"'
+)
+foreach ($pattern in $requiredLootPatterns) {
+    if ($lootSource -notmatch $pattern) {
+        throw "Missing healing potion loot pattern: $pattern"
+    }
+}
+if ($lootSource -match 'Resource_Healplant|healing_herbs') {
+    throw 'Healing potion loot must not use the healer herb resource.'
+}
+if ($lootPrototypeSource -notmatch '\[LWS_HealingPotion\]' -or $lootPrototypeSource -notmatch 'Special_Item') {
+    throw 'Healing potion special-item prototype is missing.'
+}
+if ($descriptionSource -notmatch 'ID="LWS_HealingPotion"' -or $descriptionSource -notmatch 'IsInventoryItem') {
+    throw 'Healing potion unit description is missing or is not an inventory item.'
+}
 $requiredCombatPatterns = @(
     'Function\s+LWS_CombatCredit',
     'FinalDamage\s*<=\s*0',
@@ -80,7 +111,8 @@ $requiredCombatPatterns = @(
     'LWS_DiagnosticKills',
     'LWS_DiagnosticBuildings',
     'LWS_RecordUnitKill',
-    'LWS_ProcessBuildingDestroyed'
+    'LWS_ProcessBuildingDestroyed',
+    'LWS_TryHealingPotionDrop'
 )
 foreach ($pattern in $requiredCombatPatterns) {
     if ($combatSource -notmatch $pattern) {
@@ -93,6 +125,19 @@ $requiredHookPatterns = @(
     '\$LWS_ClassFromLevelXP\s*\(\s*2001\s*\)\s*!=\s*5',
     '\$LWS_KillsRequired\s*\(\s*5\s*,\s*1\s*\)\s*!=\s*20',
     'Function\s+LWS_PrepareClassShowcase',
+    'Function\s+LWS_RunLootDiagnostic',
+    'LWS_TryHealingPotionDrop\s*\(\s*NoDropVictim\s*,\s*1\s*,\s*99\s*\)',
+    'LWS_TryHealingPotionDrop\s*\(\s*DropVictim\s*,\s*1\s*,\s*0\s*\)',
+    'Function\s+LWS_SetupPotionArena',
+    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Warriors_Guild"',
+    '\$SpawnUnit\s*\(\s*WarriorsGuild\s*,\s*"Paladin"',
+    '\$Adopt\s*\(\s*WarriorsGuild\s*,\s*Paladin\s*\)',
+    '\$Advance_To_Level\s*\(\s*Paladin\s*,\s*8\s*\)',
+    'EnemyCount\s*<\s*6',
+    'PotionCount\s*<\s*10',
+    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_HealingPotion"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_HealingPotion"',
+    '\$IsValidGamePiece\s*\(\s*ShowcaseMonster\s*\)',
+    '#ATTRIB_NumHealingPotions\s*\)\s*!=\s*\(\s*PotionsBefore\s*\+\s*1',
     '\$SpawnUnit\s*\(\s*Palace\s*,\s*"GoblinOverlord"',
     'LWS_ProcessBuildingDestroyed\s*\(\s*PerkTester\s*,\s*99\s*,\s*0\s*\)',
     'LWS_ProcessBuildingDestroyed\s*\(\s*PerkTester\s*,\s*0\s*,\s*2\s*\)',
@@ -123,6 +168,14 @@ if ($generatorSource -notmatch 'OriginalQuests\\GPLMx\\TaskModules\\Subtasks\\mx
 }
 if ($generatorSource -notmatch 'LWS_CombatCredit') {
     throw 'Combat override generator does not inject the attribution hook.'
+}
+
+$itemGeneratorSource = Get-Content -LiteralPath $itemGeneratorPath -Raw
+if ($itemGeneratorSource -notmatch 'OriginalQuests\\GPLMx\\DecisionTrees\\Modules\\mx_Eval_Items\.gpl') {
+    throw 'Item evaluation override generator is not pinned to the Northern Expansion source.'
+}
+if ($itemGeneratorSource -notmatch 'LWS_HealingPotion' -or $itemGeneratorSource -notmatch '#Max_Heal_Potions') {
+    throw 'Item evaluation override does not protect the vanilla healing potion cap.'
 }
 
 if (-not (Test-Path -LiteralPath $bytecodePath -PathType Leaf)) {
