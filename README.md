@@ -126,5 +126,7 @@ then verifies pickup increments a Rogue's native potion counter by exactly one.
 After PASS it removes the dangerous class/perk showcase monsters and creates a
 separate autonomous arena: one level-8 Paladin at half health, six nearby weak
 monsters (Giant Rats and Skeletons), and three scattered marked potion drops.
-The arena makes combat and loot visible, but its random outcome cannot change
-PASS/FAIL.
+The arena includes a completed player-owned Warriors Guild which adopts the
+Paladin as a member, preventing the otherwise homeless hero from leaving the
+map. The arena makes combat and loot visible, but its random outcome cannot
+change PASS/FAIL.

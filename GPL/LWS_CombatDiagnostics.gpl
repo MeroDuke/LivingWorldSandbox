@@ -75,14 +75,20 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_SetupPotionArena ( agent Palace )
 Declare
-    agent Paladin, Enemy, PotionDrop;
+    agent WarriorsGuild, Paladin, Enemy, PotionDrop;
     coordinate ArenaLocation;
     integer EnemyCount, PotionCount;
 Begin
     ArenaLocation = $RandomCoord ( Palace, 700, 900 );
-    Paladin = $SpawnUnit ( Palace, "Paladin", ArenaLocation, #Player_1 );
+    WarriorsGuild = $SpawnUnit ( Palace, "Warriors_Guild", ArenaLocation, "MaxHP", #Player_1 );
+    if ( $IsValidGamePiece ( WarriorsGuild ) == FALSE )
+        return;
+
+    Paladin = $SpawnUnit ( WarriorsGuild, "Paladin", $RandomCoord ( WarriorsGuild, 40, 80 ), #Player_1 );
     if ( $IsValidGamePiece ( Paladin ) == FALSE )
         return;
+    if ( Paladin's "home" == $NullAgent ())
+        $Adopt ( WarriorsGuild, Paladin );
 
     $Advance_To_Level ( Paladin, 8 );
     $SetAttribute ( Paladin, #ATTRIB_HP, $GetAttribute ( Paladin, #ATTRIB_MaxHP ) / 2 );
