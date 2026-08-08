@@ -1,0 +1,12 @@
+# The SDK is a local, read-only reference and is not redistributed.
+/SDK/
+
+# Legacy root-level artifacts that are not loaded by the quest definition.
+/LivingWorldSandbox.bcd
+/README.txt
+
+# The compiler writes here before the build script moves the artifact into Data/.
+/GPL/*.bcd
+
+# Local editor/crash artifacts.
+*.mdmp

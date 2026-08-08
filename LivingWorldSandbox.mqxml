@@ -1,0 +1,23 @@
+<Majesty>
+  <Quest id="{4348A40A-C97D-4B51-A2A0-20150CD562CD}">
+    <Name>LivingWorldSandbox</Name>
+    <DisplayName lang="en_US">Living World Sandbox</DisplayName>
+    <Description lang="en_US">
+      <Short>Build a kingdom in a living wilderness.</Short>
+      <Long>A minimal sandbox baseline with six monster lairs and twenty-four roaming monsters.</Long>
+    </Description>
+    <Difficulty>Easy</Difficulty>
+    <DataConfiguration>
+      <Dataset base="MajestyExpansion">
+        <Load>
+          <GPL>
+            <Target>Data/LivingWorldSandbox.bcd</Target>
+            <Source>GPL/LivingWorldSandbox.gpl</Source>
+          </GPL>
+          <GPLSource>GPL</GPLSource>
+          <Template>Quests/LivingWorldSandbox.q</Template>
+        </Load>
+      </Dataset>
+    </DataConfiguration>
+  </Quest>
+</Majesty>
