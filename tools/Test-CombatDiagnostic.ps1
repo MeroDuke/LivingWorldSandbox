@@ -5,6 +5,7 @@ $ErrorActionPreference = 'Stop'
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $definitionPath = Join-Path $repositoryRoot 'LWSCombatDiagnostic.mqxml'
 $hookPath = Join-Path $repositoryRoot 'GPL\LWS_CombatDiagnostics.gpl'
+$statePath = Join-Path $repositoryRoot 'GPL\LWS_MonsterState.gpl'
 $generatorPath = Join-Path $repositoryRoot 'tools\New-CombatOverride.ps1'
 $bytecodePath = Join-Path $repositoryRoot 'Data\LWSCombatDiagnostic.bcd'
 
@@ -22,6 +23,23 @@ if ($quest.DataConfiguration.Dataset.Load.GPL.Target -ne 'Data/LWSCombatDiagnost
 }
 
 $hookSource = Get-Content -LiteralPath $hookPath -Raw
+$stateSource = Get-Content -LiteralPath $statePath -Raw
+$requiredStatePatterns = @(
+    'Function\s+LWS_EnsureMonsterState',
+    'original_type',
+    'LWS_StateVersion',
+    'LWS_Level',
+    'LWS_KillsThisLevel',
+    'LWS_TotalKills',
+    'LWS_BuildingsDestroyed',
+    'LWS_ProgressClass',
+    'LWS_Perks'
+)
+foreach ($pattern in $requiredStatePatterns) {
+    if ($stateSource -notmatch $pattern) {
+        throw "Missing monster state pattern: $pattern"
+    }
+}
 $requiredHookPatterns = @(
     'Function\s+LWS_CombatCredit',
     'FinalDamage\s*<=\s*0',

@@ -1,0 +1,31 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LivingWorldSandbox - per-agent monster progression state.
+// Phase 1 stores state only. Classification, leveling, stat growth, perks, and loot are implemented later.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Function LWS_EnsureMonsterState ( agent Monster )
+Declare
+Begin
+    if ( $IsValidGamePiece ( Monster ) == FALSE )
+        return;
+    if ( $HasAttribute ( "original_type", Monster ) == FALSE )
+        return;
+    if ( Monster's "original_type" != "Monster" )
+        return;
+
+    // Add fields independently so this function can repair partial state without resetting progress.
+    if ( $HasAttribute ( "LWS_StateVersion", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_StateVersion", "integer", 1 );
+    if ( $HasAttribute ( "LWS_Level", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_Level", "integer", 1 );
+    if ( $HasAttribute ( "LWS_KillsThisLevel", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_KillsThisLevel", "integer", 0 );
+    if ( $HasAttribute ( "LWS_TotalKills", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_TotalKills", "integer", 0 );
+    if ( $HasAttribute ( "LWS_BuildingsDestroyed", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_BuildingsDestroyed", "integer", 0 );
+    if ( $HasAttribute ( "LWS_ProgressClass", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_ProgressClass", "integer", 0 );
+    if ( $HasAttribute ( "LWS_Perks", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_Perks", "integer", 0 );
+End

@@ -21,6 +21,8 @@ Begin
     if ( Attacker's "original_type" != "Monster" )
         return;
 
+    $LWS_EnsureMonsterState ( Attacker );
+
     // Units owned by the same player are friendly for this first attribution boundary.
     if ( $GetUnitPlayerNumber ( Attacker ) == $GetUnitPlayerNumber ( Defender ))
         return;
@@ -88,6 +90,28 @@ Begin
     $AddAttribute ( Attacker, "LWS_DiagnosticBuildings", "integer", 0 );
     $AddAttribute ( Attacker, "LWS_DiagnosticLairsIgnored", "integer", 0 );
     $SetAttribute ( Attacker, #ATTRIB_Strength, 1000 );
+
+    // Phase 1: every field exists on this individual monster and initialization is idempotent.
+    if ( Attacker's "LWS_StateVersion" != 1 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( Attacker's "LWS_Level" != 1 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( Attacker's "LWS_KillsThisLevel" != 0 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( Attacker's "LWS_TotalKills" != 0 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( Attacker's "LWS_BuildingsDestroyed" != 0 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( Attacker's "LWS_ProgressClass" != 0 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( Attacker's "LWS_Perks" != 0 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    Attacker's "LWS_TotalKills" = 7;
+    $LWS_EnsureMonsterState ( Attacker );
+    if ( Attacker's "LWS_TotalKills" != 7 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    Attacker's "LWS_TotalKills" = 0;
 
     EnemyTarget = $SpawnUnit ( Palace, "Peasant", $RandomCoord ( TestLocation, 50 ), #Player_1 );
     $SetAttribute ( EnemyTarget, #ATTRIB_HP, 1 );

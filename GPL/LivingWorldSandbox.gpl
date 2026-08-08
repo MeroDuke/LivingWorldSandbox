@@ -71,7 +71,10 @@ Begin
                 SpawnedMonster = $SpawnUnit ( Palace, "Goblin_Fighter", SpawnLocation, #Monster_Player );
 
             if ( $IsValidGamePiece ( SpawnedMonster ))
-                MonsterCount += 1;
+                begin
+                    $LWS_EnsureMonsterState ( SpawnedMonster );
+                    MonsterCount += 1;
+                end
 
             AttemptCount += 1;
         end
