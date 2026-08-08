@@ -35,6 +35,7 @@ Begin
 
     if ( Defender's "type" == "building" )
         begin
+            $LWS_ProcessBuildingDestroyed ( Attacker, $RandomNumber ( 100 ), $RandomNumber ( 3 ));
             if ( $HasAttribute ( "LWS_DiagnosticBuildings", Attacker ))
                 Attacker's "LWS_DiagnosticBuildings" += 1;
             return;

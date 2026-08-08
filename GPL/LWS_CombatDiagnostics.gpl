@@ -86,9 +86,10 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_RunCombatDiagnostic ( agent AIRootAgent, agent Palace )
 Declare
-    agent Attacker, EnemyTarget, FriendlyTarget, LairTarget, BuildingTarget, ArenaPeasant, ShowcaseMonster;
+    agent Attacker, EnemyTarget, FriendlyTarget, LairTarget, BuildingTarget, ArenaPeasant, ShowcaseMonster, PerkTester;
     coordinate TestLocation;
     integer OriginalStrength, PeasantCount;
+    integer OldHtoH, OldStrength, OldArmor, OldParry, OldDodge, OldMagicResistance;
 Begin
     TestLocation = $RandomCoord ( Palace, 300, 500 );
     Attacker = $SpawnUnit ( Palace, "Giant_Rat", TestLocation, #Monster_Player );
@@ -173,6 +174,47 @@ Begin
 
     if ( Attacker's "LWS_DiagnosticBuildings" != 1 )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( Attacker's "LWS_BuildingsDestroyed" != 1 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    // Deterministic building reward and cap checks, isolated from the random production roll above.
+    PerkTester = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
+    if ( $IsValidGamePiece ( PerkTester ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    else
+        begin
+    $LWS_EnsureMonsterState ( PerkTester );
+    OldHtoH = $GetAttribute ( PerkTester, #ATTRIB_HtoH );
+    OldStrength = $GetAttribute ( PerkTester, #ATTRIB_Strength );
+    OldArmor = $GetAttribute ( PerkTester, #ATTRIB_armor_basic_damage );
+    OldParry = $GetAttribute ( PerkTester, #ATTRIB_Parry );
+    OldDodge = $GetAttribute ( PerkTester, #ATTRIB_Dodge );
+    OldMagicResistance = $GetAttribute ( PerkTester, #ATTRIB_MagicResistance );
+
+    $LWS_ProcessBuildingDestroyed ( PerkTester, 99, 0 );
+    if ( PerkTester's "LWS_BuildingsDestroyed" != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( PerkTester's "LWS_Perks" != 0 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    $LWS_ProcessBuildingDestroyed ( PerkTester, 0, 0 );
+    if ( PerkTester's "LWS_Perks" != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $GetAttribute ( PerkTester, #ATTRIB_HtoH ) != ( OldHtoH + 2 )) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $GetAttribute ( PerkTester, #ATTRIB_Strength ) != ( OldStrength + 1 )) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    $LWS_ProcessBuildingDestroyed ( PerkTester, 0, 1 );
+    if ( PerkTester's "LWS_Perks" != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $GetAttribute ( PerkTester, #ATTRIB_armor_basic_damage ) != ( OldArmor + 1 )) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $GetAttribute ( PerkTester, #ATTRIB_Parry ) != ( OldParry + 1 )) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $GetAttribute ( PerkTester, #ATTRIB_Dodge ) != ( OldDodge + 1 )) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    $LWS_ProcessBuildingDestroyed ( PerkTester, 0, 2 );
+    if ( PerkTester's "LWS_Perks" != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $GetAttribute ( PerkTester, #ATTRIB_MagicResistance ) != ( OldMagicResistance + 3 )) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    $LWS_ProcessBuildingDestroyed ( PerkTester, 0, 0 );
+    if ( PerkTester's "LWS_BuildingsDestroyed" != 5 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( PerkTester's "LWS_Perks" != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $GetAttribute ( PerkTester, #ATTRIB_HtoH ) != ( OldHtoH + 2 )) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+        end
 
     // Observable arena: the same surviving rat can naturally hunt nine nearby peasants.
     // Together with the controlled first kill, ten total kills take a starter from level 1 to level 5.

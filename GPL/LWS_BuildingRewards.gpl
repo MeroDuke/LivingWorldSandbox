@@ -1,0 +1,50 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LivingWorldSandbox - permanent rewards for destroying player buildings.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Function LWS_ApplyBuildingPerk ( agent Monster, integer PerkRoll )
+Declare
+    integer PerkChoice, NewResistance;
+Begin
+    if ( Monster's "LWS_Perks" >= 3 )
+        return;
+
+    PerkChoice = PerkRoll % 3;
+    if ( PerkChoice == 0 )
+        begin
+            // Combat perk.
+            if ( Monster's "attacktype" == 1 )
+                $AdjustAttribute ( Monster, #ATTRIB_HtoH, 2 );
+            if ( Monster's "attacktype" == 2 )
+                $AdjustAttribute ( Monster, #ATTRIB_Ranged, 2 );
+            $AdjustAttribute ( Monster, #ATTRIB_Strength, 1 );
+        end
+    else if ( PerkChoice == 1 )
+        begin
+            // Defense perk.
+            $AdjustAttribute ( Monster, #ATTRIB_armor_basic_damage, 1 );
+            $AdjustAttribute ( Monster, #ATTRIB_Parry, 1 );
+            $AdjustAttribute ( Monster, #ATTRIB_Dodge, 1 );
+        end
+    else
+        begin
+            // Magic perk, capped below immunity.
+            NewResistance = $GetAttribute ( Monster, #ATTRIB_MagicResistance ) + 3;
+            if ( NewResistance > 95 ) NewResistance = 95;
+            $SetAttribute ( Monster, #ATTRIB_MagicResistance, NewResistance );
+        end
+
+    Monster's "LWS_Perks" += 1;
+    $CreateEffector ( Monster, "level_up", 0 );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_ProcessBuildingDestroyed ( agent Monster, integer ChanceRoll, integer PerkRoll )
+Declare
+Begin
+    $LWS_EnsureMonsterState ( Monster );
+    Monster's "LWS_BuildingsDestroyed" += 1;
+
+    if ( ChanceRoll < 35 )
+        $LWS_ApplyBuildingPerk ( Monster, PerkRoll );
+End
