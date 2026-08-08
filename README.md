@@ -109,4 +109,6 @@ stat perk. Combat improves attack accuracy and Strength, defense improves armor,
 Parry, and Dodge, and magic improves Magic Resistance with a 95 cap. Monsters
 can receive at most three building perks. Lairs never count as buildings. The
 diagnostic forces each reward branch and verifies both a failed roll and the cap;
-production combat uses random rolls.
+production combat uses random rolls. It leaves a three-perk Goblin Overlord near
+the Palace with 72 HtoH, 19 Strength, 4 armor, 61 Parry, 51 Dodge, and 23 Magic
+Resistance so the combined permanent bonuses can be inspected in the UI.

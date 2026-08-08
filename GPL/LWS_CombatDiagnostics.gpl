@@ -178,7 +178,8 @@ Begin
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
     // Deterministic building reward and cap checks, isolated from the random production roll above.
-    PerkTester = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
+    // A unique expansion unit makes the three-perk result easy to inspect in the UI.
+    PerkTester = $SpawnUnit ( Palace, "GoblinOverlord", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
     if ( $IsValidGamePiece ( PerkTester ) == FALSE )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
     else

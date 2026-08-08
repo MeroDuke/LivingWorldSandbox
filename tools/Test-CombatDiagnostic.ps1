@@ -93,6 +93,7 @@ $requiredHookPatterns = @(
     '\$LWS_ClassFromLevelXP\s*\(\s*2001\s*\)\s*!=\s*5',
     '\$LWS_KillsRequired\s*\(\s*5\s*,\s*1\s*\)\s*!=\s*20',
     'Function\s+LWS_PrepareClassShowcase',
+    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"GoblinOverlord"',
     'LWS_ProcessBuildingDestroyed\s*\(\s*PerkTester\s*,\s*99\s*,\s*0\s*\)',
     'LWS_ProcessBuildingDestroyed\s*\(\s*PerkTester\s*,\s*0\s*,\s*2\s*\)',
     'OldHP\s*=\s*OldMaxHP\s*/\s*2',
