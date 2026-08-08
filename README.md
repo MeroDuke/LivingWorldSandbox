@@ -86,3 +86,7 @@ after level 4. The visible native experience level is synchronized with
 `LWS_Level`; stat growth, perks, and loot remain disabled. The combat diagnostic
 verifies every classification boundary and first-level threshold, then leaves
 the test rat beside nine enemy peasants for observable AI-driven progression.
+It also leaves five level-2 showcase monsters near the Palace: Giant Rat
+(starter), Ratman (low), Troll (medium), Minotaur (high), and Dragon (brutal).
+The diagnostic passes only when each monster reaches level 2 after receiving
+exactly its class-specific number of kill credits.

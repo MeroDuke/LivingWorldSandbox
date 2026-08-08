@@ -25,9 +25,35 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_PrepareClassShowcase ( agent Monster, integer ExpectedClass, integer KillCredits ) is boolean
+Declare
+    integer CreditCount;
+Begin
+    if ( $IsValidGamePiece ( Monster ) == FALSE )
+        return FALSE;
+
+    $LWS_EnsureMonsterState ( Monster );
+    if ( Monster's "LWS_ProgressClass" != ExpectedClass )
+        return FALSE;
+
+    CreditCount = 0;
+    while ( CreditCount < KillCredits ) do
+        begin
+            $LWS_RecordUnitKill ( Monster );
+            CreditCount += 1;
+        end
+
+    if ( Monster's "LWS_Level" != 2 )
+        return FALSE;
+    if ( $GetAttribute ( Monster, #ATTRIB_ExperienceLevel ) != 2 )
+        return FALSE;
+    return TRUE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_RunCombatDiagnostic ( agent AIRootAgent, agent Palace )
 Declare
-    agent Attacker, EnemyTarget, FriendlyTarget, LairTarget, BuildingTarget, ArenaPeasant;
+    agent Attacker, EnemyTarget, FriendlyTarget, LairTarget, BuildingTarget, ArenaPeasant, ShowcaseMonster;
     coordinate TestLocation;
     integer OriginalStrength, PeasantCount;
 Begin
@@ -115,19 +141,6 @@ Begin
     if ( Attacker's "LWS_DiagnosticBuildings" != 1 )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
-    if ( AIRootAgent's "LWS_DiagnosticFailures" == 0 )
-        begin
-            AIRootAgent's "LWS_DiagnosticPassed" = TRUE;
-            // Visible result that does not depend on autonomous hero or monster behavior.
-            $AdjustPlayerData ( Palace, "gold", 7777 );
-            $DebugOut ( 911, "LWS PHASE 0 COMBAT DIAGNOSTIC: PASS" );
-        end
-    else
-        begin
-            $AdjustPlayerData ( Palace, "gold", 111 );
-            $DebugOut ( 911, "LWS PHASE 0 COMBAT DIAGNOSTIC: FAIL", AIRootAgent's "LWS_DiagnosticFailures" );
-        end
-
     // Observable arena: the same surviving rat can naturally hunt nine nearby peasants.
     // Together with the controlled first kill, ten total kills take a starter from level 1 to level 5.
     $SetAttribute ( Attacker, #ATTRIB_Strength, OriginalStrength );
@@ -136,5 +149,39 @@ Begin
         begin
             ArenaPeasant = $SpawnUnit ( Palace, "Peasant", $RandomCoord ( TestLocation, 50, 220 ), #Player_1 );
             PeasantCount += 1;
+        end
+
+    // Visible progression-class showcase. Each survivor is prepared exactly to level 2.
+    ShowcaseMonster = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
+    if ( $LWS_PrepareClassShowcase ( ShowcaseMonster, 1, 1 ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    ShowcaseMonster = $SpawnUnit ( Palace, "Ratman", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
+    if ( $LWS_PrepareClassShowcase ( ShowcaseMonster, 2, 2 ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    ShowcaseMonster = $SpawnUnit ( Palace, "Troll", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
+    if ( $LWS_PrepareClassShowcase ( ShowcaseMonster, 3, 4 ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    ShowcaseMonster = $SpawnUnit ( Palace, "Minotaur", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
+    if ( $LWS_PrepareClassShowcase ( ShowcaseMonster, 4, 12 ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    ShowcaseMonster = $SpawnUnit ( Palace, "Dragon", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
+    if ( $LWS_PrepareClassShowcase ( ShowcaseMonster, 5, 20 ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    if ( AIRootAgent's "LWS_DiagnosticFailures" == 0 )
+        begin
+            AIRootAgent's "LWS_DiagnosticPassed" = TRUE;
+            // Visible result that does not depend on autonomous hero or monster behavior.
+            $AdjustPlayerData ( Palace, "gold", 7777 );
+            $DebugOut ( 911, "LWS PROGRESSION CLASS DIAGNOSTIC: PASS" );
+        end
+    else
+        begin
+            $AdjustPlayerData ( Palace, "gold", 111 );
+            $DebugOut ( 911, "LWS PROGRESSION CLASS DIAGNOSTIC: FAIL", AIRootAgent's "LWS_DiagnosticFailures" );
         end
 End
