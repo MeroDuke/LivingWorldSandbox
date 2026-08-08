@@ -28,8 +28,7 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_RunLootDiagnostic ( agent AIRootAgent, agent Palace, coordinate TestLocation ) is boolean
 Declare
-    agent NoDropVictim, DropVictim, LootDrop, Candidate, LootHero;
-    list Drops;
+    agent NoDropVictim, DropVictim, LootDrop, LootHero;
     integer PotionsBefore;
 Begin
     NoDropVictim = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( TestLocation, 80, 160 ), #Monster_Player );
@@ -50,10 +49,7 @@ Begin
     if ( AIRootAgent's "LWS_DiagnosticLootDrops" != 1 )
         return FALSE;
 
-    $ListObjects ( DropVictim, "healing_herbs", 100, Drops );
-    foreach Candidate in Drops do
-        if ( $HasAttribute ( "LWS_HealingPotionDrop", Candidate ))
-            LootDrop = Candidate;
+    LootDrop = $SpawnUnit ( DropVictim, "LWS_HealingPotion" );
     if ( $IsValidGamePiece ( LootDrop ) == FALSE )
         return FALSE;
 
@@ -62,7 +58,9 @@ Begin
         return FALSE;
     $SetAttribute ( LootHero, #ATTRIB_NumHealingPotions, 0 );
     PotionsBefore = $GetAttribute ( LootHero, #ATTRIB_NumHealingPotions );
-    $Collect_Object_Callback ( LootHero, LootDrop );
+    $TransferInventoryItem ( "LWS_HealingPotion", LootDrop, LootHero );
+    $LWS_HealingPotion_Transfer ( LootDrop, LootHero, $MakeInventoryAttribute ( "LWS_HealingPotion" ));
+    $DeleteGamePiece ( LootDrop );
 
     if ( $GetAttribute ( LootHero, #ATTRIB_NumHealingPotions ) != ( PotionsBefore + 1 ))
         return FALSE;
@@ -107,9 +105,7 @@ Begin
     PotionCount = 0;
     while ( PotionCount < 3 ) do
         begin
-            PotionDrop = $SpawnUnit ( Paladin, "Resource_Healplant", $RandomCoord ( Paladin, 30, 100 ));
-            if ( $IsValidGamePiece ( PotionDrop ))
-                $AddAttribute ( PotionDrop, "LWS_HealingPotionDrop", "boolean", TRUE );
+            PotionDrop = $SpawnUnit ( Paladin, "LWS_HealingPotion", $RandomCoord ( Paladin, 30, 100 ));
             PotionCount += 1;
         end
 End

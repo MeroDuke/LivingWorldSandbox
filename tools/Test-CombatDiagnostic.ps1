@@ -8,6 +8,8 @@ $hookPath = Join-Path $repositoryRoot 'GPL\LWS_CombatDiagnostics.gpl'
 $combatPath = Join-Path $repositoryRoot 'GPL\LWS_CombatProgression.gpl'
 $buildingRewardsPath = Join-Path $repositoryRoot 'GPL\LWS_BuildingRewards.gpl'
 $lootPath = Join-Path $repositoryRoot 'GPL\LWS_Loot.gpl'
+$lootPrototypePath = Join-Path $repositoryRoot 'GPL\LWS_LootPrototypes.dat'
+$descriptionPath = Join-Path $repositoryRoot 'Data\LWS_Descriptions.xml'
 $statePath = Join-Path $repositoryRoot 'GPL\LWS_MonsterState.gpl'
 $generatorPath = Join-Path $repositoryRoot 'tools\New-CombatOverride.ps1'
 $bytecodePath = Join-Path $repositoryRoot 'Data\LWSCombatDiagnostic.bcd'
@@ -29,6 +31,8 @@ $hookSource = Get-Content -LiteralPath $hookPath -Raw
 $combatSource = Get-Content -LiteralPath $combatPath -Raw
 $buildingRewardsSource = Get-Content -LiteralPath $buildingRewardsPath -Raw
 $lootSource = Get-Content -LiteralPath $lootPath -Raw
+$lootPrototypeSource = Get-Content -LiteralPath $lootPrototypePath -Raw
+$descriptionSource = Get-Content -LiteralPath $descriptionPath -Raw
 $stateSource = Get-Content -LiteralPath $statePath -Raw
 $requiredStatePatterns = @(
     'Function\s+LWS_EnsureMonsterState',
@@ -73,15 +77,27 @@ foreach ($pattern in $requiredBuildingRewardPatterns) {
 }
 $requiredLootPatterns = @(
     'Function\s+LWS_TryHealingPotionDrop',
+    'Function\s+LWS_HealingPotion_Birth',
+    'Function\s+LWS_HealingPotion_Transfer',
     'LWS_LootResolved',
-    'ChanceRoll\s*>=\s*8',
-    'Resource_Healplant',
-    'LWS_HealingPotionDrop'
+    'ChanceRoll\s*>=\s*50',
+    '\$AdjustAttribute\s*\(\s*NewOwnerAgent\s*,\s*#ATTRIB_NumHealingPotions\s*,\s*1',
+    '\$DeleteInventoryItem\s*\(\s*AttributeID\s*,\s*NewOwnerAgent',
+    '\$SpawnUnit\s*\(\s*Defender\s*,\s*"LWS_HealingPotion"'
 )
 foreach ($pattern in $requiredLootPatterns) {
     if ($lootSource -notmatch $pattern) {
         throw "Missing healing potion loot pattern: $pattern"
     }
+}
+if ($lootSource -match 'Resource_Healplant|healing_herbs') {
+    throw 'Healing potion loot must not use the healer herb resource.'
+}
+if ($lootPrototypeSource -notmatch '\[LWS_HealingPotion\]' -or $lootPrototypeSource -notmatch 'Special_Item') {
+    throw 'Healing potion special-item prototype is missing.'
+}
+if ($descriptionSource -notmatch 'ID="LWS_HealingPotion"' -or $descriptionSource -notmatch 'IsInventoryItem') {
+    throw 'Healing potion unit description is missing or is not an inventory item.'
 }
 $requiredCombatPatterns = @(
     'Function\s+LWS_CombatCredit',
@@ -118,6 +134,7 @@ $requiredHookPatterns = @(
     '\$Advance_To_Level\s*\(\s*Paladin\s*,\s*8\s*\)',
     'EnemyCount\s*<\s*6',
     'PotionCount\s*<\s*3',
+    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_HealingPotion"',
     '\$IsValidGamePiece\s*\(\s*ShowcaseMonster\s*\)',
     '#ATTRIB_NumHealingPotions\s*\)\s*!=\s*\(\s*PotionsBefore\s*\+\s*1',
     '\$SpawnUnit\s*\(\s*Palace\s*,\s*"GoblinOverlord"',
@@ -150,15 +167,6 @@ if ($generatorSource -notmatch 'OriginalQuests\\GPLMx\\TaskModules\\Subtasks\\mx
 }
 if ($generatorSource -notmatch 'LWS_CombatCredit') {
     throw 'Combat override generator does not inject the attribution hook.'
-}
-
-$pickupGeneratorPath = Join-Path $repositoryRoot 'tools\New-LootPickupOverride.ps1'
-$pickupGeneratorSource = Get-Content -LiteralPath $pickupGeneratorPath -Raw
-if ($pickupGeneratorSource -notmatch 'OriginalQuests\\GPLMx\\TaskModules\\Characters\\mx_collect_object\.gpl') {
-    throw 'Loot pickup override generator is not pinned to the Northern Expansion pickup source.'
-}
-if ($pickupGeneratorSource -notmatch '#ATTRIB_NumHealingPotions') {
-    throw 'Loot pickup override generator does not grant the native healing potion attribute.'
 }
 
 if (-not (Test-Path -LiteralPath $bytecodePath -PathType Leaf)) {

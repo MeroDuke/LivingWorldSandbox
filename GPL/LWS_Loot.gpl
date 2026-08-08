@@ -1,5 +1,28 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-// LivingWorldSandbox - minimal healing potion loot.
+// LivingWorldSandbox - native healing potion loot.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Function LWS_HealingPotion_Birth ( agent ThisAgent )
+Declare
+Begin
+    $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_HealingPotion_Transfer );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_HealingPotion_Transfer ( agent OldOwnerAgent, agent NewOwnerAgent, integer AttributeID )
+Declare
+Begin
+    if ( $IsValidGamePiece ( NewOwnerAgent ) == FALSE )
+        return;
+
+    // Marketplace purchases and Ranger brewing use this same native counter.
+    if ( $GetAttribute ( NewOwnerAgent, #ATTRIB_NumHealingPotions ) < #Max_Heal_Potions )
+        $AdjustAttribute ( NewOwnerAgent, #ATTRIB_NumHealingPotions, 1 );
+
+    // The world pickup is a consumable carrier, not a persistent custom inventory item.
+    $DeleteInventoryItem ( AttributeID, NewOwnerAgent );
+End
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Function LWS_TryHealingPotionDrop ( agent Defender, integer FinalDamage, integer ChanceRoll )
@@ -21,14 +44,12 @@ Begin
         return;
 
     $AddAttribute ( Defender, "LWS_LootResolved", "boolean", TRUE );
-    if ( ChanceRoll >= 8 )
+    if ( ChanceRoll >= 50 )
         return;
 
-    Drop = $SpawnUnit ( Defender, "Resource_Healplant" );
+    Drop = $SpawnUnit ( Defender, "LWS_HealingPotion" );
     if ( $IsValidGamePiece ( Drop ) == FALSE )
         return;
-    $AddAttribute ( Drop, "LWS_HealingPotionDrop", "boolean", TRUE );
-
     AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
     if ( $HasAttribute ( "LWS_DiagnosticLootDrops", AIRootAgent ))
         AIRootAgent's "LWS_DiagnosticLootDrops" += 1;

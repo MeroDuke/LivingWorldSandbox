@@ -9,11 +9,15 @@ $expectedPackages = @{
     LivingWorldSandbox = @(
         'LivingWorldSandbox.mqxml'
         'Data\LivingWorldSandbox.bcd'
+        'Data\LWS_Descriptions.xml'
+        'Data\LWS_Text.xml'
         'Quests\LivingWorldSandbox.q'
     )
     LWSCombatDiagnostic = @(
         'LWSCombatDiagnostic.mqxml'
         'Data\LWSCombatDiagnostic.bcd'
+        'Data\LWS_Descriptions.xml'
+        'Data\LWS_Text.xml'
         'Quests\LivingWorldSandbox.q'
     )
 }

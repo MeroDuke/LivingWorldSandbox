@@ -12,7 +12,6 @@ $temporaryBytecode = Join-Path $gplDirectory 'LivingWorldSandbox.bcd'
 $targetBytecode = Join-Path $dataDirectory 'LivingWorldSandbox.bcd'
 
 & (Join-Path $PSScriptRoot 'New-CombatOverride.ps1') -SdkPath $SdkPath
-& (Join-Path $PSScriptRoot 'New-LootPickupOverride.ps1') -SdkPath $SdkPath
 
 $compilerCandidates = @()
 if ($SdkPath) {

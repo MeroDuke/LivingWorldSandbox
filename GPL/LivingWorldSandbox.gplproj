@@ -1,7 +1,7 @@
 source="LWS_MonsterState.gpl"
 source="LWS_BuildingRewards.gpl"
 source="LWS_Loot.gpl"
+data="LWS_LootPrototypes.dat"
 source="LWS_CombatProgression.gpl"
 source="LivingWorldSandbox.gpl"
 source="Generated/LWS_MX_Damage.gpl"
-source="Generated/LWS_MX_CollectObject.gpl"
