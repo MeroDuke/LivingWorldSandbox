@@ -6,6 +6,7 @@ $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $definitionPath = Join-Path $repositoryRoot 'LWSCombatDiagnostic.mqxml'
 $hookPath = Join-Path $repositoryRoot 'GPL\LWS_CombatDiagnostics.gpl'
 $combatPath = Join-Path $repositoryRoot 'GPL\LWS_CombatProgression.gpl'
+$buildingRewardsPath = Join-Path $repositoryRoot 'GPL\LWS_BuildingRewards.gpl'
 $statePath = Join-Path $repositoryRoot 'GPL\LWS_MonsterState.gpl'
 $generatorPath = Join-Path $repositoryRoot 'tools\New-CombatOverride.ps1'
 $bytecodePath = Join-Path $repositoryRoot 'Data\LWSCombatDiagnostic.bcd'
@@ -25,6 +26,7 @@ if ($quest.DataConfiguration.Dataset.Load.GPL.Target -ne 'Data/LWSCombatDiagnost
 
 $hookSource = Get-Content -LiteralPath $hookPath -Raw
 $combatSource = Get-Content -LiteralPath $combatPath -Raw
+$buildingRewardsSource = Get-Content -LiteralPath $buildingRewardsPath -Raw
 $stateSource = Get-Content -LiteralPath $statePath -Raw
 $requiredStatePatterns = @(
     'Function\s+LWS_EnsureMonsterState',
@@ -54,6 +56,19 @@ foreach ($pattern in $requiredStatePatterns) {
         throw "Missing monster state pattern: $pattern"
     }
 }
+$requiredBuildingRewardPatterns = @(
+    'Function\s+LWS_ProcessBuildingDestroyed',
+    'ChanceRoll\s*<\s*35',
+    'Function\s+LWS_ApplyBuildingPerk',
+    'LWS_Perks"\s*>=\s*3',
+    '#ATTRIB_armor_basic_damage',
+    '#ATTRIB_MagicResistance'
+)
+foreach ($pattern in $requiredBuildingRewardPatterns) {
+    if ($buildingRewardsSource -notmatch $pattern) {
+        throw "Missing building reward pattern: $pattern"
+    }
+}
 $requiredCombatPatterns = @(
     'Function\s+LWS_CombatCredit',
     'FinalDamage\s*<=\s*0',
@@ -64,7 +79,8 @@ $requiredCombatPatterns = @(
     'Defender''s\s+"type"\s*==\s*"building"',
     'LWS_DiagnosticKills',
     'LWS_DiagnosticBuildings',
-    'LWS_RecordUnitKill'
+    'LWS_RecordUnitKill',
+    'LWS_ProcessBuildingDestroyed'
 )
 foreach ($pattern in $requiredCombatPatterns) {
     if ($combatSource -notmatch $pattern) {
@@ -77,6 +93,9 @@ $requiredHookPatterns = @(
     '\$LWS_ClassFromLevelXP\s*\(\s*2001\s*\)\s*!=\s*5',
     '\$LWS_KillsRequired\s*\(\s*5\s*,\s*1\s*\)\s*!=\s*20',
     'Function\s+LWS_PrepareClassShowcase',
+    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"GoblinOverlord"',
+    'LWS_ProcessBuildingDestroyed\s*\(\s*PerkTester\s*,\s*99\s*,\s*0\s*\)',
+    'LWS_ProcessBuildingDestroyed\s*\(\s*PerkTester\s*,\s*0\s*,\s*2\s*\)',
     'OldHP\s*=\s*OldMaxHP\s*/\s*2',
     '#ATTRIB_HP\s*\)\s*==\s*\$GetAttribute\s*\(\s*Monster\s*,\s*#ATTRIB_MaxHP',
     'LWS_PrepareClassShowcase\s*\(\s*ShowcaseMonster\s*,\s*1\s*,\s*1\s*\)',
