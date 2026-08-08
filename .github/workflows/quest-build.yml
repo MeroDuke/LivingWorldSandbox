@@ -20,6 +20,11 @@ jobs:
       - name: Validate Phase 0 combat diagnostic
         shell: powershell
         run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Test-CombatDiagnostic.ps1
+      - name: Assemble and validate ready-to-copy packages
+        shell: powershell
+        run: |
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\New-QuestPackages.ps1
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Test-QuestPackages.ps1
 
   compile:
     name: Compile GPL bytecode
@@ -40,6 +45,8 @@ jobs:
         run: |
           powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Test-QuestBaseline.ps1
           powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Test-CombatDiagnostic.ps1
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\New-QuestPackages.ps1
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Test-QuestPackages.ps1
       - name: Verify committed bytecode is reproducible
         shell: powershell
         run: git diff --exit-code -- Data/LivingWorldSandbox.bcd Data/LWSCombatDiagnostic.bcd
@@ -48,10 +55,4 @@ jobs:
         with:
           name: LivingWorldSandbox-${{ github.sha }}
           if-no-files-found: error
-          path: |
-            LivingWorldSandbox.mqxml
-            Data/LivingWorldSandbox.bcd
-            Quests/LivingWorldSandbox.q
-            GPL/LivingWorldSandbox.gpl
-            GPL/LivingWorldSandbox.gplproj
-            README.md
+          path: output/LivingWorldSandbox/

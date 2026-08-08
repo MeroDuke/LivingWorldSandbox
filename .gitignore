@@ -9,5 +9,8 @@
 /GPL/*.bcd
 /GPL/Generated/
 
+# Ready-to-copy packages generated from the tracked runtime artifacts.
+/output/
+
 # Local editor/crash artifacts.
 *.mdmp
