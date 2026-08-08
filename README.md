@@ -123,6 +123,8 @@ healing herbs retain their original five-herbs-per-potion behavior. The pickup
 callback override is generated at build time from the local read-only SDK and is
 not committed. The diagnostic forces one failed and one successful drop roll,
 then verifies pickup increments a Rogue's native potion counter by exactly one.
-It also leaves a second marked drop beside a Ranger with zero potions so the
-unchanged autonomous collection and later `heal_self` behavior can be observed;
-PASS does not depend on the Ranger choosing to collect it.
+After PASS it removes the dangerous class/perk showcase monsters and creates a
+separate autonomous arena: one level-8 Paladin at half health, six nearby weak
+monsters (Giant Rats and Skeletons), and three scattered marked potion drops.
+The arena makes combat and loot visible, but its random outcome cannot change
+PASS/FAIL.
