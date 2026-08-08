@@ -115,7 +115,7 @@ Resistance so the combined permanent bonuses can be inspected in the UI.
 
 ## Healing potion loot
 
-A monster death temporarily has a 50% chance to drop a custom Healing Potion
+A monster death has an 8% chance to drop a custom Healing Potion
 special item. Any hero collecting it receives exactly one native
 `#ATTRIB_NumHealingPotions`, up to the vanilla carrying cap, and can consume it
 through the unchanged Northern Expansion `heal_self` behavior. The item uses the
@@ -130,7 +130,7 @@ Heroes already carrying the vanilla maximum of five healing potions ignore
 these drops, leaving them on the ground for another hero.
 After PASS it removes the dangerous class/perk showcase monsters and creates a
 separate autonomous arena: one level-8 Paladin at half health, six nearby weak
-monsters (Giant Rats and Skeletons), and three scattered Healing Potion pickups.
+monsters (Giant Rats and Skeletons), and ten scattered Healing Potion pickups.
 The arena includes a completed player-owned Warriors Guild which adopts the
 Paladin as a member, preventing the otherwise homeless hero from leaving the
 map. The arena makes combat and loot visible, but its random outcome cannot

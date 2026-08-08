@@ -44,7 +44,7 @@ Begin
         return;
 
     $AddAttribute ( Defender, "LWS_LootResolved", "boolean", TRUE );
-    if ( ChanceRoll >= 50 )
+    if ( ChanceRoll >= 8 )
         return;
 
     // Ground inventory items must carry their generated inventory attribute.

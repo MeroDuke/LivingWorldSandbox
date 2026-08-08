@@ -103,7 +103,7 @@ Begin
         end
 
     PotionCount = 0;
-    while ( PotionCount < 3 ) do
+    while ( PotionCount < 10 ) do
         begin
             PotionDrop = $SpawnUnit ( Paladin, "LWS_HealingPotion", $RandomCoord ( Paladin, 30, 100 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_HealingPotion" ), 0 ));
             PotionCount += 1;

@@ -81,7 +81,7 @@ $requiredLootPatterns = @(
     'Function\s+LWS_HealingPotion_Birth',
     'Function\s+LWS_HealingPotion_Transfer',
     'LWS_LootResolved',
-    'ChanceRoll\s*>=\s*50',
+    'ChanceRoll\s*>=\s*8',
     '\$AdjustAttribute\s*\(\s*NewOwnerAgent\s*,\s*#ATTRIB_NumHealingPotions\s*,\s*1',
     '\$DeleteInventoryItem\s*\(\s*AttributeID\s*,\s*NewOwnerAgent',
     '\$SpawnUnit\s*\(\s*Defender\s*,\s*"LWS_HealingPotion"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_HealingPotion"'
@@ -134,7 +134,7 @@ $requiredHookPatterns = @(
     '\$Adopt\s*\(\s*WarriorsGuild\s*,\s*Paladin\s*\)',
     '\$Advance_To_Level\s*\(\s*Paladin\s*,\s*8\s*\)',
     'EnemyCount\s*<\s*6',
-    'PotionCount\s*<\s*3',
+    'PotionCount\s*<\s*10',
     '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_HealingPotion"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_HealingPotion"',
     '\$IsValidGamePiece\s*\(\s*ShowcaseMonster\s*\)',
     '#ATTRIB_NumHealingPotions\s*\)\s*!=\s*\(\s*PotionsBefore\s*\+\s*1',
