@@ -90,3 +90,13 @@ It also leaves five level-2 showcase monsters near the Palace: Giant Rat
 (starter), Ratman (low), Troll (medium), Minotaur (high), and Dragon (brutal).
 The diagnostic passes only when each monster reaches level 2 after receiving
 exactly its class-specific number of kill credits.
+
+## Stat growth
+
+Each monster level adds 5% of the monster's original MaxHP (minimum one point),
+one point of Dodge and Parry, and one point of either HtoH or Ranged accuracy
+according to its attack type. Strength increases every third level and Magic
+Resistance every fifth level. Accuracy and avoidance stop at 98. Current HP
+increases only by the MaxHP increment, preserving all previously missing HP;
+level-up never performs a full heal. The five diagnostic showcase monsters are
+set to half health before leveling and PASS only if they remain injured.

@@ -27,7 +27,8 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_PrepareClassShowcase ( agent Monster, integer ExpectedClass, integer KillCredits ) is boolean
 Declare
-    integer CreditCount;
+    integer CreditCount, OldMaxHP, OldHP, HPBonus;
+    integer OldHtoH, OldRanged, OldDodge, OldParry, OldStrength, OldMagicResistance;
 Begin
     if ( $IsValidGamePiece ( Monster ) == FALSE )
         return FALSE;
@@ -35,6 +36,18 @@ Begin
     $LWS_EnsureMonsterState ( Monster );
     if ( Monster's "LWS_ProgressClass" != ExpectedClass )
         return FALSE;
+
+    OldMaxHP = $GetAttribute ( Monster, #ATTRIB_MaxHP );
+    OldHP = OldMaxHP / 2;
+    $SetAttribute ( Monster, #ATTRIB_HP, OldHP );
+    HPBonus = ( OldMaxHP * 5 ) / 100;
+    if ( HPBonus < 1 ) HPBonus = 1;
+    OldHtoH = $GetAttribute ( Monster, #ATTRIB_HtoH );
+    OldRanged = $GetAttribute ( Monster, #ATTRIB_Ranged );
+    OldDodge = $GetAttribute ( Monster, #ATTRIB_Dodge );
+    OldParry = $GetAttribute ( Monster, #ATTRIB_Parry );
+    OldStrength = $GetAttribute ( Monster, #ATTRIB_Strength );
+    OldMagicResistance = $GetAttribute ( Monster, #ATTRIB_MagicResistance );
 
     CreditCount = 0;
     while ( CreditCount < KillCredits ) do
@@ -46,6 +59,26 @@ Begin
     if ( Monster's "LWS_Level" != 2 )
         return FALSE;
     if ( $GetAttribute ( Monster, #ATTRIB_ExperienceLevel ) != 2 )
+        return FALSE;
+    if ( $GetAttribute ( Monster, #ATTRIB_MaxHP ) != ( OldMaxHP + HPBonus ))
+        return FALSE;
+    if ( $GetAttribute ( Monster, #ATTRIB_HP ) != ( OldHP + HPBonus ))
+        return FALSE;
+    if ( $GetAttribute ( Monster, #ATTRIB_HP ) == $GetAttribute ( Monster, #ATTRIB_MaxHP ))
+        return FALSE;
+    if ( $GetAttribute ( Monster, #ATTRIB_Dodge ) != ( OldDodge + 1 ))
+        return FALSE;
+    if ( $GetAttribute ( Monster, #ATTRIB_Parry ) != ( OldParry + 1 ))
+        return FALSE;
+    if (( Monster's "attacktype" == 1 ) &&
+        ( $GetAttribute ( Monster, #ATTRIB_HtoH ) != ( OldHtoH + 1 )))
+        return FALSE;
+    if (( Monster's "attacktype" == 2 ) &&
+        ( $GetAttribute ( Monster, #ATTRIB_Ranged ) != ( OldRanged + 1 )))
+        return FALSE;
+    if ( $GetAttribute ( Monster, #ATTRIB_Strength ) != OldStrength )
+        return FALSE;
+    if ( $GetAttribute ( Monster, #ATTRIB_MagicResistance ) != OldMagicResistance )
         return FALSE;
     return TRUE;
 End
