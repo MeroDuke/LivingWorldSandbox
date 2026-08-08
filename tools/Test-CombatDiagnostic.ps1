@@ -31,12 +31,16 @@ $requiredHookPatterns = @(
     'Defender''s\s+"type"\s*==\s*"lair"',
     'Defender''s\s+"type"\s*==\s*"building"',
     'LWS_DiagnosticKills',
-    'LWS_DiagnosticBuildings'
+    'LWS_DiagnosticBuildings',
+    '\$LWS_RunCombatDiagnostic\s*\(\s*AIRootAgent\s*,\s*Palace\s*\)'
 )
 foreach ($pattern in $requiredHookPatterns) {
     if ($hookSource -notmatch $pattern) {
         throw "Missing diagnostic hook pattern: $pattern"
     }
+}
+if ($hookSource -match '\$NewThread\s*\(\s*\$LWS_RunCombatDiagnostic') {
+    throw 'Diagnostic callback must not be passed directly to NewThread.'
 }
 
 $generatorSource = Get-Content -LiteralPath $generatorPath -Raw

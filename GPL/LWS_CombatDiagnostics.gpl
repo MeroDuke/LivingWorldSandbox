@@ -69,7 +69,11 @@ Begin
 
     $AddAttribute ( AIRootAgent, "LWS_DiagnosticPassed", "boolean", FALSE );
     $AddAttribute ( AIRootAgent, "LWS_DiagnosticFailures", "integer", 0 );
-    $NewThread ( $LWS_RunCombatDiagnostic, 2000, AIRootAgent, Palace );
+
+    // This is a short deterministic integration check, so run it synchronously.
+    // Majesty threads must be started through an agent function attribute; passing
+    // a bare function to NewThread compiles but does not execute reliably at runtime.
+    $LWS_RunCombatDiagnostic ( AIRootAgent, Palace );
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
