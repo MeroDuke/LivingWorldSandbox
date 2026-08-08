@@ -56,6 +56,23 @@ Begin
     if ( Attacker's "LWS_Perks" != 0 )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
+    // Expansion LevelXP classification boundaries.
+    if ( $LWS_ClassFromLevelXP ( 0 ) != 0 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_ClassFromLevelXP ( 250 ) != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_ClassFromLevelXP ( 251 ) != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_ClassFromLevelXP ( 550 ) != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_ClassFromLevelXP ( 551 ) != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_ClassFromLevelXP ( 900 ) != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_ClassFromLevelXP ( 901 ) != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_ClassFromLevelXP ( 2000 ) != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_ClassFromLevelXP ( 2001 ) != 5 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    if ( $LWS_KillsRequired ( 1, 1 ) != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_KillsRequired ( 2, 1 ) != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_KillsRequired ( 3, 1 ) != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_KillsRequired ( 4, 1 ) != 12 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_KillsRequired ( 5, 1 ) != 20 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
     Attacker's "LWS_TotalKills" = 7;
     $LWS_EnsureMonsterState ( Attacker );
     if ( Attacker's "LWS_TotalKills" != 7 )

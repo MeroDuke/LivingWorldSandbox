@@ -36,7 +36,9 @@ $requiredStatePatterns = @(
     'LWS_BuildingsDestroyed',
     'LWS_ProgressClass',
     'LWS_Perks',
-    'Function\s+LWS_StarterKillsRequired',
+    'Function\s+LWS_ClassFromLevelXP',
+    '#ATTRIB_LevelXP',
+    'Function\s+LWS_KillsRequired',
     'Function\s+LWS_RecordUnitKill',
     '#ATTRIB_ExperienceLevel'
 )
@@ -65,6 +67,8 @@ foreach ($pattern in $requiredCombatPatterns) {
 
 $requiredHookPatterns = @(
     '\$LWS_EnsureMonsterState\s*\(\s*Attacker\s*\)',
+    '\$LWS_ClassFromLevelXP\s*\(\s*2001\s*\)\s*!=\s*5',
+    '\$LWS_KillsRequired\s*\(\s*5\s*,\s*1\s*\)\s*!=\s*20',
     'LWS_DiagnosticKills',
     'LWS_DiagnosticBuildings',
     'PeasantCount\s*<\s*9',
