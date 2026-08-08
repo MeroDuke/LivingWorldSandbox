@@ -30,6 +30,23 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Test-QuestBaseli
 The build always produces the canonical runtime artifact at
 `Data/LivingWorldSandbox.bcd`.
 
+## Ready-to-copy packages
+
+Create clean runtime-only packages under `output/`:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\New-QuestPackages.ps1
+```
+
+Add `-Build` (and optionally `-SdkPath`) to compile both bytecode targets before
+packaging. Copy the complete contents of the required package directory into the
+Majesty quest directory; do not copy individual files from the source tree:
+
+- `output/LivingWorldSandbox/` - normal playable sandbox;
+- `output/LWSCombatDiagnostic/` - isolated Phase 0 diagnostic.
+
+The generated `output/` directory is intentionally excluded from Git.
+
 ## CI
 
 Package validation runs on a GitHub-hosted Windows runner. GPL compilation uses a
@@ -42,3 +59,16 @@ compilation runs only for trusted pushes or an explicit manual dispatch.
 
 CI recompiles the GPL source and fails if the committed bytecode is not exactly
 reproducible.
+
+## Phase 0 combat diagnostic
+
+`LWSCombatDiagnostic.mqxml` is a developer-only Northern Expansion quest. It
+loads `Data/LWSCombatDiagnostic.bcd`, preserves the production starter
+ecosystem, and invokes controlled combat-pipeline checks directly without
+waiting for autonomous heroes or monsters to choose a fight.
+
+Generate the packages and copy the complete contents of
+`output/LWSCombatDiagnostic/` to run it.
+
+The diagnostic adds 7777 treasury gold when all checks pass, or 111 gold when
+one or more checks fail. The detailed result is also written with `DebugOut`.
