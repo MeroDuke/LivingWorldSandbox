@@ -30,6 +30,7 @@ $requiredStatePatterns = @(
     'Function\s+LWS_EnsureMonsterState',
     'original_type',
     'LWS_StateVersion',
+    'LWS_BaseMaxHP',
     'LWS_Level',
     'LWS_KillsThisLevel',
     'LWS_TotalKills',
@@ -40,6 +41,12 @@ $requiredStatePatterns = @(
     '#ATTRIB_LevelXP',
     'Function\s+LWS_KillsRequired',
     'Function\s+LWS_RecordUnitKill',
+    'Function\s+LWS_ApplyLevelGrowth',
+    'LWS_BaseMaxHP"\s*\*\s*5',
+    '#ATTRIB_MaxHP\s*,\s*HPBonus',
+    '#ATTRIB_HP\s*,\s*HPBonus',
+    'NewLevel\s*%\s*3',
+    'NewLevel\s*%\s*5',
     '#ATTRIB_ExperienceLevel'
 )
 foreach ($pattern in $requiredStatePatterns) {
@@ -70,6 +77,8 @@ $requiredHookPatterns = @(
     '\$LWS_ClassFromLevelXP\s*\(\s*2001\s*\)\s*!=\s*5',
     '\$LWS_KillsRequired\s*\(\s*5\s*,\s*1\s*\)\s*!=\s*20',
     'Function\s+LWS_PrepareClassShowcase',
+    'OldHP\s*=\s*OldMaxHP\s*/\s*2',
+    '#ATTRIB_HP\s*\)\s*==\s*\$GetAttribute\s*\(\s*Monster\s*,\s*#ATTRIB_MaxHP',
     'LWS_PrepareClassShowcase\s*\(\s*ShowcaseMonster\s*,\s*1\s*,\s*1\s*\)',
     'LWS_PrepareClassShowcase\s*\(\s*ShowcaseMonster\s*,\s*2\s*,\s*2\s*\)',
     'LWS_PrepareClassShowcase\s*\(\s*ShowcaseMonster\s*,\s*3\s*,\s*4\s*\)',
