@@ -126,6 +126,8 @@ successful drop roll, then verifies pickup increments a Rogue's native potion
 counter by exactly one.
 Ground drops carry Majesty's generated inventory attribute, allowing the
 vanilla `Eval_Items` behavior to retrieve and transfer them normally.
+Heroes already carrying the vanilla maximum of five healing potions ignore
+these drops, leaving them on the ground for another hero.
 After PASS it removes the dangerous class/perk showcase monsters and creates a
 separate autonomous arena: one level-8 Paladin at half health, six nearby weak
 monsters (Giant Rats and Skeletons), and three scattered Healing Potion pickups.

@@ -12,6 +12,7 @@ $lootPrototypePath = Join-Path $repositoryRoot 'GPL\LWS_LootPrototypes.dat'
 $descriptionPath = Join-Path $repositoryRoot 'Data\LWS_Descriptions.xml'
 $statePath = Join-Path $repositoryRoot 'GPL\LWS_MonsterState.gpl'
 $generatorPath = Join-Path $repositoryRoot 'tools\New-CombatOverride.ps1'
+$itemGeneratorPath = Join-Path $repositoryRoot 'tools\New-ItemEvaluationOverride.ps1'
 $bytecodePath = Join-Path $repositoryRoot 'Data\LWSCombatDiagnostic.bcd'
 
 [xml]$definition = Get-Content -LiteralPath $definitionPath -Raw
@@ -167,6 +168,14 @@ if ($generatorSource -notmatch 'OriginalQuests\\GPLMx\\TaskModules\\Subtasks\\mx
 }
 if ($generatorSource -notmatch 'LWS_CombatCredit') {
     throw 'Combat override generator does not inject the attribution hook.'
+}
+
+$itemGeneratorSource = Get-Content -LiteralPath $itemGeneratorPath -Raw
+if ($itemGeneratorSource -notmatch 'OriginalQuests\\GPLMx\\DecisionTrees\\Modules\\mx_Eval_Items\.gpl') {
+    throw 'Item evaluation override generator is not pinned to the Northern Expansion source.'
+}
+if ($itemGeneratorSource -notmatch 'LWS_HealingPotion' -or $itemGeneratorSource -notmatch '#Max_Heal_Potions') {
+    throw 'Item evaluation override does not protect the vanilla healing potion cap.'
 }
 
 if (-not (Test-Path -LiteralPath $bytecodePath -PathType Leaf)) {
