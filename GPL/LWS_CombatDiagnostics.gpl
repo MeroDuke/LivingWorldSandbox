@@ -196,9 +196,11 @@ Begin
     $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_3, 0 );
     $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_4, 0 );
 
-    WeaponDrop = $SpawnUnit ( Paladin, "LWS_Test_U_Long_T3P1", $RandomCoord ( Paladin, 30, 70 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_Test_U_Long_T3P1" ), 0 ));
+    // Keep inspection items outside the Paladin's initial awareness radius so
+    // the player has time to select and read both UI cards before retrieval.
+    WeaponDrop = $SpawnUnit ( Paladin, "LWS_Test_U_Long_T3P1", $RandomCoord ( Paladin, 500, 600 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_Test_U_Long_T3P1" ), 0 ));
     if ( $IsValidGamePiece ( WeaponDrop )) $LWS_ConfigureEquipmentDrop ( WeaponDrop, "Weapon", "Longsword", 3, 1 );
-    ArmorDrop = $SpawnUnit ( Paladin, "LWS_Test_R_Plate_T3P1", $RandomCoord ( Paladin, 30, 70 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_Test_R_Plate_T3P1" ), 0 ));
+    ArmorDrop = $SpawnUnit ( WeaponDrop, "LWS_Test_R_Plate_T3P1", $RandomCoord ( WeaponDrop, 30, 60 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_Test_R_Plate_T3P1" ), 0 ));
     if ( $IsValidGamePiece ( ArmorDrop )) $LWS_ConfigureEquipmentDrop ( ArmorDrop, "Armor", "Plate", 3, 1 );
     LegendaryDrop = $SpawnUnit ( Paladin, "LWS_WandOfImmolation", $RandomCoord ( Paladin, 100, 140 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_WandOfImmolation" ), 0 ));
 
