@@ -79,18 +79,24 @@ foreach ($pattern in $requiredBuildingRewardPatterns) {
     }
 }
 $requiredLootPatterns = @(
-    'Function\s+LWS_TryHealingPotionDrop',
+    'Function\s+LWS_ResolveMonsterLoot',
+    'Function\s+LWS_SpawnLootItem',
+    'Function\s+LWS_LootMinimumRarity',
+    'Function\s+LWS_LootMaximumRarity',
+    'Function\s+LWS_LootGuaranteesEpic',
+    'Function\s+LWS_IsLegendaryLootSource',
     'Function\s+LWS_HealingPotion_Birth',
     'Function\s+LWS_HealingPotion_Transfer',
     'LWS_LootResolved',
+    'LWS_LootSlotsUsed"\s*>=\s*2',
     'ChanceRoll\s*>=\s*8',
     '\$AdjustAttribute\s*\(\s*NewOwnerAgent\s*,\s*#ATTRIB_NumHealingPotions\s*,\s*1',
     '\$DeleteInventoryItem\s*\(\s*AttributeID\s*,\s*NewOwnerAgent',
-    '\$SpawnUnit\s*\(\s*Defender\s*,\s*"LWS_HealingPotion"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_HealingPotion"',
-    'Function\s+LWS_TryDiagnosticWeaponDrop',
+    '\$SpawnUnit\s*\(\s*Defender\s*,\s*DropTitle[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*DropTitle',
+    'Function\s+LWS_TryDiagnosticWeaponSlot',
     'LWS_DiagnosticWeaponDropChance',
     'LWS_T2_Longsword_Plus6',
-    'Function\s+LWS_TryDiagnosticArmorDrop',
+    'Function\s+LWS_TryDiagnosticArmorSlot',
     'LWS_DiagnosticArmorDropChance',
     'LWS_T2_Armor_Plus6'
 )
@@ -163,9 +169,7 @@ $requiredCombatPatterns = @(
     'LWS_DiagnosticBuildings',
     'LWS_RecordUnitKill',
     'LWS_ProcessBuildingDestroyed',
-    'LWS_TryHealingPotionDrop',
-    'LWS_TryDiagnosticWeaponDrop',
-    'LWS_TryDiagnosticArmorDrop'
+    'LWS_ResolveMonsterLoot'
 )
 foreach ($pattern in $requiredCombatPatterns) {
     if ($combatSource -notmatch $pattern) {
@@ -187,8 +191,8 @@ $requiredHookPatterns = @(
     '\$spelldamage\s*\(\s*SpellMonster\s*,\s*FriendlyTarget\s*,\s*1\s*,\s*1\s*\)',
     'RequiredKills\s*=\s*\$LWS_KillsRequired',
     'SpellMonster''s\s+"LWS_Level"\s*!=\s*2',
-    'LWS_TryHealingPotionDrop\s*\(\s*NoDropVictim\s*,\s*1\s*,\s*99\s*\)',
-    'LWS_TryHealingPotionDrop\s*\(\s*DropVictim\s*,\s*1\s*,\s*0\s*\)',
+    'LWS_ResolveMonsterLoot\s*\(\s*NoDropVictim\s*,\s*1\s*,\s*99\s*,\s*99\s*,\s*99\s*\)',
+    'LWS_ResolveMonsterLoot\s*\(\s*DropVictim\s*,\s*1\s*,\s*0\s*,\s*99\s*,\s*99\s*\)',
     'Function\s+LWS_SetupEquipmentArena',
     '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Warriors_Guild"',
     '\$SpawnUnit\s*\(\s*WarriorsGuild\s*,\s*"Paladin"',

@@ -129,6 +129,15 @@ Short-lived peasant targets used by deterministic checks are detached from the
 real Palace immediately after spawn, so they do not consume its internal
 worker slots or stop normal builder/repairer spawning.
 
+All monster loot now passes through one fatal-hit resolver with a hard maximum
+of two successfully spawned world items. Potions, weapons, armor, and future
+consumable or special-item types share those slots. `LWS_ProgressClass` fixes
+the permitted rarity interval: Class 1 Common; Class 2 Common-Uncommon; Class 3
+Uncommon-Rare; Class 4 Rare-Epic; and Class 5 guaranteed Epic with Legendary
+available only to explicitly whitelisted sources. Monster level never raises
+this ceiling. The policy is stored in `Docs/monster-loot-policy.json`; concrete
+drop probabilities are intentionally deferred to the next balance step.
+
 ## Tiered equipment diagnostic
 
 The first equipment implementation separates a weapon's quality tier from its
