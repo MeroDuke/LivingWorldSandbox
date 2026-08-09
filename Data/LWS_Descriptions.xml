@@ -23,4 +23,76 @@
       </Attributes>
     </Game>
   </Description>
+  <Description type="Unit" subType="Character" ID="LWS_T3_Longsword_Plus5" Name="LWS_T3_Longsword_Plus5" Description="IDTXT_LWS_T3_LONGSWORD_PLUS5_HELP">
+    <Engine version="1">
+      <Info value="Static"/>
+      <Info value="Directionless"/>
+      <Info value="BlockGround"/>
+      <CanUse value="HumanPlayer"/>
+      <Menu value="8"/>
+      <ImageIDBase value="AVk4"/>
+      <DefaultSound value="0"/>
+    </Engine>
+    <Game version="1">
+      <DialogID value="APb1"/>
+      <MaxHP value="10"/>
+      <RecruitDelay value="10000"/>
+      <Flags value="NotFlaggable"/>
+      <Flags value="NotSpellTarget"/>
+      <Flags value="IsInventoryItem"/>
+      <HelpID value="IDTXT_LWS_T3_LONGSWORD_PLUS5_HELP"/>
+      <Attributes>
+        <Attribute ID="CanDropItem" Value="0"/>
+        <Attribute ID="LWS_T3_Longsword_Plus5" Value="0"/>
+      </Attributes>
+    </Game>
+  </Description>
+  <Description type="Unit" subType="Character" ID="LWS_T3_Longsword_Plus6" Name="LWS_T3_Longsword_Plus6" Description="IDTXT_LWS_T3_LONGSWORD_PLUS6_HELP">
+    <Engine version="1">
+      <Info value="Static"/>
+      <Info value="Directionless"/>
+      <Info value="BlockGround"/>
+      <CanUse value="HumanPlayer"/>
+      <Menu value="8"/>
+      <ImageIDBase value="AVk4"/>
+      <DefaultSound value="0"/>
+    </Engine>
+    <Game version="1">
+      <DialogID value="APb1"/>
+      <MaxHP value="10"/>
+      <RecruitDelay value="10000"/>
+      <Flags value="NotFlaggable"/>
+      <Flags value="NotSpellTarget"/>
+      <Flags value="IsInventoryItem"/>
+      <HelpID value="IDTXT_LWS_T3_LONGSWORD_PLUS6_HELP"/>
+      <Attributes>
+        <Attribute ID="CanDropItem" Value="0"/>
+        <Attribute ID="LWS_T3_Longsword_Plus6" Value="0"/>
+      </Attributes>
+    </Game>
+  </Description>
+  <Description type="Unit" subType="Character" ID="LWS_T3_Longsword_Plus7" Name="LWS_T3_Longsword_Plus7" Description="IDTXT_LWS_T3_LONGSWORD_PLUS7_HELP">
+    <Engine version="1">
+      <Info value="Static"/>
+      <Info value="Directionless"/>
+      <Info value="BlockGround"/>
+      <CanUse value="HumanPlayer"/>
+      <Menu value="8"/>
+      <ImageIDBase value="AVk4"/>
+      <DefaultSound value="0"/>
+    </Engine>
+    <Game version="1">
+      <DialogID value="APb1"/>
+      <MaxHP value="10"/>
+      <RecruitDelay value="10000"/>
+      <Flags value="NotFlaggable"/>
+      <Flags value="NotSpellTarget"/>
+      <Flags value="IsInventoryItem"/>
+      <HelpID value="IDTXT_LWS_T3_LONGSWORD_PLUS7_HELP"/>
+      <Attributes>
+        <Attribute ID="CanDropItem" Value="0"/>
+        <Attribute ID="LWS_T3_Longsword_Plus7" Value="0"/>
+      </Attributes>
+    </Game>
+  </Description>
 </Majesty>

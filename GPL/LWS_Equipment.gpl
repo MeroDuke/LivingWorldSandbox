@@ -1,0 +1,230 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LivingWorldSandbox - tiered hero equipment and Blacksmith integration.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Function LWS_WeaponTierBaseBonus ( integer Tier ) is integer
+Declare
+Begin
+    if ( Tier == 1 ) return 3;
+    if ( Tier == 2 ) return 2;
+    return 1;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_WeaponEffectiveBonus ( integer Tier, integer AffixBonus ) is integer
+Declare
+Begin
+    return $LWS_WeaponTierBaseBonus ( Tier ) + AffixBonus;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_EnsureWeaponEquipmentState ( agent Hero )
+Declare
+Begin
+    if ( $HasAttribute ( "LWS_WeaponTier", Hero ) == FALSE )
+        $AddAttribute ( Hero, "LWS_WeaponTier", "integer", 3 );
+    if ( $HasAttribute ( "LWS_WeaponAffixBonus", Hero ) == FALSE )
+        $AddAttribute ( Hero, "LWS_WeaponAffixBonus", "integer", 0 );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_ShouldRetrieveWeapon ( agent Hero, agent Item ) is boolean
+Declare
+    integer ItemTier, ItemAffix, ItemEffective, CurrentEffective;
+Begin
+    if ( $IsValidGamePiece ( Hero ) == FALSE ) return FALSE;
+    if ( $IsValidGamePiece ( Item ) == FALSE ) return FALSE;
+    if ( $GetAttribute ( Hero, #ATTRIB_WeaponTypeIndex ) <= 0 ) return FALSE;
+    if ( $HasAttribute ( "LWS_EquipmentTier", Item ) == FALSE ) return FALSE;
+    if ( $HasAttribute ( "LWS_EquipmentAffixBonus", Item ) == FALSE ) return FALSE;
+
+    ItemTier = Item's "LWS_EquipmentTier";
+    ItemAffix = Item's "LWS_EquipmentAffixBonus";
+    ItemEffective = $LWS_WeaponEffectiveBonus ( ItemTier, ItemAffix );
+    CurrentEffective = $GetAttribute ( Hero, #ATTRIB_Weapon_Struct_Bonus );
+    return ItemEffective > CurrentEffective;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_EquipWeaponTransfer ( agent OldOwnerAgent, agent NewOwnerAgent, integer AttributeID )
+Declare
+    integer ItemTier, ItemAffix, ItemEffective;
+Begin
+    if ( $IsValidGamePiece ( NewOwnerAgent ) == FALSE ) return;
+
+    if ( $LWS_ShouldRetrieveWeapon ( NewOwnerAgent, OldOwnerAgent ))
+        begin
+            ItemTier = OldOwnerAgent's "LWS_EquipmentTier";
+            ItemAffix = OldOwnerAgent's "LWS_EquipmentAffixBonus";
+            ItemEffective = $LWS_WeaponEffectiveBonus ( ItemTier, ItemAffix );
+
+            $LWS_EnsureWeaponEquipmentState ( NewOwnerAgent );
+            NewOwnerAgent's "LWS_WeaponTier" = ItemTier;
+            NewOwnerAgent's "LWS_WeaponAffixBonus" = ItemAffix;
+            $SetAttribute ( NewOwnerAgent, #ATTRIB_Weapon_Struct_Bonus, ItemEffective );
+            $CreateEffector ( NewOwnerAgent, "got_weapon", 0 );
+            $DebugOut ( 911, "LWS EQUIPPED WEAPON", NewOwnerAgent, "TIER", ItemTier, "AFFIX", ItemAffix, "EFFECTIVE", ItemEffective );
+        end
+
+    // The ground item is only a carrier for the equipped weapon state.
+    $DeleteInventoryItem ( AttributeID, NewOwnerAgent );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_T3LongswordPlus5_Birth ( agent ThisAgent )
+Declare
+Begin
+    $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipWeaponTransfer );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 3 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 5 );
+End
+
+Function LWS_T3LongswordPlus6_Birth ( agent ThisAgent )
+Declare
+Begin
+    $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipWeaponTransfer );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 3 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 6 );
+End
+
+Function LWS_T3LongswordPlus7_Birth ( agent ThisAgent )
+Declare
+Begin
+    $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipWeaponTransfer );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 3 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 7 );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Overrides the Northern Expansion Blacksmith decision. Vanilla equipment remains unchanged;
+// only heroes carrying LWS tier metadata use the tier-aware branch.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function BlackSmith_Check ( agent ThisAgent, string Equipment, integer Bonus, list Blacksmiths ) is boolean
+Declare
+    list Potentials;
+    integer Gold_Needed, Tier;
+Begin
+    if ( Equipment == "Weapon" && $HasAttribute ( "LWS_WeaponTier", ThisAgent ))
+        begin
+            Tier = ThisAgent's "LWS_WeaponTier";
+            if ( Tier <= 1 ) return FALSE;
+
+            ThisAgent's "Task_Number" = #ATTRIB_Weapon_Struct_Bonus;
+            if ( Tier == 3 )
+                begin
+                    Gold_Needed = #Cost_Per_Struct_Upgrade2;
+                    Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchWeaponLevel_3 );
+                end
+            else
+                begin
+                    Gold_Needed = #Cost_Per_Struct_Upgrade3;
+                    Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchWeaponLevel_4 );
+                end
+
+            if ( $Total_Gold ( ThisAgent ) < Gold_Needed ) return FALSE;
+            if ( $ListSize ( Potentials ) == 0 ) return FALSE;
+
+            ThisAgent's "Target" = $Loyalty_Mod_Pick_Closest ( ThisAgent, Potentials );
+            ThisAgent's "TaskName" = "visiting";
+            return TRUE;
+        end
+
+    // Original structural-upgrade behavior for vanilla weapons and all armor.
+    if ( Bonus >= 3 ) return FALSE;
+    if ( Bonus == 0 ) Gold_Needed = #Cost_Per_Struct_Upgrade1;
+    if ( Bonus == 1 ) Gold_Needed = #Cost_Per_Struct_Upgrade2;
+    if ( Bonus == 2 ) Gold_Needed = #Cost_Per_Struct_Upgrade3;
+    if ( Equipment == "Armor" ) Gold_Needed = Gold_Needed * #armor_multiplier;
+    if ( $Total_Gold ( ThisAgent ) < Gold_Needed ) return FALSE;
+    if ( $ListSize ( Blacksmiths ) == 0 ) return FALSE;
+
+    if ( Equipment == "Armor" )
+        begin
+            ThisAgent's "Task_Number" = #ATTRIB_Armor_Struct_Bonus;
+            if ( Bonus == 0 ) Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchArmorLevel_2 );
+            else if ( Bonus == 1 ) Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchArmorLevel_3 );
+            else Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchArmorLevel_4 );
+        end
+    else
+        begin
+            ThisAgent's "Task_Number" = #ATTRIB_Weapon_Struct_Bonus;
+            if ( Bonus == 0 ) Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchWeaponLevel_2 );
+            else if ( Bonus == 1 ) Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchWeaponLevel_3 );
+            else Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchWeaponLevel_4 );
+        end
+
+    if ( $ListSize ( Potentials ) == 0 ) return FALSE;
+    ThisAgent's "Target" = $Loyalty_Mod_Pick_Closest ( ThisAgent, Potentials );
+    ThisAgent's "TaskName" = "visiting";
+    return TRUE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Overrides the Northern Expansion Blacksmith transaction. LWS weapons improve one tier per visit
+// and preserve their drop affix; the vanilla path below is unchanged in behavior.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function Obtain_Upgrade ( agent ThisAgent )
+Declare
+    agent ThisBuilding;
+    integer What_To_Upgrade, Total_Gold, Gold, Upgrade, Mult, Tier, AffixBonus;
+Begin
+    ThisBuilding = ThisAgent's "Target";
+    Total_Gold = $Total_Gold ( ThisAgent );
+    What_To_Upgrade = ThisAgent's "Task_Number";
+    $SetThreadInterval ( ThisAgent's "ActiveScript", #Normal_Cycle );
+
+    if ( What_To_Upgrade == #ATTRIB_Weapon_Struct_Bonus && $HasAttribute ( "LWS_WeaponTier", ThisAgent ))
+        begin
+            Tier = ThisAgent's "LWS_WeaponTier";
+            AffixBonus = ThisAgent's "LWS_WeaponAffixBonus";
+
+            if ( Tier == 3 && Total_Gold >= #Cost_Per_Struct_Upgrade2 && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchWeaponLevel_3 ) != 0 )
+                begin
+                    Gold = #Cost_Per_Struct_Upgrade2;
+                    Tier = 2;
+                end
+            else if ( Tier == 2 && Total_Gold >= #Cost_Per_Struct_Upgrade3 && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchWeaponLevel_4 ) != 0 )
+                begin
+                    Gold = #Cost_Per_Struct_Upgrade3;
+                    Tier = 1;
+                end
+
+            if ( Gold > 0 )
+                begin
+                    $Spend_Gold ( ThisAgent, ThisBuilding, Gold );
+                    ThisAgent's "LWS_WeaponTier" = Tier;
+                    $SetAttribute ( ThisAgent, #ATTRIB_Weapon_Struct_Bonus, $LWS_WeaponEffectiveBonus ( Tier, AffixBonus ));
+                    $DebugOut ( 911, "LWS BLACKSMITH WEAPON UPGRADE", ThisAgent, "TIER", Tier, "AFFIX", AffixBonus );
+                end
+
+            ThisAgent's "ActiveScript" = $Done_Enhancing_Equipment;
+            return;
+        end
+
+    Mult = #armor_multiplier;
+    if ( What_To_Upgrade == #ATTRIB_Armor_Struct_Bonus )
+        begin
+            if ( $GetAttribute ( ThisAgent, What_To_Upgrade ) == 0 && Total_Gold >= #Cost_Per_Struct_Upgrade1 * Mult && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchArmorLevel_2 ) != 0 )
+                begin Total_Gold -= #Cost_Per_Struct_Upgrade1 * Mult; Gold += #Cost_Per_Struct_Upgrade1 * Mult; Upgrade = 1; end
+            if ( $GetAttribute ( ThisAgent, What_To_Upgrade ) <= 1 && Total_Gold >= #Cost_Per_Struct_Upgrade2 * Mult && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchArmorLevel_3 ) != 0 )
+                begin Total_Gold -= #Cost_Per_Struct_Upgrade2 * Mult; Gold += #Cost_Per_Struct_Upgrade2 * Mult; Upgrade = 2; end
+            if ( $GetAttribute ( ThisAgent, What_To_Upgrade ) <= 2 && Total_Gold >= #Cost_Per_Struct_Upgrade3 * Mult && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchArmorLevel_4 ) != 0 )
+                begin Gold += #Cost_Per_Struct_Upgrade3 * Mult; Upgrade = 3; end
+        end
+    else
+        begin
+            if ( $GetAttribute ( ThisAgent, What_To_Upgrade ) == 0 && Total_Gold >= #Cost_Per_Struct_Upgrade1 && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchWeaponLevel_2 ) != 0 )
+                begin Total_Gold -= #Cost_Per_Struct_Upgrade1; Gold += #Cost_Per_Struct_Upgrade1; Upgrade = 1; end
+            if ( $GetAttribute ( ThisAgent, What_To_Upgrade ) <= 1 && Total_Gold >= #Cost_Per_Struct_Upgrade2 && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchWeaponLevel_3 ) != 0 )
+                begin Total_Gold -= #Cost_Per_Struct_Upgrade2; Gold += #Cost_Per_Struct_Upgrade2; Upgrade = 2; end
+            if ( $GetAttribute ( ThisAgent, What_To_Upgrade ) <= 2 && Total_Gold >= #Cost_Per_Struct_Upgrade3 && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchWeaponLevel_4 ) != 0 )
+                begin Gold += #Cost_Per_Struct_Upgrade3; Upgrade = 3; end
+        end
+
+    if ( Upgrade > 0 )
+        begin
+            $Spend_Gold ( ThisAgent, ThisBuilding, Gold );
+            $SetAttribute ( ThisAgent, What_To_Upgrade, Upgrade );
+        end
+    ThisAgent's "ActiveScript" = $Done_Enhancing_Equipment;
+End

@@ -83,13 +83,9 @@ Northern Expansion `LevelXP` value: starter `1-250`, low `251-550`, medium
 unclassified. Kill thresholds are respectively `1/2/3/4`, `2/3/4/5`,
 `4/6/8/10`, `12/16/20/24`, and `20/30/40/50`, with the fourth value repeated
 after level 4. The visible native experience level is synchronized with
-`LWS_Level`; stat growth, perks, and loot remain disabled. The combat diagnostic
-verifies every classification boundary and first-level threshold, then leaves
-the test rat beside nine enemy peasants for observable AI-driven progression.
-It also leaves five level-2 showcase monsters near the Palace: Giant Rat
-(starter), Ratman (low), Troll (medium), Minotaur (high), and Dragon (brutal).
-The diagnostic passes only when each monster reaches level 2 after receiving
-exactly its class-specific number of kill credits.
+`LWS_Level`. The combat diagnostic verifies every classification boundary and
+first-level threshold with temporary units, then removes them before creating
+the focused equipment arena.
 
 ## Stat growth
 
@@ -98,8 +94,8 @@ one point of Dodge and Parry, and one point of either HtoH or Ranged accuracy
 according to its attack type. Strength increases every third level and Magic
 Resistance every fifth level. Accuracy and avoidance stop at 98. Current HP
 increases only by the MaxHP increment, preserving all previously missing HP;
-level-up never performs a full heal. The five diagnostic showcase monsters are
-set to half health before leveling and PASS only if they remain injured.
+level-up never performs a full heal. Temporary diagnostic monsters are set to
+half health before leveling and PASS only if they remain injured.
 
 ## Building destruction perks
 
@@ -109,9 +105,8 @@ stat perk. Combat improves attack accuracy and Strength, defense improves armor,
 Parry, and Dodge, and magic improves Magic Resistance with a 95 cap. Monsters
 can receive at most three building perks. Lairs never count as buildings. The
 diagnostic forces each reward branch and verifies both a failed roll and the cap;
-production combat uses random rolls. It leaves a three-perk Goblin Overlord near
-the Palace with 72 HtoH, 19 Strength, 4 armor, 61 Parry, 51 Dodge, and 23 Magic
-Resistance so the combined permanent bonuses can be inspected in the UI.
+production combat uses random rolls. The temporary perk tester is removed before
+the focused equipment arena is created.
 
 ## Healing potion loot
 
@@ -128,13 +123,30 @@ Ground drops carry Majesty's generated inventory attribute, allowing the
 vanilla `Eval_Items` behavior to retrieve and transfer them normally.
 Heroes already carrying the vanilla maximum of five healing potions ignore
 these drops, leaving them on the ground for another hero.
-After PASS it removes the dangerous class/perk showcase monsters and creates a
-separate autonomous arena: one level-8 Paladin at half health, six nearby weak
-monsters (Giant Rats and Skeletons), and ten scattered Healing Potion pickups.
-The arena includes a completed player-owned Warriors Guild which adopts the
-Paladin as a member, preventing the otherwise homeless hero from leaving the
-map. The arena makes combat and loot visible, but its random outcome cannot
-change PASS/FAIL.
+The old peasant crowd, nearby weak monsters, and scattered potion pickups are
+not part of the current arena.
+
+## Tiered weapon diagnostic
+
+The first equipment implementation separates a weapon's quality tier from its
+drop affix. `T3`, `T2`, and `T1` contribute `+1`, `+2`, and `+3` structural
+bonus respectively; the affix is preserved when the Blacksmith improves the
+tier. A `T3 Longsword +6` therefore has effective structural bonus 7 and becomes
+`T2 +6` (effective 8), then `T1 +6` (effective 9).
+
+After PASS the diagnostic creates a focused arena containing one level-8
+Paladin, its completed Warriors Guild, one completed Blacksmith, and a nearby
+`T3 Longsword +6` pickup. The Paladin has 1000 carried gold plus 1000 stored
+gold and a guaranteed equipment-upgrade consideration roll. Research the next
+weapon quality at the Blacksmith and allow the autonomous Paladin time to visit
+it. The Blacksmith decision uses the separate tier, so the already-high `+6`
+affix does not prevent the visit.
+
+Only in the diagnostic quest, defeated monsters have a 50% chance to drop a
+`T3 Longsword +5` or `T3 Longsword +7`, selected evenly. A hero equips a dropped
+weapon only when its effective structural value is strictly greater than the
+currently equipped value. This temporary rate is disabled in the production
+sandbox. The diagnostic PASS signal remains the 7777 treasury-gold increase.
 
 ## Direct spell kill attribution
 
@@ -144,5 +156,5 @@ the same fatal-hit rules as normal attacks. Enemy kills count; friendly Monster
 Player targets do not. Player-cast spells have no attacker agent and therefore
 cannot grant monster progression. Poison and other engine-periodic damage are
 not yet attributed because the vanilla periodic HP drain does not retain its
-source agent. The diagnostic advances a Goblin Priest to level 2 using only
-direct spell damage and leaves it alive near the Palace for visible inspection.
+source agent. The diagnostic advances a temporary Goblin Priest to level 2
+using only direct spell damage and removes it after verification.

@@ -1,5 +1,8 @@
 <Majesty>
   <Language id="en_US">
     <Text id="IDTXT_LWS_HEALING_POTION_HELP">Healing Potion[newline]Restores health when used by a hero.</Text>
+    <Text id="IDTXT_LWS_T3_LONGSWORD_PLUS5_HELP">T3 Longsword +5[newline]Bronze-tier Paladin weapon. Effective structural bonus: 6.</Text>
+    <Text id="IDTXT_LWS_T3_LONGSWORD_PLUS6_HELP">T3 Longsword +6[newline]Bronze-tier Paladin weapon. Effective structural bonus: 7.</Text>
+    <Text id="IDTXT_LWS_T3_LONGSWORD_PLUS7_HELP">T3 Longsword +7[newline]Bronze-tier Paladin weapon. Effective structural bonus: 8.</Text>
   </Language>
 </Majesty>
