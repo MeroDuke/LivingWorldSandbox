@@ -43,6 +43,25 @@ foreach ($title in $prototypeTitles) {
     }
 }
 
+$birthScripts = @{
+    Staff = 'LWS_StaffDrop_Birth'; Axeclub = 'LWS_AxeclubDrop_Birth'; Dagger = 'LWS_DaggerDrop_Birth'
+    Longsword = 'LWS_LongswordDrop_Birth'; Longbow = 'LWS_LongbowDrop_Birth'; Crossbow = 'LWS_CrossbowDrop_Birth'
+    Mace = 'LWS_MaceDrop_Birth'; ChaosWeapon = 'LWS_ChaosWeaponDrop_Birth'; Hammer = 'LWS_HammerDrop_Birth'
+    Leather = 'LWS_LeatherDrop_Birth'; Chain = 'LWS_ChainDrop_Birth'; Plate = 'LWS_PlateDrop_Birth'; ChaosArmor = 'LWS_ChaosArmorDrop_Birth'
+}
+foreach ($family in @('Staff','Axeclub','Dagger','Longsword','Longbow','Crossbow','Mace','Hammer','Leather','Chain','Plate')) {
+    $expectedCount = if ($family -in @('Leather','Chain','Plate')) { 20 } else { 38 }
+    $actualCount = ([regex]::Matches($catalogPrototypeSource, '\(BirthScript\s+' + $birthScripts[$family] + '\)')).Count
+    if ($actualCount -ne $expectedCount) { throw "Unexpected BirthScript coverage for ${family}: $actualCount" }
+}
+if (([regex]::Matches($catalogPrototypeSource, '\(BirthScript\s+' + $birthScripts.ChaosWeapon + '\)')).Count -ne 38 -or
+    ([regex]::Matches($catalogPrototypeSource, '\(BirthScript\s+' + $birthScripts.ChaosArmor + '\)')).Count -ne 20) {
+    throw 'Weapon and armor Chaos BirthScripts are not separated correctly.'
+}
+if ($catalogPrototypeSource -match 'LWS_Random(?:Weapon|Armor)Drop_Birth') {
+    throw 'A static equipment prototype still uses an unclassified generic BirthScript.'
+}
+
 $tierBase = @(0, 0, 1, 2, 3)
 $bands = @(
     @{ Rarity = 1; Min = 0; Max = 1 },
@@ -83,6 +102,10 @@ foreach ($pattern in @(
 }
 if ($equipmentSource -notmatch 'Function\s+LWS_ConfigureEquipmentDrop') {
     throw 'Runtime equipment carrier configuration is missing.'
+}
+if ($equipmentSource -notmatch 'Function\s+LWS_InitializeWeaponDrop' -or
+    $equipmentSource -notmatch 'Function\s+LWS_InitializeArmorDrop') {
+    throw 'Birth-time equipment classification is missing.'
 }
 if ($catalogResolverSource -notmatch 'Function\s+LWS_StaticEquipmentDropTitle') {
     throw 'Static equipment resolver entry point is missing.'

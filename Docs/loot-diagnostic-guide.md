@@ -35,3 +35,7 @@ Szemmel csak azt kell figyelni, hogy a Paladin felveszi-e a közeli kompatibilis
 tárgyakat, nem ragad-e bele a földi loot vizsgálatába, és a Legendary felvétele
 után képes-e használni az új képességet. A 8%/1% természetes esélyeket ebben a
 smoke tesztben nem kell kivárni.
+
+A felszerelési arénában egy Longbow is található a többi vizsgálati tárgy mellett.
+Ez szándékosan inkompatibilis a Paladinnal: a földön kell maradnia, és a Paladinnak
+nem szabad odamennie vagy eltüntetnie. Egy Ranger vagy Elf később felveheti.

@@ -2,7 +2,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Staff_1_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -10,7 +10,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Staff_1_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -18,7 +18,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Staff_1_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -26,7 +26,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Staff_1_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -34,7 +34,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Staff_1_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -42,7 +42,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Staff_1_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -50,7 +50,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Staff_1_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -58,7 +58,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Staff_1_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -66,7 +66,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Staff_1_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -74,7 +74,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Staff_1_9)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -82,7 +82,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Staff_1_10)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -90,7 +90,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Staff_2_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -98,7 +98,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Staff_2_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -106,7 +106,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Staff_2_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -114,7 +114,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Staff_2_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -122,7 +122,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Staff_2_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -130,7 +130,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Staff_2_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -138,7 +138,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Staff_2_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -146,7 +146,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Staff_2_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -154,7 +154,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Staff_2_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -162,7 +162,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Staff_2_9)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -170,7 +170,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Staff_3_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -178,7 +178,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Staff_3_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -186,7 +186,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Staff_3_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -194,7 +194,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Staff_3_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -202,7 +202,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Staff_3_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -210,7 +210,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Staff_3_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -218,7 +218,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Staff_3_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -226,7 +226,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Staff_3_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -234,7 +234,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Staff_3_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -242,7 +242,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Staff_4_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -250,7 +250,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Staff_4_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -258,7 +258,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Staff_4_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -266,7 +266,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Staff_4_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -274,7 +274,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Staff_4_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -282,7 +282,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Staff_4_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -290,7 +290,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Staff_4_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -298,7 +298,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Staff_4_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_StaffDrop_Birth)
     }
 [end]
 
@@ -306,7 +306,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Axeclub_1_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -314,7 +314,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Axeclub_1_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -322,7 +322,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Axeclub_1_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -330,7 +330,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Axeclub_1_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -338,7 +338,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Axeclub_1_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -346,7 +346,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Axeclub_1_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -354,7 +354,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Axeclub_1_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -362,7 +362,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Axeclub_1_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -370,7 +370,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Axeclub_1_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -378,7 +378,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Axeclub_1_9)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -386,7 +386,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Axeclub_1_10)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -394,7 +394,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Axeclub_2_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -402,7 +402,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Axeclub_2_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -410,7 +410,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Axeclub_2_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -418,7 +418,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Axeclub_2_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -426,7 +426,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Axeclub_2_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -434,7 +434,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Axeclub_2_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -442,7 +442,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Axeclub_2_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -450,7 +450,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Axeclub_2_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -458,7 +458,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Axeclub_2_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -466,7 +466,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Axeclub_2_9)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -474,7 +474,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Axeclub_3_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -482,7 +482,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Axeclub_3_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -490,7 +490,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Axeclub_3_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -498,7 +498,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Axeclub_3_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -506,7 +506,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Axeclub_3_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -514,7 +514,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Axeclub_3_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -522,7 +522,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Axeclub_3_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -530,7 +530,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Axeclub_3_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -538,7 +538,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Axeclub_3_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -546,7 +546,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Axeclub_4_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -554,7 +554,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Axeclub_4_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -562,7 +562,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Axeclub_4_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -570,7 +570,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Axeclub_4_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -578,7 +578,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Axeclub_4_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -586,7 +586,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Axeclub_4_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -594,7 +594,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Axeclub_4_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -602,7 +602,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Axeclub_4_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_AxeclubDrop_Birth)
     }
 [end]
 
@@ -610,7 +610,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Dagger_1_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -618,7 +618,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Dagger_1_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -626,7 +626,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Dagger_1_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -634,7 +634,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Dagger_1_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -642,7 +642,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Dagger_1_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -650,7 +650,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Dagger_1_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -658,7 +658,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Dagger_1_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -666,7 +666,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Dagger_1_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -674,7 +674,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Dagger_1_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -682,7 +682,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Dagger_1_9)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -690,7 +690,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Dagger_1_10)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -698,7 +698,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Dagger_2_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -706,7 +706,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Dagger_2_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -714,7 +714,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Dagger_2_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -722,7 +722,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Dagger_2_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -730,7 +730,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Dagger_2_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -738,7 +738,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Dagger_2_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -746,7 +746,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Dagger_2_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -754,7 +754,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Dagger_2_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -762,7 +762,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Dagger_2_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -770,7 +770,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Dagger_2_9)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -778,7 +778,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Dagger_3_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -786,7 +786,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Dagger_3_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -794,7 +794,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Dagger_3_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -802,7 +802,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Dagger_3_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -810,7 +810,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Dagger_3_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -818,7 +818,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Dagger_3_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -826,7 +826,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Dagger_3_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -834,7 +834,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Dagger_3_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -842,7 +842,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Dagger_3_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -850,7 +850,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Dagger_4_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -858,7 +858,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Dagger_4_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -866,7 +866,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Dagger_4_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -874,7 +874,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Dagger_4_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -882,7 +882,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Dagger_4_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -890,7 +890,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Dagger_4_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -898,7 +898,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Dagger_4_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -906,7 +906,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Dagger_4_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_DaggerDrop_Birth)
     }
 [end]
 
@@ -914,7 +914,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Longsword_1_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -922,7 +922,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Longsword_1_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -930,7 +930,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Longsword_1_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -938,7 +938,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Longsword_1_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -946,7 +946,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longsword_1_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -954,7 +954,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longsword_1_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -962,7 +962,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longsword_1_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -970,7 +970,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longsword_1_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -978,7 +978,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longsword_1_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -986,7 +986,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longsword_1_9)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -994,7 +994,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longsword_1_10)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1002,7 +1002,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Longsword_2_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1010,7 +1010,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Longsword_2_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1018,7 +1018,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Longsword_2_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1026,7 +1026,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longsword_2_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1034,7 +1034,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longsword_2_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1042,7 +1042,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longsword_2_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1050,7 +1050,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longsword_2_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1058,7 +1058,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longsword_2_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1066,7 +1066,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longsword_2_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1074,7 +1074,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longsword_2_9)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1082,7 +1082,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Longsword_3_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1090,7 +1090,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Longsword_3_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1098,7 +1098,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longsword_3_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1106,7 +1106,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longsword_3_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1114,7 +1114,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longsword_3_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1122,7 +1122,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longsword_3_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1130,7 +1130,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longsword_3_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1138,7 +1138,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longsword_3_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1146,7 +1146,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longsword_3_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1154,7 +1154,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Longsword_4_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1162,7 +1162,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longsword_4_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1170,7 +1170,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longsword_4_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1178,7 +1178,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longsword_4_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1186,7 +1186,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longsword_4_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1194,7 +1194,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longsword_4_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1202,7 +1202,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longsword_4_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1210,7 +1210,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longsword_4_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongswordDrop_Birth)
     }
 [end]
 
@@ -1218,7 +1218,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Longbow_1_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1226,7 +1226,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Longbow_1_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1234,7 +1234,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Longbow_1_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1242,7 +1242,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Longbow_1_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1250,7 +1250,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longbow_1_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1258,7 +1258,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longbow_1_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1266,7 +1266,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longbow_1_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1274,7 +1274,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longbow_1_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1282,7 +1282,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longbow_1_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1290,7 +1290,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longbow_1_9)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1298,7 +1298,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longbow_1_10)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1306,7 +1306,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Longbow_2_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1314,7 +1314,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Longbow_2_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1322,7 +1322,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Longbow_2_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1330,7 +1330,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longbow_2_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1338,7 +1338,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longbow_2_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1346,7 +1346,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longbow_2_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1354,7 +1354,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longbow_2_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1362,7 +1362,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longbow_2_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1370,7 +1370,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longbow_2_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1378,7 +1378,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longbow_2_9)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1386,7 +1386,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Longbow_3_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1394,7 +1394,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Longbow_3_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1402,7 +1402,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longbow_3_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1410,7 +1410,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longbow_3_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1418,7 +1418,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longbow_3_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1426,7 +1426,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longbow_3_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1434,7 +1434,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longbow_3_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1442,7 +1442,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longbow_3_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1450,7 +1450,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longbow_3_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1458,7 +1458,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Longbow_4_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1466,7 +1466,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longbow_4_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1474,7 +1474,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longbow_4_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1482,7 +1482,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Longbow_4_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1490,7 +1490,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longbow_4_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1498,7 +1498,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longbow_4_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1506,7 +1506,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longbow_4_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1514,7 +1514,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Longbow_4_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_LongbowDrop_Birth)
     }
 [end]
 
@@ -1522,7 +1522,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Crossbow_1_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1530,7 +1530,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Crossbow_1_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1538,7 +1538,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Crossbow_1_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1546,7 +1546,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Crossbow_1_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1554,7 +1554,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Crossbow_1_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1562,7 +1562,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Crossbow_1_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1570,7 +1570,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Crossbow_1_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1578,7 +1578,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Crossbow_1_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1586,7 +1586,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Crossbow_1_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1594,7 +1594,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Crossbow_1_9)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1602,7 +1602,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Crossbow_1_10)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1610,7 +1610,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Crossbow_2_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1618,7 +1618,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Crossbow_2_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1626,7 +1626,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Crossbow_2_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1634,7 +1634,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Crossbow_2_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1642,7 +1642,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Crossbow_2_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1650,7 +1650,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Crossbow_2_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1658,7 +1658,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Crossbow_2_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1666,7 +1666,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Crossbow_2_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1674,7 +1674,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Crossbow_2_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1682,7 +1682,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Crossbow_2_9)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1690,7 +1690,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Crossbow_3_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1698,7 +1698,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Crossbow_3_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1706,7 +1706,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Crossbow_3_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1714,7 +1714,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Crossbow_3_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1722,7 +1722,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Crossbow_3_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1730,7 +1730,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Crossbow_3_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1738,7 +1738,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Crossbow_3_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1746,7 +1746,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Crossbow_3_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1754,7 +1754,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Crossbow_3_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1762,7 +1762,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Crossbow_4_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1770,7 +1770,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Crossbow_4_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1778,7 +1778,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Crossbow_4_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1786,7 +1786,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Crossbow_4_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1794,7 +1794,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Crossbow_4_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1802,7 +1802,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Crossbow_4_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1810,7 +1810,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Crossbow_4_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1818,7 +1818,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Crossbow_4_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_CrossbowDrop_Birth)
     }
 [end]
 
@@ -1826,7 +1826,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Mace_1_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1834,7 +1834,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Mace_1_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1842,7 +1842,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Mace_1_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1850,7 +1850,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Mace_1_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1858,7 +1858,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Mace_1_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1866,7 +1866,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Mace_1_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1874,7 +1874,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Mace_1_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1882,7 +1882,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Mace_1_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1890,7 +1890,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Mace_1_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1898,7 +1898,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Mace_1_9)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1906,7 +1906,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Mace_1_10)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1914,7 +1914,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Mace_2_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1922,7 +1922,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Mace_2_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1930,7 +1930,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Mace_2_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1938,7 +1938,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Mace_2_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1946,7 +1946,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Mace_2_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1954,7 +1954,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Mace_2_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1962,7 +1962,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Mace_2_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1970,7 +1970,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Mace_2_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1978,7 +1978,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Mace_2_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1986,7 +1986,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Mace_2_9)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -1994,7 +1994,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Mace_3_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -2002,7 +2002,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Mace_3_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -2010,7 +2010,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Mace_3_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -2018,7 +2018,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Mace_3_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -2026,7 +2026,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Mace_3_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -2034,7 +2034,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Mace_3_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -2042,7 +2042,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Mace_3_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -2050,7 +2050,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Mace_3_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -2058,7 +2058,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Mace_3_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -2066,7 +2066,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Mace_4_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -2074,7 +2074,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Mace_4_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -2082,7 +2082,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Mace_4_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -2090,7 +2090,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Mace_4_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -2098,7 +2098,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Mace_4_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -2106,7 +2106,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Mace_4_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -2114,7 +2114,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Mace_4_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -2122,7 +2122,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Mace_4_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_MaceDrop_Birth)
     }
 [end]
 
@@ -2130,7 +2130,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Chaos_1_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2138,7 +2138,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Chaos_1_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2146,7 +2146,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Chaos_1_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2154,7 +2154,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Chaos_1_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2162,7 +2162,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Chaos_1_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2170,7 +2170,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Chaos_1_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2178,7 +2178,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Chaos_1_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2186,7 +2186,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Chaos_1_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2194,7 +2194,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Chaos_1_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2202,7 +2202,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Chaos_1_9)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2210,7 +2210,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Chaos_1_10)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2218,7 +2218,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Chaos_2_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2226,7 +2226,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Chaos_2_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2234,7 +2234,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Chaos_2_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2242,7 +2242,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Chaos_2_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2250,7 +2250,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Chaos_2_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2258,7 +2258,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Chaos_2_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2266,7 +2266,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Chaos_2_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2274,7 +2274,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Chaos_2_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2282,7 +2282,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Chaos_2_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2290,7 +2290,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Chaos_2_9)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2298,7 +2298,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Chaos_3_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2306,7 +2306,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Chaos_3_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2314,7 +2314,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Chaos_3_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2322,7 +2322,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Chaos_3_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2330,7 +2330,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Chaos_3_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2338,7 +2338,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Chaos_3_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2346,7 +2346,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Chaos_3_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2354,7 +2354,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Chaos_3_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2362,7 +2362,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Chaos_3_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2370,7 +2370,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Chaos_4_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2378,7 +2378,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Chaos_4_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2386,7 +2386,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Chaos_4_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2394,7 +2394,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Chaos_4_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2402,7 +2402,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Chaos_4_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2410,7 +2410,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Chaos_4_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2418,7 +2418,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Chaos_4_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2426,7 +2426,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Chaos_4_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_ChaosWeaponDrop_Birth)
     }
 [end]
 
@@ -2434,7 +2434,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Hammer_1_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2442,7 +2442,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Hammer_1_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2450,7 +2450,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Hammer_1_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2458,7 +2458,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Hammer_1_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2466,7 +2466,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Hammer_1_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2474,7 +2474,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Hammer_1_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2482,7 +2482,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Hammer_1_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2490,7 +2490,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Hammer_1_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2498,7 +2498,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Hammer_1_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2506,7 +2506,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Hammer_1_9)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2514,7 +2514,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Hammer_1_10)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2522,7 +2522,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_C_Hammer_2_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2530,7 +2530,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Hammer_2_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2538,7 +2538,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Hammer_2_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2546,7 +2546,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Hammer_2_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2554,7 +2554,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Hammer_2_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2562,7 +2562,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Hammer_2_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2570,7 +2570,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Hammer_2_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2578,7 +2578,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Hammer_2_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2586,7 +2586,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Hammer_2_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2594,7 +2594,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Hammer_2_9)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2602,7 +2602,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Hammer_3_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2610,7 +2610,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Hammer_3_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2618,7 +2618,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Hammer_3_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2626,7 +2626,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Hammer_3_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2634,7 +2634,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Hammer_3_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2642,7 +2642,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Hammer_3_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2650,7 +2650,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Hammer_3_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2658,7 +2658,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Hammer_3_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2666,7 +2666,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Hammer_3_8)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2674,7 +2674,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_U_Hammer_4_0)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2682,7 +2682,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Hammer_4_1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2690,7 +2690,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Hammer_4_2)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2698,7 +2698,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_R_Hammer_4_3)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2706,7 +2706,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Hammer_4_4)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2714,7 +2714,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Hammer_4_5)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2722,7 +2722,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Hammer_4_6)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2730,7 +2730,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDW_E_Hammer_4_7)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
+        (BirthScript LWS_HammerDrop_Birth)
     }
 [end]
 
@@ -2738,7 +2738,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_C_Leather_1_0)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2746,7 +2746,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_U_Leather_1_1)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2754,7 +2754,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Leather_1_2)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2762,7 +2762,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Leather_1_3)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2770,7 +2770,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Leather_1_4)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2778,7 +2778,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Leather_1_5)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2786,7 +2786,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_C_Leather_2_0)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2794,7 +2794,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_U_Leather_2_1)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2802,7 +2802,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Leather_2_2)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2810,7 +2810,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Leather_2_3)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2818,7 +2818,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Leather_2_4)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2826,7 +2826,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_U_Leather_3_0)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2834,7 +2834,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Leather_3_1)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2842,7 +2842,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Leather_3_2)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2850,7 +2850,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Leather_3_3)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2858,7 +2858,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Leather_3_4)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2866,7 +2866,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_U_Leather_4_0)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2874,7 +2874,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Leather_4_1)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2882,7 +2882,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Leather_4_2)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2890,7 +2890,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Leather_4_3)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_LeatherDrop_Birth)
     }
 [end]
 
@@ -2898,7 +2898,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_C_Chain_1_0)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -2906,7 +2906,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_U_Chain_1_1)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -2914,7 +2914,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Chain_1_2)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -2922,7 +2922,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Chain_1_3)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -2930,7 +2930,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Chain_1_4)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -2938,7 +2938,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Chain_1_5)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -2946,7 +2946,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_C_Chain_2_0)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -2954,7 +2954,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_U_Chain_2_1)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -2962,7 +2962,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Chain_2_2)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -2970,7 +2970,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Chain_2_3)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -2978,7 +2978,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Chain_2_4)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -2986,7 +2986,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_U_Chain_3_0)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -2994,7 +2994,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Chain_3_1)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -3002,7 +3002,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Chain_3_2)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -3010,7 +3010,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Chain_3_3)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -3018,7 +3018,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Chain_3_4)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -3026,7 +3026,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_U_Chain_4_0)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -3034,7 +3034,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Chain_4_1)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -3042,7 +3042,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Chain_4_2)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -3050,7 +3050,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Chain_4_3)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChainDrop_Birth)
     }
 [end]
 
@@ -3058,7 +3058,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_C_Plate_1_0)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3066,7 +3066,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_U_Plate_1_1)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3074,7 +3074,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Plate_1_2)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3082,7 +3082,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Plate_1_3)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3090,7 +3090,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Plate_1_4)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3098,7 +3098,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Plate_1_5)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3106,7 +3106,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_C_Plate_2_0)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3114,7 +3114,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_U_Plate_2_1)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3122,7 +3122,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Plate_2_2)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3130,7 +3130,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Plate_2_3)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3138,7 +3138,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Plate_2_4)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3146,7 +3146,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_U_Plate_3_0)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3154,7 +3154,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Plate_3_1)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3162,7 +3162,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Plate_3_2)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3170,7 +3170,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Plate_3_3)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3178,7 +3178,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Plate_3_4)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3186,7 +3186,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_U_Plate_4_0)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3194,7 +3194,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Plate_4_1)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3202,7 +3202,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Plate_4_2)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3210,7 +3210,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Plate_4_3)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_PlateDrop_Birth)
     }
 [end]
 
@@ -3218,7 +3218,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_C_Chaos_1_0)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3226,7 +3226,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_U_Chaos_1_1)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3234,7 +3234,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Chaos_1_2)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3242,7 +3242,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Chaos_1_3)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3250,7 +3250,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Chaos_1_4)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3258,7 +3258,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Chaos_1_5)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3266,7 +3266,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_C_Chaos_2_0)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3274,7 +3274,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_U_Chaos_2_1)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3282,7 +3282,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Chaos_2_2)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3290,7 +3290,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Chaos_2_3)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3298,7 +3298,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Chaos_2_4)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3306,7 +3306,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_U_Chaos_3_0)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3314,7 +3314,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Chaos_3_1)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3322,7 +3322,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Chaos_3_2)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3330,7 +3330,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Chaos_3_3)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3338,7 +3338,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Chaos_3_4)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3346,7 +3346,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_U_Chaos_4_0)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3354,7 +3354,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_R_Chaos_4_1)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3362,7 +3362,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Chaos_4_2)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 
@@ -3370,7 +3370,7 @@
     {Special_Item
         (type Special_Item)
         (Title LWSDA_E_Chaos_4_3)
-        (BirthScript LWS_RandomArmorDrop_Birth)
+        (BirthScript LWS_ChaosArmorDrop_Birth)
     }
 [end]
 

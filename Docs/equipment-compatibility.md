@@ -44,6 +44,9 @@ megelőzi a tier + affix összehasonlítást.
 ## Fontos következmények
 
 - A Paladin és a Warrior közös Longsword- és Plate-dropokat használhat.
+- A statikus dropok már a saját BirthScriptjükben megkapják a típus- és családbesorolást.
+  Így a hős AI a tárgy megjelenésének első pillanatától kiszűrheti az inkompatibilis
+  felszerelést; például a Paladin nem választhat Longbow dropot.
 - A Ranger és az Elf közös Longbow-dropokat használhat, de eltérő páncélt viselnek.
 - A Healer és a Gnome használhat Daggert, de nem viselhet páncélt.
 - A Monk sem fegyver-, sem páncéldroppot nem használhat.

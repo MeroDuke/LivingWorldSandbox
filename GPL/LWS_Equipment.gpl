@@ -61,28 +61,48 @@ Declare
 Begin
     if ( $IsValidGamePiece ( Item ) == FALSE ) return;
     if ( EquipmentType == "Armor" )
-        $AddAttribute ( Item, "TransferScript", "function", $LWS_EquipArmorTransfer );
+        Item's "TransferScript" = $LWS_EquipArmorTransfer;
     else
-        $AddAttribute ( Item, "TransferScript", "function", $LWS_EquipWeaponTransfer );
-    $AddAttribute ( Item, "LWS_EquipmentType", "string", EquipmentType );
-    $AddAttribute ( Item, "LWS_EquipmentFamily", "string", EquipmentFamily );
+        Item's "TransferScript" = $LWS_EquipWeaponTransfer;
+    Item's "LWS_EquipmentType" = EquipmentType;
+    Item's "LWS_EquipmentFamily" = EquipmentFamily;
     $AddAttribute ( Item, "LWS_EquipmentTier", "integer", Tier );
     $AddAttribute ( Item, "LWS_EquipmentAffixBonus", "integer", AffixBonus );
     $AddAttribute ( Item, "LWS_EquipmentRarity", "string", $LWS_EquipmentRarity ( EquipmentType, Tier, AffixBonus ));
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function LWS_RandomWeaponDrop_Birth ( agent ThisAgent )
+Function LWS_InitializeWeaponDrop ( agent ThisAgent, string EquipmentFamily )
 Declare
 Begin
-    // Runtime generator supplies family, tier, affix, rarity, and transfer script after spawn.
+    // Classification is required during BirthScript: hero AI can evaluate a newly spawned
+    // Special_Item before the loot generator has supplied its rolled tier and affix.
+    $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipWeaponTransfer );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentType", "string", "Weapon" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", EquipmentFamily );
 End
 
-Function LWS_RandomArmorDrop_Birth ( agent ThisAgent )
+Function LWS_InitializeArmorDrop ( agent ThisAgent, string EquipmentFamily )
 Declare
 Begin
-    // Runtime generator supplies family, tier, affix, rarity, and transfer script after spawn.
+    $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipArmorTransfer );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentType", "string", "Armor" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", EquipmentFamily );
 End
+
+Function LWS_StaffDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeWeaponDrop ( ThisAgent, "Staff" ); End
+Function LWS_AxeclubDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeWeaponDrop ( ThisAgent, "Axeclub" ); End
+Function LWS_DaggerDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeWeaponDrop ( ThisAgent, "Dagger" ); End
+Function LWS_LongswordDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeWeaponDrop ( ThisAgent, "Longsword" ); End
+Function LWS_LongbowDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeWeaponDrop ( ThisAgent, "Longbow" ); End
+Function LWS_CrossbowDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeWeaponDrop ( ThisAgent, "Crossbow" ); End
+Function LWS_MaceDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeWeaponDrop ( ThisAgent, "Mace" ); End
+Function LWS_ChaosWeaponDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeWeaponDrop ( ThisAgent, "Chaos" ); End
+Function LWS_HammerDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeWeaponDrop ( ThisAgent, "Hammer" ); End
+Function LWS_LeatherDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeArmorDrop ( ThisAgent, "Leather" ); End
+Function LWS_ChainDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeArmorDrop ( ThisAgent, "Chain" ); End
+Function LWS_PlateDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeArmorDrop ( ThisAgent, "Plate" ); End
+Function LWS_ChaosArmorDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeArmorDrop ( ThisAgent, "Chaos" ); End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Northern Expansion equipment families, resolved from M_Characters.xml + MX_Characters.xml.
@@ -238,7 +258,7 @@ Begin
                     if ( $LWS_CanReceiveLegendary ( Hero, Candidate ))
                         return Candidate;
                 end
-            else if ( $HasAttribute ( "LWS_EquipmentTier", Candidate ))
+            else if ( $HasAttribute ( "LWS_EquipmentType", Candidate ))
                 begin
                     if ( $LWS_ShouldRetrieveEquipment ( Hero, Candidate ))
                         return Candidate;

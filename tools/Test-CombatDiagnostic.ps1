@@ -191,6 +191,8 @@ $requiredHookPatterns = @(
     'LWS_RandomArmorFamily\s*\(\s*3\s*\)\s*!=\s*"Chaos"',
     'LWS_StaticEquipmentDropTitle\s*\(\s*"Weapon"\s*,\s*"Longsword"\s*,\s*1\s*,\s*7\s*\)\s*!=\s*"LWSDW_E_Longsword_1_7"',
     'LWS_StaticEquipmentDropTitle\s*\(\s*"Armor"\s*,\s*"Plate"\s*,\s*3\s*,\s*1\s*\)\s*!=\s*"LWSDA_R_Plate_3_1"',
+    '\$SpawnUnit\s*\(\s*WeaponDrop\s*,\s*"LWSDW_U_Longbow_3_1"',
+    'LWS_IsEquipmentCompatible\s*\(\s*Paladin\s*,\s*RejectedWeaponDrop\s*\)',
     'LWS_RandomLegendaryTitle\s*\(\s*5\s*\)\s*!=\s*"LWS_StonebacksShield"',
     'LWS_LootSlotsUsed"\s*!=\s*2',
     'LWSDW_U_Longsword_3_1',

@@ -162,7 +162,7 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_SetupEquipmentArena ( agent AIRootAgent, agent Palace )
 Declare
-    agent WarriorsGuild, Blacksmith, Paladin, WeaponDrop, ArmorDrop, LegendaryDrop, WeakMonster;
+    agent WarriorsGuild, Blacksmith, Paladin, WeaponDrop, RejectedWeaponDrop, ArmorDrop, LegendaryDrop, WeakMonster;
     coordinate ArenaLocation;
     integer WeakMonsterCount;
 Begin
@@ -200,6 +200,17 @@ Begin
     // the player has time to select and read both UI cards before retrieval.
     WeaponDrop = $SpawnUnit ( Paladin, "LWSDW_U_Longsword_3_1", $RandomCoord ( Paladin, 500, 600 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWSDW_U_Longsword_3_1" ), 0 ));
     if ( $IsValidGamePiece ( WeaponDrop )) $LWS_ConfigureEquipmentDrop ( WeaponDrop, "Weapon", "Longsword", 3, 1 );
+    // Regression: classification must already exist when BirthScript returns. The Paladin
+    // must ignore this Longbow and leave it available for an Elf or Ranger.
+    RejectedWeaponDrop = $SpawnUnit ( WeaponDrop, "LWSDW_U_Longbow_3_1", $RandomCoord ( WeaponDrop, 30, 60 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWSDW_U_Longbow_3_1" ), 0 ));
+    if ( $IsValidGamePiece ( RejectedWeaponDrop ))
+        begin
+            if ( $HasAttribute ( "LWS_EquipmentType", RejectedWeaponDrop ) == FALSE || RejectedWeaponDrop's "LWS_EquipmentFamily" != "Longbow" )
+                AIRootAgent's "LWS_DiagnosticFailures" += 1;
+            if ( $LWS_IsEquipmentCompatible ( Paladin, RejectedWeaponDrop ))
+                AIRootAgent's "LWS_DiagnosticFailures" += 1;
+            $LWS_ConfigureEquipmentDrop ( RejectedWeaponDrop, "Weapon", "Longbow", 3, 1 );
+        end
     ArmorDrop = $SpawnUnit ( WeaponDrop, "LWSDA_R_Plate_3_1", $RandomCoord ( WeaponDrop, 30, 60 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWSDA_R_Plate_3_1" ), 0 ));
     if ( $IsValidGamePiece ( ArmorDrop )) $LWS_ConfigureEquipmentDrop ( ArmorDrop, "Armor", "Plate", 3, 1 );
     LegendaryDrop = $SpawnUnit ( Paladin, "LWS_WandOfImmolation", $RandomCoord ( Paladin, 100, 140 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_WandOfImmolation" ), 0 ));
