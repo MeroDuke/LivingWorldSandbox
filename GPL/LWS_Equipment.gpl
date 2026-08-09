@@ -58,6 +58,7 @@ End
 Function LWS_ConfigureEquipmentDrop ( agent Item, string EquipmentType, string EquipmentFamily,
                                       integer Tier, integer AffixBonus )
 Declare
+    string DisplayName;
 Begin
     if ( $IsValidGamePiece ( Item ) == FALSE ) return;
     if ( EquipmentType == "Armor" )
@@ -69,6 +70,12 @@ Begin
     $AddAttribute ( Item, "LWS_EquipmentTier", "integer", Tier );
     $AddAttribute ( Item, "LWS_EquipmentAffixBonus", "integer", AffixBonus );
     $AddAttribute ( Item, "LWS_EquipmentRarity", "string", $LWS_EquipmentRarity ( EquipmentType, Tier, AffixBonus ));
+
+    // SpecifyName changes only this world item's visible label. Keep Title untouched:
+    // it remains the stable prototype ID used by inventory transfer and pickup logic.
+    DisplayName = $Concatenate ( Item's "LWS_EquipmentRarity", " ", EquipmentFamily,
+                                 " T", Tier, " +", AffixBonus );
+    $SpecifyName ( Item, DisplayName );
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

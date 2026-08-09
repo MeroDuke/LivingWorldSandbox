@@ -1,5 +1,13 @@
 # Random equipment generator
 
+## Visible world-item names
+
+Each generic carrier receives an instance-specific display name through the SDK
+`SpecifyName` function. The label contains rarity, equipment family, tier, and
+affix, for example `Uncommon Longsword T3 +1`. The stable prototype `Title`
+remains unchanged, so pickup and transfer logic continue to use the original
+carrier identifier.
+
 A production monsterdrop két generikus world-item hordozót használ: egy fegyvert
 és egy páncélt. Spawn után a GPL ráírja a konkrét családot, tiert, affixet és
 rarityt. Ez elkerüli több száz statikus prototípus karbantartását.
