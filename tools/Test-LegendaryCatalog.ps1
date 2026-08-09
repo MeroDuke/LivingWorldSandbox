@@ -5,6 +5,7 @@ $catalog = Get-Content -Raw (Join-Path $repositoryRoot 'Docs\legendary-catalog.j
 $legendarySource = Get-Content -Raw (Join-Path $repositoryRoot 'GPL\LWS_Legendary.gpl')
 $monsterStateSource = Get-Content -Raw (Join-Path $repositoryRoot 'GPL\LWS_MonsterState.gpl')
 $lootSource = Get-Content -Raw (Join-Path $repositoryRoot 'GPL\LWS_Loot.gpl')
+$chestSource = Get-Content -Raw (Join-Path $repositoryRoot 'GPL\LWS_Chest.gpl')
 $prototypeSource = Get-Content -Raw (Join-Path $repositoryRoot 'GPL\LWS_LootPrototypes.dat')
 $descriptionSource = Get-Content -Raw (Join-Path $repositoryRoot 'Data\LWS_Descriptions.xml')
 $productionProject = Get-Content -Raw (Join-Path $repositoryRoot 'GPL\LivingWorldSandbox.gplproj')
@@ -37,15 +38,16 @@ foreach ($source in $catalog.whitelistedSources) {
 foreach ($pattern in @(
     'Function\s+LWS_CanReceiveLegendary',
     'Function\s+LWS_LegendaryTransfer',
+    'Function\s+LWS_GrantLegendaryTitle',
     'Function\s+LWS_RandomLegendaryTitle',
-    '\$HasAttribute\s*\(\s*Marker\s*,\s*NewOwnerAgent\s*\)\s*==\s*FALSE',
+    '\$HasAttribute\s*\(\s*Marker\s*,\s*Hero\s*\)',
     '\$LearnSpell',
     '\$DeleteInventoryItem'
 )) {
     if ($legendarySource -notmatch $pattern) { throw "Missing Legendary behavior pattern: $pattern" }
 }
-if ($lootSource -notmatch 'Function\s+LWS_SpawnLegendaryUnique' -or $lootSource -notmatch 'if\s*\(\s*Rarity\s*==\s*5\s*\)\s*\$LWS_SpawnLegendaryUnique') {
-    throw 'Legendary roll is not connected to the central loot resolver.'
+if ($lootSource -notmatch 'LWS_CreateLockedMonsterChest' -or $chestSource -notmatch 'LWS_AddLockedChestSimpleReward\s*\(\s*Chest\s*,\s*Slot\s*,\s*"Legendary"') {
+    throw 'Legendary roll is not connected to the locked monster chest resolver.'
 }
 
 Write-Host 'Legendary Unique catalog validation passed.'

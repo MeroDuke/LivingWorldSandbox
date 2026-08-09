@@ -98,8 +98,8 @@ Begin
         return FALSE;
     $SetAttribute ( LootHero, #ATTRIB_NumHealingPotions, 0 );
     PotionsBefore = $GetAttribute ( LootHero, #ATTRIB_NumHealingPotions );
-    $TransferInventoryItem ( "LWS_HealingPotion", LootDrop, LootHero );
-    $LWS_HealingPotion_Transfer ( LootDrop, LootHero, $MakeInventoryAttribute ( "LWS_HealingPotion" ));
+    if ( LootDrop's "LWS_ChestSlot1Type" != "Potion" ) return FALSE;
+    $LWS_OpenExplorationChest ( LootHero, LootDrop );
     $DeleteGamePiece ( LootDrop );
 
     if ( $GetAttribute ( LootHero, #ATTRIB_NumHealingPotions ) != ( PotionsBefore + 1 ))
@@ -162,7 +162,7 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_SetupEquipmentArena ( agent AIRootAgent, agent Palace )
 Declare
-    agent WarriorsGuild, Blacksmith, Paladin, WeaponDrop, RejectedWeaponDrop, ArmorDrop, LegendaryDrop, WeakMonster;
+    agent WarriorsGuild, Blacksmith, Paladin, WeaponDrop, RejectedWeaponDrop, ArmorDrop, LegendaryDrop, WeakMonster, Chest;
     coordinate ArenaLocation;
     integer WeakMonsterCount;
 Begin
@@ -229,6 +229,19 @@ Begin
                 end
             WeakMonsterCount += 1;
         end
+
+    // Exploration-chest showcase: one locked recipe per class, scattered well outside
+    // the Paladin's initial awareness. Odd classes carry two rewards, even classes one.
+    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 900, 1200 ), 1, 2 );
+    if ( $IsValidGamePiece ( Chest ) == FALSE || Chest's "LWS_ChestClass" != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 900, 1200 ), 2, 1 );
+    if ( $IsValidGamePiece ( Chest ) == FALSE || Chest's "LWS_ChestClass" != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 900, 1200 ), 3, 2 );
+    if ( $IsValidGamePiece ( Chest ) == FALSE || Chest's "LWS_ChestClass" != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 900, 1200 ), 4, 1 );
+    if ( $IsValidGamePiece ( Chest ) == FALSE || Chest's "LWS_ChestClass" != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 900, 1200 ), 5, 2 );
+    if ( $IsValidGamePiece ( Chest ) == FALSE || Chest's "LWS_ChestClass" != 5 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

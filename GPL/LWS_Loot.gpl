@@ -334,23 +334,11 @@ Begin
     if ( PotionCandidate && WeaponCandidate && ArmorCandidate )
         OmitCandidate = $RandomNumber ( 3 );
 
-    if ( PotionCandidate && OmitCandidate != 0 ) $LWS_TryHealingPotionSlot ( Defender, PotionRoll );
-    if ( WeaponCandidate && OmitCandidate != 1 )
-        begin
-            Rarity = $LWS_SelectLootRarity ( ProgressClass, $RandomNumber ( 100 ));
-            if ( Rarity == 5 && $LWS_IsLegendaryLootSource ( Defender ) == FALSE ) Rarity = 4;
-            if ( Rarity == 5 ) $LWS_SpawnLegendaryUnique ( Defender, $RandomNumber ( 100 ));
-            else $LWS_SpawnRandomEquipment ( Defender, "Weapon", Rarity, $RandomNumber ( 100 ),
-                                              $RandomNumber ( 100 ), $RandomNumber ( 100 ));
-        end
-    if ( ArmorCandidate && OmitCandidate != 2 )
-        begin
-            Rarity = $LWS_SelectLootRarity ( ProgressClass, $RandomNumber ( 100 ));
-            if ( Rarity == 5 && $LWS_IsLegendaryLootSource ( Defender ) == FALSE ) Rarity = 4;
-            if ( Rarity == 5 ) $LWS_SpawnLegendaryUnique ( Defender, $RandomNumber ( 100 ));
-            else $LWS_SpawnRandomEquipment ( Defender, "Armor", Rarity, $RandomNumber ( 100 ),
-                                              $RandomNumber ( 100 ), $RandomNumber ( 100 ));
-        end
+    // Package every successful monster reward into one chest. The recipe is locked
+    // at death; only the compatible family is resolved from the opener later.
+    if ( PotionCandidate || WeaponCandidate || ArmorCandidate )
+        $LWS_CreateLockedMonsterChest ( Defender, ProgressClass, PotionCandidate,
+                                        WeaponCandidate, ArmorCandidate, OmitCandidate );
 
     // Diagnostic-only carriers share any slots still available after production candidates.
     $LWS_TryDiagnosticWeaponSlot ( Defender, WeaponRoll );

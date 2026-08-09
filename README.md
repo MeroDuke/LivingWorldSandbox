@@ -130,7 +130,8 @@ real Palace immediately after spawn, so they do not consume its internal
 worker slots or stop normal builder/repairer spawning.
 
 All monster loot now passes through one fatal-hit resolver with a hard maximum
-of two successfully spawned world items. Potions, weapons, armor, and future
+of two rewards. Successful rewards are locked into one treasure chest, so one
+monster creates at most one world object. Potions, weapons, armor, and future
 consumable or special-item types share those slots. `LWS_ProgressClass` fixes
 the permitted rarity interval: Class 1 Common; Class 2 Common-Uncommon; Class 3
 Uncommon-Rare; Class 4 Rare-Epic; and Class 5 guaranteed Epic with Legendary
@@ -163,10 +164,12 @@ and their campaign flags remain untouched.
 
 The combat diagnostic now performs an agent-free deterministic runtime sweep of
 all nine weapon-family mappings, all four armor-family mappings, all six
-Legendary catalog mappings, and the hard two-world-item cap. It does not spawn a
+Legendary catalog mappings, and the hard two-reward cap. It does not spawn a
 hidden hero roster or trigger automatic test housing. It then leaves a small visual smoke arena containing a
 Paladin, statically described Longsword and Plate drops, a Wand of Immolation,
-Warriors Guild, Blacksmith, and four distant weak rats. See
+Warriors Guild, Blacksmith, four distant weak rats, and five distant locked
+C1-C5 exploration chests. Production maps seed three randomly placed exploration
+chests. See
 `Docs/loot-diagnostic-guide.md`; normal 8% and 1% rolls do not need to be waited
 out during this test.
 

@@ -39,26 +39,32 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_LegendaryTransfer ( agent OldOwnerAgent, agent NewOwnerAgent, integer AttributeID )
 Declare
-    string ItemTitle, Marker;
+    string ItemTitle;
 Begin
     if ( $IsValidGamePiece ( NewOwnerAgent ) == FALSE ) return;
     ItemTitle = OldOwnerAgent's "Title";
-    Marker = $LWS_LegendaryMarker ( ItemTitle );
-
-    if ( Marker != "" && $HasAttribute ( Marker, NewOwnerAgent ) == FALSE )
-        begin
-            $AddAttribute ( NewOwnerAgent, Marker, "boolean", TRUE );
-            if ( ItemTitle == "LWS_WandOfImmolation" ) $LearnSpell ( NewOwnerAgent, "Item_Damage_Shield", FALSE );
-            else if ( ItemTitle == "LWS_BeltOfReflection" ) $LearnSpell ( NewOwnerAgent, "magic_mirror", FALSE );
-            else if ( ItemTitle == "LWS_TeevusWand" ) $LearnSpell ( NewOwnerAgent, "Vortex", FALSE );
-            else if ( ItemTitle == "LWS_RuneOfHealing" ) $LearnSpell ( NewOwnerAgent, "Item_Healing", FALSE );
-            else if ( ItemTitle == "LWS_HelmOfDisplacement" ) $LearnSpell ( NewOwnerAgent, "Force", FALSE );
-            else if ( ItemTitle == "LWS_StonebacksShield" ) $LearnSpell ( NewOwnerAgent, "Stonebacks_Shield", FALSE );
-            $CreateEffector ( NewOwnerAgent, "level_up", 0 );
-            $DebugOut ( 911, "LWS LEGENDARY ACQUIRED", NewOwnerAgent, ItemTitle );
-        end
+    $LWS_GrantLegendaryTitle ( NewOwnerAgent, ItemTitle );
 
     $DeleteInventoryItem ( AttributeID, NewOwnerAgent );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_GrantLegendaryTitle ( agent Hero, string ItemTitle )
+Declare
+    string Marker;
+Begin
+    if ( $IsValidGamePiece ( Hero ) == FALSE ) return;
+    Marker = $LWS_LegendaryMarker ( ItemTitle );
+    if ( Marker == "" || $HasAttribute ( Marker, Hero )) return;
+    $AddAttribute ( Hero, Marker, "boolean", TRUE );
+    if ( ItemTitle == "LWS_WandOfImmolation" ) $LearnSpell ( Hero, "Item_Damage_Shield", FALSE );
+    else if ( ItemTitle == "LWS_BeltOfReflection" ) $LearnSpell ( Hero, "magic_mirror", FALSE );
+    else if ( ItemTitle == "LWS_TeevusWand" ) $LearnSpell ( Hero, "Vortex", FALSE );
+    else if ( ItemTitle == "LWS_RuneOfHealing" ) $LearnSpell ( Hero, "Item_Healing", FALSE );
+    else if ( ItemTitle == "LWS_HelmOfDisplacement" ) $LearnSpell ( Hero, "Force", FALSE );
+    else if ( ItemTitle == "LWS_StonebacksShield" ) $LearnSpell ( Hero, "Stonebacks_Shield", FALSE );
+    $CreateEffector ( Hero, "level_up", 0 );
+    $DebugOut ( 911, "LWS LEGENDARY ACQUIRED", Hero, ItemTitle );
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -12,6 +12,7 @@ $targetBytecode = Join-Path $dataDirectory 'LWSCombatDiagnostic.bcd'
 
 & (Join-Path $PSScriptRoot 'New-CombatOverride.ps1') -SdkPath $SdkPath
 & (Join-Path $PSScriptRoot 'New-ItemEvaluationOverride.ps1') -SdkPath $SdkPath
+& (Join-Path $PSScriptRoot 'New-TreasureOverride.ps1') -SdkPath $SdkPath
 
 $sdkCandidates = @()
 if ($SdkPath) {
