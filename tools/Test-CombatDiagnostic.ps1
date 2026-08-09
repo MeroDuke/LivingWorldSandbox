@@ -89,8 +89,8 @@ $requiredLootPatterns = @(
     '\$SpawnUnit\s*\(\s*Defender\s*,\s*"LWS_HealingPotion"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_HealingPotion"',
     'Function\s+LWS_TryDiagnosticWeaponDrop',
     'LWS_DiagnosticWeaponDropChance',
-    'LWS_T3_Longsword_Plus5',
-    'LWS_T3_Longsword_Plus7'
+    'LWS_T2_Longsword_Plus5',
+    'LWS_T2_Longsword_Plus7'
 )
 foreach ($pattern in $requiredLootPatterns) {
     if ($lootSource -notmatch $pattern) {
@@ -116,8 +116,8 @@ $requiredEquipmentPatterns = @(
     'LWS_WeaponAffixBonus',
     'Function\s+BlackSmith_Check',
     'Function\s+Obtain_Upgrade',
-    'Tier\s*==\s*3[^}]+Tier\s*=\s*2',
-    'Tier\s*==\s*2[^}]+Tier\s*=\s*1',
+    'Tier\s*==\s*2[^}]+Tier\s*=\s*3',
+    'Tier\s*==\s*3[^}]+Tier\s*=\s*4',
     '#ATTRIB_Weapon_Struct_Bonus\s*,\s*\$LWS_WeaponEffectiveBonus\s*\(\s*Tier\s*,\s*AffixBonus'
 )
 foreach ($pattern in $requiredEquipmentPatterns) {
@@ -125,7 +125,7 @@ foreach ($pattern in $requiredEquipmentPatterns) {
         throw "Missing tiered equipment pattern: $pattern"
     }
 }
-foreach ($itemName in @('LWS_T3_Longsword_Plus5', 'LWS_T3_Longsword_Plus6', 'LWS_T3_Longsword_Plus7')) {
+foreach ($itemName in @('LWS_T2_Longsword_Plus5', 'LWS_T2_Longsword_Plus6', 'LWS_T2_Longsword_Plus7')) {
     if ($lootPrototypeSource -notmatch [regex]::Escape("[$itemName]") -or $descriptionSource -notmatch ('ID="' + [regex]::Escape($itemName) + '"')) {
         throw "Tiered weapon item is incomplete: $itemName"
     }
@@ -152,9 +152,9 @@ foreach ($pattern in $requiredCombatPatterns) {
 }
 
 $requiredHookPatterns = @(
-    'Function\s+LWS_DetachDiagnosticPeasant',
-    'Palace''s\s+"num_peasants"\s*-=',
-    'Peasant''s\s+"home"\s*=\s*\$NullAgent',
+    'Function\s+LWS_EnsurePalacePeasantSpawner',
+    'Palace''s\s+"num_peasants"\s*=\s*\$ListSize',
+    '\$RunThread\s*\(\s*Palace''s\s+"peasant_spawn"',
     '\$LWS_EnsureMonsterState\s*\(\s*Attacker\s*\)',
     '\$LWS_ClassFromLevelXP\s*\(\s*2001\s*\)\s*!=\s*5',
     '\$LWS_KillsRequired\s*\(\s*5\s*,\s*1\s*\)\s*!=\s*20',
@@ -182,7 +182,7 @@ $requiredHookPatterns = @(
     '#ATTRIB_Gold\s*,\s*1000',
     '#ATTRIB_StoredGold\s*,\s*1000',
     'Upgrade_Weapon_Chance"\s*=\s*100',
-    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_T3_Longsword_Plus6"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_T3_Longsword_Plus6"',
+    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_T2_Longsword_Plus6"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_T2_Longsword_Plus6"',
     'LWS_DiagnosticWeaponDropChance"\s*,\s*"integer"\s*,\s*50',
     '\$IsValidGamePiece\s*\(\s*ShowcaseMonster\s*\)',
     '#ATTRIB_NumHealingPotions\s*\)\s*!=\s*\(\s*PotionsBefore\s*\+\s*1',
@@ -212,6 +212,9 @@ if ($hookSource -match '\$NewThread\s*\(\s*\$LWS_RunCombatDiagnostic') {
 }
 if ($hookSource -match 'EnemyCount\s*<|PotionCount\s*<|PeasantCount\s*<') {
     throw 'Legacy crowd and potion arena setup must remain removed.'
+}
+if ($hookSource -match '\$SpawnUnit\s*\([^;]+"Peasant"') {
+    throw 'Diagnostic checks must not spawn real Palace peasants.'
 }
 if ($hookSource -match '\$ListObjects\s*\(\s*Palace\s*,\s*"Monster"\s*,\s*1200') {
     throw 'Diagnostic cleanup must not broadly delete Palace-area monsters or workers.'

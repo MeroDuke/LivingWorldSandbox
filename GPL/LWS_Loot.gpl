@@ -29,8 +29,8 @@ Begin
     $AddAttribute ( Defender, "LWS_EquipmentLootResolved", "boolean", TRUE );
 
     if ( ChanceRoll >= AIRootAgent's "LWS_DiagnosticWeaponDropChance" ) return;
-    if ( AffixRoll == 0 ) DropTitle = "LWS_T3_Longsword_Plus5";
-    else DropTitle = "LWS_T3_Longsword_Plus7";
+    if ( AffixRoll == 0 ) DropTitle = "LWS_T2_Longsword_Plus5";
+    else DropTitle = "LWS_T2_Longsword_Plus7";
 
     Drop = $SpawnUnit ( Defender, DropTitle, "Override", $Concatenate ( $MakeInventoryAttribute ( DropTitle ), 0 ));
     if ( $IsValidGamePiece ( Drop ))

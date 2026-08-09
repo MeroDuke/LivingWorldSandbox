@@ -26,17 +26,20 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Peasant_Birth always increments the real Palace counter, even for short-lived diagnostic targets.
-// Detach test peasants immediately so they cannot block the Palace's autonomous worker spawner.
-Function LWS_DetachDiagnosticPeasant ( agent Palace, agent Peasant )
+// Reconcile the Palace's cached worker count and restart its autonomous spawner if necessary.
+Function LWS_EnsurePalacePeasantSpawner ( agent Palace )
 Declare
+    list PlayerHeroes, Peasants;
 Begin
     if ( $IsValidGamePiece ( Palace ) == FALSE ) return;
-    if ( $IsValidGamePiece ( Peasant ) == FALSE ) return;
-    if ( Peasant's "home" != Palace ) return;
 
-    Palace's "num_peasants" -= 1;
-    Peasant's "home" = $NullAgent ();
+    $ListObjects ( Palace, "Hero", -1, PlayerHeroes, #MyPlayer );
+    Peasants = $ListTitles ( PlayerHeroes, "Peasant" );
+    Palace's "num_peasants" = $ListSize ( Peasants );
+
+    if ( Palace's "num_peasants" < Palace's "max_peasants" )
+        if ( $IsRunning ( Palace's "peasant_spawn" ) == FALSE )
+            $RunThread ( Palace's "peasant_spawn", #Normal_Cycle, Palace );
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,10 +102,9 @@ Begin
         return FALSE;
     $LWS_EnsureMonsterState ( SpellMonster );
 
-    EnemyTarget = $SpawnUnit ( Palace, "Peasant", $RandomCoord ( TestLocation, 80, 160 ), #Player_1 );
+    EnemyTarget = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( TestLocation, 80, 160 ), #Player_1 );
     if ( $IsValidGamePiece ( EnemyTarget ) == FALSE )
         return FALSE;
-    $LWS_DetachDiagnosticPeasant ( Palace, EnemyTarget );
     $SetAttribute ( EnemyTarget, #ATTRIB_HP, 1 );
     $spelldamage ( SpellMonster, EnemyTarget, 1, 1 );
     if ( SpellMonster's "LWS_TotalKills" != 1 )
@@ -113,10 +115,9 @@ Begin
     RequiredKills = $LWS_KillsRequired ( SpellMonster's "LWS_ProgressClass", 1 );
     while ( SpellMonster's "LWS_TotalKills" < RequiredKills ) do
         begin
-            EnemyTarget = $SpawnUnit ( Palace, "Peasant", $RandomCoord ( SpellMonster, 80, 160 ), #Player_1 );
+            EnemyTarget = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( SpellMonster, 80, 160 ), #Player_1 );
             if ( $IsValidGamePiece ( EnemyTarget ) == FALSE )
                 return FALSE;
-            $LWS_DetachDiagnosticPeasant ( Palace, EnemyTarget );
             $SetAttribute ( EnemyTarget, #ATTRIB_HP, 1 );
             $spelldamage ( SpellMonster, EnemyTarget, 1, 1 );
         end
@@ -171,9 +172,9 @@ Begin
     $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_3, 0 );
     $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_4, 0 );
 
-    WeaponDrop = $SpawnUnit ( Paladin, "LWS_T3_Longsword_Plus6", $RandomCoord ( Paladin, 30, 70 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_T3_Longsword_Plus6" ), 0 ));
+    WeaponDrop = $SpawnUnit ( Paladin, "LWS_T2_Longsword_Plus6", $RandomCoord ( Paladin, 30, 70 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_T2_Longsword_Plus6" ), 0 ));
 
-    // Test-only: defeated monsters now have a 50% chance to drop either T3 +5 or T3 +7.
+    // Test-only: defeated monsters now have a 50% chance to drop either T2 +5 or T2 +7.
     $AddAttribute ( AIRootAgent, "LWS_DiagnosticWeaponDropChance", "integer", 50 );
 End
 
@@ -287,12 +288,12 @@ Begin
     if ( $LWS_KillsRequired ( 5, 1 ) != 20 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
     // Tier/affix arithmetic is deterministic and independent of Blacksmith AI timing.
-    if ( $LWS_WeaponTierBaseBonus ( 3 ) != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    if ( $LWS_WeaponTierBaseBonus ( 2 ) != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    if ( $LWS_WeaponTierBaseBonus ( 1 ) != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    if ( $LWS_WeaponEffectiveBonus ( 3, 6 ) != 7 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    if ( $LWS_WeaponEffectiveBonus ( 2, 6 ) != 8 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    if ( $LWS_WeaponEffectiveBonus ( 1, 6 ) != 9 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_WeaponTierBaseBonus ( 2 ) != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_WeaponTierBaseBonus ( 3 ) != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_WeaponTierBaseBonus ( 4 ) != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_WeaponEffectiveBonus ( 2, 6 ) != 7 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_WeaponEffectiveBonus ( 3, 6 ) != 8 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_WeaponEffectiveBonus ( 4, 6 ) != 9 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
     Attacker's "LWS_TotalKills" = 7;
     $LWS_EnsureMonsterState ( Attacker );
@@ -300,8 +301,7 @@ Begin
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
     Attacker's "LWS_TotalKills" = 0;
 
-    EnemyTarget = $SpawnUnit ( Palace, "Peasant", $RandomCoord ( TestLocation, 50 ), #Player_1 );
-    $LWS_DetachDiagnosticPeasant ( Palace, EnemyTarget );
+    EnemyTarget = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( TestLocation, 50 ), #Player_1 );
     $SetAttribute ( EnemyTarget, #ATTRIB_HP, 1 );
     $SetAttribute ( EnemyTarget, #ATTRIB_armor_basic_damage, 0 );
     $damage ( Attacker, EnemyTarget );
@@ -436,4 +436,5 @@ Begin
 
     // Autonomous, observable equipment arena; its outcome cannot change PASS/FAIL.
     $LWS_SetupEquipmentArena ( AIRootAgent, Palace );
+    $LWS_EnsurePalacePeasantSpawner ( Palace );
 End

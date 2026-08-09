@@ -132,15 +132,16 @@ worker slots or stop normal builder/repairer spawning.
 ## Tiered weapon diagnostic
 
 The first equipment implementation separates a weapon's quality tier from its
-drop affix. `T3`, `T2`, and `T1` contribute `+1`, `+2`, and `+3` structural
+drop affix. The tiers follow the Blacksmith research UI: `T2`, `T3`, and `T4`
+contribute `+1`, `+2`, and `+3` structural
 bonus respectively; the affix is preserved when the Blacksmith improves the
-tier. A `T3 Longsword +6` therefore has effective structural bonus 7 and becomes
-`T2 +6` (effective 8), then `T1 +6` (effective 9).
+tier. A Bronze `T2 Longsword +6` therefore has effective structural bonus 7 and
+becomes `T3 +6` (effective 8), then `T4 +6` (effective 9).
 
 After PASS the diagnostic creates a focused arena containing one level-8
 Paladin, its completed Warriors Guild, one level-3 Blacksmith with all equipment
 research explicitly cleared, and a nearby
-`T3 Longsword +6` pickup. The Paladin has 1000 carried gold plus 1000 stored
+`T2 Longsword +6` pickup. The Paladin has 1000 carried gold plus 1000 stored
 gold and a guaranteed equipment-upgrade consideration roll. Research the next
 weapon quality at the Blacksmith and allow the autonomous Paladin time to visit
 it. The Blacksmith decision uses the separate tier, so the already-high `+6`
@@ -152,7 +153,7 @@ equal weapons therefore stay on the ground instead of being collected and
 silently discarded after the hero has already equipped a better drop.
 
 Only in the diagnostic quest, defeated monsters have a 50% chance to drop a
-`T3 Longsword +5` or `T3 Longsword +7`, selected evenly. A hero equips a dropped
+`T2 Longsword +5` or `T2 Longsword +7`, selected evenly. A hero equips a dropped
 weapon only when its effective structural value is strictly greater than the
 currently equipped value. This temporary rate is disabled in the production
 sandbox. The diagnostic PASS signal remains the 7777 treasury-gold increase.

@@ -6,26 +6,26 @@
     }
 [end]
 
-[LWS_T3_Longsword_Plus5]
+[LWS_T2_Longsword_Plus5]
     {Special_Item
         (type Special_Item)
-        (Title LWS_T3_Longsword_Plus5)
-        (BirthScript LWS_T3LongswordPlus5_Birth)
+        (Title LWS_T2_Longsword_Plus5)
+        (BirthScript LWS_T2LongswordPlus5_Birth)
     }
 [end]
 
-[LWS_T3_Longsword_Plus6]
+[LWS_T2_Longsword_Plus6]
     {Special_Item
         (type Special_Item)
-        (Title LWS_T3_Longsword_Plus6)
-        (BirthScript LWS_T3LongswordPlus6_Birth)
+        (Title LWS_T2_Longsword_Plus6)
+        (BirthScript LWS_T2LongswordPlus6_Birth)
     }
 [end]
 
-[LWS_T3_Longsword_Plus7]
+[LWS_T2_Longsword_Plus7]
     {Special_Item
         (type Special_Item)
-        (Title LWS_T3_Longsword_Plus7)
-        (BirthScript LWS_T3LongswordPlus7_Birth)
+        (Title LWS_T2_Longsword_Plus7)
+        (BirthScript LWS_T2LongswordPlus7_Birth)
     }
 [end]

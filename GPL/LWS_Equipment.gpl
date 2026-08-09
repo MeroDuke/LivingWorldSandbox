@@ -5,8 +5,8 @@
 Function LWS_WeaponTierBaseBonus ( integer Tier ) is integer
 Declare
 Begin
-    if ( Tier == 1 ) return 3;
-    if ( Tier == 2 ) return 2;
+    if ( Tier == 4 ) return 3;
+    if ( Tier == 3 ) return 2;
     return 1;
 End
 
@@ -22,7 +22,7 @@ Function LWS_EnsureWeaponEquipmentState ( agent Hero )
 Declare
 Begin
     if ( $HasAttribute ( "LWS_WeaponTier", Hero ) == FALSE )
-        $AddAttribute ( Hero, "LWS_WeaponTier", "integer", 3 );
+        $AddAttribute ( Hero, "LWS_WeaponTier", "integer", 2 );
     if ( $HasAttribute ( "LWS_WeaponAffixBonus", Hero ) == FALSE )
         $AddAttribute ( Hero, "LWS_WeaponAffixBonus", "integer", 0 );
 End
@@ -97,27 +97,27 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function LWS_T3LongswordPlus5_Birth ( agent ThisAgent )
+Function LWS_T2LongswordPlus5_Birth ( agent ThisAgent )
 Declare
 Begin
     $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipWeaponTransfer );
-    $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 3 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 2 );
     $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 5 );
 End
 
-Function LWS_T3LongswordPlus6_Birth ( agent ThisAgent )
+Function LWS_T2LongswordPlus6_Birth ( agent ThisAgent )
 Declare
 Begin
     $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipWeaponTransfer );
-    $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 3 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 2 );
     $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 6 );
 End
 
-Function LWS_T3LongswordPlus7_Birth ( agent ThisAgent )
+Function LWS_T2LongswordPlus7_Birth ( agent ThisAgent )
 Declare
 Begin
     $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipWeaponTransfer );
-    $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 3 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 2 );
     $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 7 );
 End
 
@@ -133,10 +133,10 @@ Begin
     if ( Equipment == "Weapon" && $HasAttribute ( "LWS_WeaponTier", ThisAgent ))
         begin
             Tier = ThisAgent's "LWS_WeaponTier";
-            if ( Tier <= 1 ) return FALSE;
+            if ( Tier >= 4 ) return FALSE;
 
             ThisAgent's "Task_Number" = #ATTRIB_Weapon_Struct_Bonus;
-            if ( Tier == 3 )
+            if ( Tier == 2 )
                 begin
                     Gold_Needed = #Cost_Per_Struct_Upgrade2;
                     Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchWeaponLevel_3 );
@@ -204,15 +204,15 @@ Begin
             Tier = ThisAgent's "LWS_WeaponTier";
             AffixBonus = ThisAgent's "LWS_WeaponAffixBonus";
 
-            if ( Tier == 3 && Total_Gold >= #Cost_Per_Struct_Upgrade2 && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchWeaponLevel_3 ) != 0 )
+            if ( Tier == 2 && Total_Gold >= #Cost_Per_Struct_Upgrade2 && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchWeaponLevel_3 ) != 0 )
                 begin
                     Gold = #Cost_Per_Struct_Upgrade2;
-                    Tier = 2;
+                    Tier = 3;
                 end
-            else if ( Tier == 2 && Total_Gold >= #Cost_Per_Struct_Upgrade3 && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchWeaponLevel_4 ) != 0 )
+            else if ( Tier == 3 && Total_Gold >= #Cost_Per_Struct_Upgrade3 && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchWeaponLevel_4 ) != 0 )
                 begin
                     Gold = #Cost_Per_Struct_Upgrade3;
-                    Tier = 1;
+                    Tier = 4;
                 end
 
             if ( Gold > 0 )

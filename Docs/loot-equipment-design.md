@@ -25,11 +25,11 @@ A tier a tárgy alapanyagát vagy gyártási minőségét jelöli.
 
 A tervezett sorrend:
 
-1. `T3` – alapminőség, például bronze
-2. `T2` – fejlesztett minőség
-3. `T1` – legjobb hagyományos Blacksmith-minőség
+1. `T2` – alapminőség, például bronze; megfelel a Blacksmith LVL 2 kutatásának
+2. `T3` – fejlesztett minőség; megfelel a Blacksmith LVL 3 kutatásának
+3. `T4` – legjobb hagyományos Blacksmith-minőség; megfelel a Blacksmith LVL 4 kutatásának
 
-A kisebb tierszám jobb minőséget jelent: `T1 > T2 > T3`.
+A nagyobb tierszám jobb minőséget jelent: `T4 > T3 > T2`.
 
 ### Affix bonus
 
@@ -37,8 +37,8 @@ Az affix bonus a tárgy saját, droppal kapott egyedi értéke. A tárgy nevébe
 
 Példák:
 
-- `T3 Armor +6`
-- `T2 Longsword +2`
+- `T2 Armor +6`
+- `T3 Longsword +2`
 
 Az affix nem azonos a tierrel, és Blacksmith-fejlesztéskor alapértelmezés szerint nem változik.
 
@@ -54,9 +54,9 @@ Kezdeti tieralapok:
 
 | Tier | Alap structural bónusz |
 |---|---:|
-| T3 | +1 |
-| T2 | +2 |
-| T1 | +3 |
+| T2 | +1 |
+| T3 | +2 |
+| T4 | +3 |
 
 Ezek kezdeti balanszértékek; tesztelés után módosíthatók anélkül, hogy az adatmodell megváltozna.
 
@@ -70,10 +70,10 @@ Példa:
 
 | Tárgy | Tieralap | Affix | Tényleges structural érték |
 |---|---:|---:|---:|
-| felszerelt `T2 Armor +2` | 2 | 2 | 4 |
-| talált `T3 Armor +6` | 1 | 6 | 7 |
+| felszerelt `T3 Armor +2` | 2 | 2 | 4 |
+| talált `T2 Armor +6` | 1 | 6 | 7 |
 
-Ebben az esetben a hős lecseréli a `T2 +2` páncélt a `T3 +6` páncélra, mert `7 > 4`.
+Ebben az esetben a hős lecseréli a `T3 +2` páncélt a `T2 +6` páncélra, mert `7 > 4`.
 
 Az azonos összértékű tárgyak közötti döntés, valamint a structural és magical bónuszok későbbi súlyozása külön design-döntés lesz.
 
@@ -95,18 +95,18 @@ Az új döntési logika:
 Példa:
 
 ```text
-T3 Armor +6 -> T2 Armor +6 -> T1 Armor +6
+T2 Armor +6 -> T3 Armor +6 -> T4 Armor +6
 ```
 
 A kezdeti tieralapokkal:
 
 ```text
-T3 +6 = 7 structural
-T2 +6 = 8 structural
-T1 +6 = 9 structural
+T2 +6 = 7 structural
+T3 +6 = 8 structural
+T4 +6 = 9 structural
 ```
 
-A Blacksmith tehát a tiert fejleszti, nem alakítja a `T3 +6` tárgyat `T2 +7` tárggyá. Így megmarad a különbség a tárgy droppal szerzett egyedi affixe és a kovácsolással javított alapminősége között.
+A Blacksmith tehát a tiert fejleszti, nem alakítja a `T2 +6` tárgyat `T3 +7` tárggyá. Így megmarad a különbség a tárgy droppal szerzett egyedi affixe és a kovácsolással javított alapminősége között.
 
 ## Tervezett belső adatmodell
 
@@ -136,7 +136,7 @@ A hős kasztja továbbra is meghatározza a használható alap felszereléstípu
 - A tárgy felvételét a teljes effektív harci érték dönti el.
 - A Blacksmith látogatását a tier motiválja, nem a teljes bónusz.
 - A Blacksmith-fejlesztés javítja a tiert, de megtartja az affixet.
-- A kezdeti hagyományos tiersorrend `T3 -> T2 -> T1`.
+- A hagyományos tiersorrend a játék kutatási szintjeit követi: `T2 -> T3 -> T4`.
 - A mágikus bónusz külön dimenzió marad.
 - A további tárgyak és drop listák erre a modellre épülnek.
 
@@ -147,6 +147,6 @@ A hős kasztja továbbra is meghatározza a használható alap felszereléstípu
 - A structural és magical értékek súlyozása tárgycserénél.
 - Döntetlen értékű tárgyak kezelése.
 - A lecserélt felszerelés sorsa: eldobás, eladás, tárolás vagy megsemmisítés.
-- Artifact tárgyak és a hagyományos `T1` fölötti kategóriák.
+- Artifact tárgyak és a hagyományos `T4` fölötti kategóriák.
 - Treasure chestek és szörnyek külön drop táblái.
 - Fegyver- és páncéltípusonkénti kompatibilitási szabályok.
