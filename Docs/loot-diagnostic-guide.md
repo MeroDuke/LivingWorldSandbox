@@ -19,18 +19,9 @@ Az eredmény:
 - induló 10000 goldból **17777**: minden automatikus ellenőrzés PASS;
 - induló 10000 goldból **10111**: legalább egy ellenőrzés FAIL.
 
-## Rövid vizuális smoke arena
+## Vizuális aréna
 
-PASS/FAIL után megmarad:
-
-- egy 8-as szintű Paladin;
-- egy 8-as szintű Ranger és a saját Rangers Guildje a chestek közelében;
-- egy Warriors Guild;
-- egy fejlesztés nélküli, harmadik szintű Blacksmith;
-- négy gyenge Giant Rat biztonságosabb távolságban;
-- öt C1–C5 exploration chest közvetlenül a kastély körül.
-
-Szemmel azt kell figyelni, hogy a kastély körüli chesteket megtalálják-e a
-felfedező hősök, a chest eltűnik-e nyitáskor, és a hős statjai, potionje vagy
-aranya megkapja-e a lezárt jutalmat. A régi közvetlen Longsword, Plate, Longbow
-és Legendary teszttárgyak már nem jelennek meg.
+A kézi Paladin-, Ranger-, equipment- és chest-arénákat a sikeres ellenőrzés után
+eltávolítottuk. A diagnosztikai pálya nem hagy maga után tesztépületeket, hősöket,
+mobokat, tárgyakat vagy előre elhelyezett chesteket. A következő feature saját,
+célzott arénát kap.

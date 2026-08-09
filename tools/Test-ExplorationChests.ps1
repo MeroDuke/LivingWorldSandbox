@@ -36,25 +36,11 @@ if ($generatorSource -notmatch 'LWS_OpenExplorationChest') {
 if ($buildSource -notmatch 'New-TreasureOverride\.ps1') {
     throw 'Production build does not generate the read-only SDK treasure override.'
 }
-if ($bootstrapSource -notmatch 'Function\s+LWS_SeedExplorationChests' -or $bootstrapSource -notmatch 'ChestCount\s*<\s*3') {
-    throw 'Production bootstrap must seed exactly three random exploration chests.'
+if ($bootstrapSource -match 'LWS_SeedExplorationChests|LWS_SpawnExplorationChest') {
+    throw 'Production bootstrap must not pre-seed exploration chests yet.'
 }
-
-foreach ($chestClass in 1..5) {
-    if ($diagnosticSource -notmatch ('LWS_SpawnExplorationChest\s*\([^\r\n]+,\s*' + $chestClass + '\s*,')) {
-        throw "Diagnostic arena is missing exploration chest class $chestClass."
-    }
-}
-if (($diagnosticSource | Select-String -Pattern '\$RandomCoord\s*\(\s*Palace\s*,\s*180\s*,\s*320\s*\)' -AllMatches).Matches.Count -ne 5) {
-    throw 'All five diagnostic chests must spawn visibly around the Palace.'
-}
-foreach ($pattern in @(
-    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Rangers_Guild"',
-    '\$SpawnUnit\s*\(\s*RangersGuild\s*,\s*"Ranger"',
-    '\$Adopt\s*\(\s*RangersGuild\s*,\s*Ranger\s*\)',
-    '\$Advance_To_Level\s*\(\s*Ranger\s*,\s*8\s*\)'
-)) {
-    if ($diagnosticSource -notmatch $pattern) { throw "Missing Ranger chest-test pattern: $pattern" }
+if ($diagnosticSource -match 'LWS_SetupEquipmentArena|LWS_SpawnExplorationChest|Rangers_Guild') {
+    throw 'Completed visible chest arenas must not remain in the diagnostic map.'
 }
 
 Write-Host 'Exploration chest validation passed.'

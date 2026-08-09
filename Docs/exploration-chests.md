@@ -25,8 +25,9 @@ a jutalom kis aranykompenzációvá alakul.
 
 - Monster chest: a `LWS_ProgressClass` adja a C1–C5 korlátot. A monster összes,
   legfeljebb két sikeres loot-rollja egy chestbe kerül.
-- Exploration chest: a pályagenerátor adja a chest classt. A diagnosztikai pálya
-  öt, a Paladintól távol elhelyezett C1–C5 chestet hoz létre.
+- Exploration chest: a későbbi pályagenerátor adja majd a chest classt. A sikeres
+  Paladin/Ranger teszt után sem a normál, sem a diagnosztikai pálya nem helyez el
+  induló exploration chesteket.
 
 A gyári `Open_Chest` továbbra is kezeli az animációt, hangot, XP-t és törlést. Az
 LWS build a read-only SDK-forrásból generált override-on keresztül, közvetlenül a

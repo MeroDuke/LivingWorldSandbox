@@ -13,25 +13,6 @@ Begin
 
     $LWS_SeedStarterLairs ( Palace );
     $LWS_SeedStarterMonsters ( Palace );
-    $LWS_SeedExplorationChests ( Palace );
-End
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function LWS_SeedExplorationChests ( agent Palace )
-Declare
-    agent Chest;
-    integer AttemptCount, ChestCount, ChestClass, RewardCount;
-Begin
-    AttemptCount = 0;
-    ChestCount = 0;
-    while (( ChestCount < 3 ) && ( AttemptCount < 30 )) do
-        begin
-            ChestClass = 1 + $RandomNumber ( 5 );
-            RewardCount = 1 + $RandomNumber ( 2 );
-            Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 900, -1 ), ChestClass, RewardCount );
-            if ( $IsValidGamePiece ( Chest )) ChestCount += 1;
-            AttemptCount += 1;
-        end
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

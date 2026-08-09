@@ -210,26 +210,6 @@ $requiredHookPatterns = @(
     'SpellMonster''s\s+"LWS_Level"\s*!=\s*2',
     'LWS_ResolveMonsterLoot\s*\(\s*NoDropVictim\s*,\s*1\s*,\s*99\s*,\s*99\s*,\s*99\s*\)',
     'LWS_ResolveMonsterLoot\s*\(\s*DropVictim\s*,\s*1\s*,\s*0\s*,\s*99\s*,\s*99\s*\)',
-    'Function\s+LWS_SetupEquipmentArena',
-    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Warriors_Guild"',
-    '\$SpawnUnit\s*\(\s*WarriorsGuild\s*,\s*"Paladin"',
-    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Blacksmith3"',
-    '#ATTRIB_ResearchArmorLevel_2\s*,\s*0',
-    '#ATTRIB_ResearchArmorLevel_3\s*,\s*0',
-    '#ATTRIB_ResearchArmorLevel_4\s*,\s*0',
-    '#ATTRIB_ResearchWeaponLevel_2\s*,\s*0',
-    '#ATTRIB_ResearchWeaponLevel_3\s*,\s*0',
-    '#ATTRIB_ResearchWeaponLevel_4\s*,\s*0',
-    '\$Adopt\s*\(\s*WarriorsGuild\s*,\s*Paladin\s*\)',
-    '\$Advance_To_Level\s*\(\s*Paladin\s*,\s*8\s*\)',
-    '#ATTRIB_Gold\s*,\s*1000',
-    '#ATTRIB_StoredGold\s*,\s*1000',
-    'Upgrade_Weapon_Chance"\s*=\s*100',
-    'Upgrade_Armor_Chance"\s*=\s*100',
-    'WeakMonsterCount\s*<\s*4',
-    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Giant_Rat"\s*,\s*\$RandomCoord\s*\(\s*Paladin\s*,\s*550\s*,\s*700',
-    '#ATTRIB_MaxHP\s*,\s*10',
-    '#ATTRIB_Strength\s*,\s*1',
     '\$IsValidGamePiece\s*\(\s*ShowcaseMonster\s*\)',
     '#ATTRIB_NumHealingPotions\s*\)\s*!=\s*\(\s*PotionsBefore\s*\+\s*1',
     '\$SpawnUnit\s*\(\s*Palace\s*,\s*"GoblinOverlord"',
@@ -258,6 +238,9 @@ if ($hookSource -match '\$NewThread\s*\(\s*\$LWS_RunCombatDiagnostic') {
 }
 if ($hookSource -match 'EnemyCount\s*<|PotionCount\s*<|PeasantCount\s*<') {
     throw 'Legacy crowd and potion arena setup must remain removed.'
+}
+if ($hookSource -match 'LWS_SetupEquipmentArena|LWS_SpawnExplorationChest') {
+    throw 'The completed visible test arenas must remain removed.'
 }
 if ($hookSource -match '\$SpawnUnit\s*\([^;]+"LWSDW_U_Longsword_3_1"' -or
     $hookSource -match '\$SpawnUnit\s*\([^;]+"LWSDW_U_Longbow_3_1"' -or

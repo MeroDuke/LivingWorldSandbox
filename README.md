@@ -165,10 +165,9 @@ and their campaign flags remain untouched.
 The combat diagnostic now performs an agent-free deterministic runtime sweep of
 all nine weapon-family mappings, all four armor-family mappings, all six
 Legendary catalog mappings, and the hard two-reward cap. It does not spawn a
-hidden hero roster or trigger automatic test housing. It then leaves a small visual smoke arena containing a
-Paladin, a level-8 Ranger with its Rangers Guild, Warriors Guild, Blacksmith, four distant weak rats, and five locked
-C1-C5 exploration chests placed visibly around the Palace. Production maps seed three randomly placed exploration
-chests. See
+hidden hero roster, trigger automatic test housing, or leave a visible smoke arena.
+Production maps do not pre-seed exploration chests yet; the proven chest runtime
+remains available for monster rewards and future map-generation features. See
 `Docs/loot-diagnostic-guide.md`; normal 8% and 1% rolls do not need to be waited
 out during this test.
 

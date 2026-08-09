@@ -159,91 +159,6 @@ Begin
     return TRUE;
 End
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function LWS_SetupEquipmentArena ( agent AIRootAgent, agent Palace )
-Declare
-    agent WarriorsGuild, Blacksmith, Paladin, RangersGuild, Ranger, WeakMonster, Chest;
-    coordinate ArenaLocation;
-    integer WeakMonsterCount;
-Begin
-    ArenaLocation = $RandomCoord ( Palace, 700, 900 );
-    WarriorsGuild = $SpawnUnit ( Palace, "Warriors_Guild", ArenaLocation, "MaxHP", #Player_1 );
-    if ( $IsValidGamePiece ( WarriorsGuild ) == FALSE )
-        return;
-
-    Paladin = $SpawnUnit ( WarriorsGuild, "Paladin", $RandomCoord ( WarriorsGuild, 40, 80 ), #Player_1 );
-    if ( $IsValidGamePiece ( Paladin ) == FALSE )
-        return;
-    if ( Paladin's "home" == $NullAgent ())
-        $Adopt ( WarriorsGuild, Paladin );
-
-    $Advance_To_Level ( Paladin, 8 );
-    $SetAttribute ( Paladin, #ATTRIB_HP, $GetAttribute ( Paladin, #ATTRIB_MaxHP ));
-    $SetAttribute ( Paladin, #ATTRIB_NumHealingPotions, 0 );
-    $SetAttribute ( Paladin, #ATTRIB_Gold, 1000 );
-    $SetAttribute ( Paladin, #ATTRIB_StoredGold, 1000 );
-    Paladin's "Upgrade_Weapon_Chance" = 100;
-    Paladin's "Upgrade_Armor_Chance" = 100;
-
-    Blacksmith = $SpawnUnit ( Palace, "Blacksmith3", $RandomCoord ( WarriorsGuild, 180, 260 ), "MaxHP", #Player_1 );
-    if ( $IsValidGamePiece ( Blacksmith ) == FALSE )
-        return;
-    // Max-level building shell, deliberately without researched equipment technologies.
-    $SetAttribute ( Blacksmith, #ATTRIB_ResearchArmorLevel_2, 0 );
-    $SetAttribute ( Blacksmith, #ATTRIB_ResearchArmorLevel_3, 0 );
-    $SetAttribute ( Blacksmith, #ATTRIB_ResearchArmorLevel_4, 0 );
-    $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_2, 0 );
-    $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_3, 0 );
-    $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_4, 0 );
-
-    WeakMonsterCount = 0;
-    while ( WeakMonsterCount < 4 ) do
-        begin
-            // Keep combat outside the Paladin's initial awareness.
-            WeakMonster = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( Paladin, 550, 700 ), #Monster_Player );
-            if ( $IsValidGamePiece ( WeakMonster ))
-                begin
-                    $SetAttribute ( WeakMonster, #ATTRIB_MaxHP, 10 );
-                    $SetAttribute ( WeakMonster, #ATTRIB_HP, 10 );
-                    $SetAttribute ( WeakMonster, #ATTRIB_Strength, 1 );
-                end
-            WeakMonsterCount += 1;
-        end
-
-    // A second opener exercises Longbow/Leather resolution independently of the Paladin.
-    RangersGuild = $SpawnUnit ( Palace, "Rangers_Guild", $RandomCoord ( Palace, 360, 480 ), "MaxHP", #Player_1 );
-    if ( $IsValidGamePiece ( RangersGuild ) == FALSE )
-        AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    else
-        begin
-            Ranger = $SpawnUnit ( RangersGuild, "Ranger", $RandomCoord ( RangersGuild, 40, 80 ), #Player_1 );
-            if ( $IsValidGamePiece ( Ranger ) == FALSE )
-                AIRootAgent's "LWS_DiagnosticFailures" += 1;
-            else
-                begin
-                    if ( Ranger's "home" == $NullAgent ()) $Adopt ( RangersGuild, Ranger );
-                    $Advance_To_Level ( Ranger, 8 );
-                    $SetAttribute ( Ranger, #ATTRIB_HP, $GetAttribute ( Ranger, #ATTRIB_MaxHP ));
-                    $SetAttribute ( Ranger, #ATTRIB_Gold, 1000 );
-                    $SetAttribute ( Ranger, #ATTRIB_StoredGold, 1000 );
-                end
-        end
-
-    // Exploration-chest showcase: visible around the Palace and far from the arena Paladin.
-    // Odd classes carry two rewards, even classes one.
-    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 180, 320 ), 1, 2 );
-    if ( $IsValidGamePiece ( Chest ) == FALSE || Chest's "LWS_ChestClass" != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 180, 320 ), 2, 1 );
-    if ( $IsValidGamePiece ( Chest ) == FALSE || Chest's "LWS_ChestClass" != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 180, 320 ), 3, 2 );
-    if ( $IsValidGamePiece ( Chest ) == FALSE || Chest's "LWS_ChestClass" != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 180, 320 ), 4, 1 );
-    if ( $IsValidGamePiece ( Chest ) == FALSE || Chest's "LWS_ChestClass" != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 180, 320 ), 5, 2 );
-    if ( $IsValidGamePiece ( Chest ) == FALSE || Chest's "LWS_ChestClass" != 5 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-End
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_PrepareClassShowcase ( agent Monster, integer ExpectedClass, integer KillCredits ) is boolean
 Declare
     integer CreditCount, OldMaxHP, OldHP, HPBonus;
@@ -545,7 +460,5 @@ Begin
     // Remove only the explicitly tracked diagnostic attacker.
     if ( $IsValidGamePiece ( Attacker )) $DeleteGamePiece ( Attacker );
 
-    // Autonomous, observable equipment arena; its outcome cannot change PASS/FAIL.
-    $LWS_SetupEquipmentArena ( AIRootAgent, Palace );
     $LWS_EnsurePalacePeasantSpawner ( Palace );
 End
