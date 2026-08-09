@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "dataset": "MajestyExpansion",
+  "sources": [
+    "SDK/OriginalQuests/Data/M_Characters.xml",
+    "SDK/OriginalQuests/DataMX/MX_Characters.xml"
+  ],
+  "weaponFamilies": ["Staff", "Axeclub", "Dagger", "Longsword", "Longbow", "Crossbow", "Mace", "Chaos", "Hammer"],
+  "armorFamilies": ["Leather", "Plate", "Chain", "Chaos"],
+  "heroes": [
+    {"title":"Adept","descriptionId":"AVA1","weapon":{"allowed":["Staff"],"forbidden":["Axeclub","Dagger","Longsword","Longbow","Crossbow","Mace","Chaos","Hammer"]},"armor":{"allowed":["Leather"],"forbidden":["Plate","Chain","Chaos"]}},
+    {"title":"Barbarian","descriptionId":"AVB1","weapon":{"allowed":["Axeclub"],"forbidden":["Staff","Dagger","Longsword","Longbow","Crossbow","Mace","Chaos","Hammer"]},"armor":{"allowed":[],"forbidden":["Leather","Plate","Chain","Chaos"]}},
+    {"title":"Cultist","descriptionId":"AVC1","weapon":{"allowed":["Dagger"],"forbidden":["Staff","Axeclub","Longsword","Longbow","Crossbow","Mace","Chaos","Hammer"]},"armor":{"allowed":["Leather"],"forbidden":["Plate","Chain","Chaos"]}},
+    {"title":"Healer","descriptionId":"AVD1","weapon":{"allowed":["Dagger"],"forbidden":["Staff","Axeclub","Longsword","Longbow","Crossbow","Mace","Chaos","Hammer"]},"armor":{"allowed":[],"forbidden":["Leather","Plate","Chain","Chaos"]}},
+    {"title":"Monk","descriptionId":"AVE1","weapon":{"allowed":[],"forbidden":["Staff","Axeclub","Dagger","Longsword","Longbow","Crossbow","Mace","Chaos","Hammer"]},"armor":{"allowed":[],"forbidden":["Leather","Plate","Chain","Chaos"]}},
+    {"title":"Paladin","descriptionId":"AVF1","weapon":{"allowed":["Longsword"],"forbidden":["Staff","Axeclub","Dagger","Longbow","Crossbow","Mace","Chaos","Hammer"]},"armor":{"allowed":["Plate"],"forbidden":["Leather","Chain","Chaos"]}},
+    {"title":"Priestess","descriptionId":"AVG1","weapon":{"allowed":["Staff"],"forbidden":["Axeclub","Dagger","Longsword","Longbow","Crossbow","Mace","Chaos","Hammer"]},"armor":{"allowed":[],"forbidden":["Leather","Plate","Chain","Chaos"]}},
+    {"title":"Ranger","descriptionId":"AVH1","weapon":{"allowed":["Longbow"],"forbidden":["Staff","Axeclub","Dagger","Longsword","Crossbow","Mace","Chaos","Hammer"]},"armor":{"allowed":["Leather"],"forbidden":["Plate","Chain","Chaos"]}},
+    {"title":"Rogue","descriptionId":"AVJ1","weapon":{"allowed":["Crossbow"],"forbidden":["Staff","Axeclub","Dagger","Longsword","Longbow","Mace","Chaos","Hammer"]},"armor":{"allowed":["Leather"],"forbidden":["Plate","Chain","Chaos"]}},
+    {"title":"Solarus","descriptionId":"AVK1","weapon":{"allowed":["Mace"],"forbidden":["Staff","Axeclub","Dagger","Longsword","Longbow","Crossbow","Chaos","Hammer"]},"armor":{"allowed":["Chain"],"forbidden":["Leather","Plate","Chaos"]}},
+    {"title":"Warrior","descriptionId":"AVL1","weapon":{"allowed":["Longsword"],"forbidden":["Staff","Axeclub","Dagger","Longbow","Crossbow","Mace","Chaos","Hammer"]},"armor":{"allowed":["Plate"],"forbidden":["Leather","Chain","Chaos"]}},
+    {"title":"Warrior_of_Discord","descriptionId":"AVM1","weapon":{"allowed":["Chaos"],"forbidden":["Staff","Axeclub","Dagger","Longsword","Longbow","Crossbow","Mace","Hammer"]},"armor":{"allowed":["Chaos"],"forbidden":["Leather","Plate","Chain"]}},
+    {"title":"Wizard","descriptionId":"AVN1","weapon":{"allowed":["Staff"],"forbidden":["Axeclub","Dagger","Longsword","Longbow","Crossbow","Mace","Chaos","Hammer"]},"armor":{"allowed":[],"forbidden":["Leather","Plate","Chain","Chaos"]}},
+    {"title":"Dwarf","descriptionId":"AVc1","weapon":{"allowed":["Hammer"],"forbidden":["Staff","Axeclub","Dagger","Longsword","Longbow","Crossbow","Mace","Chaos"]},"armor":{"allowed":["Plate"],"forbidden":["Leather","Chain","Chaos"]}},
+    {"title":"Elf","descriptionId":"AVd1","weapon":{"allowed":["Longbow"],"forbidden":["Staff","Axeclub","Dagger","Longsword","Crossbow","Mace","Chaos","Hammer"]},"armor":{"allowed":["Chain"],"forbidden":["Leather","Plate","Chaos"]}},
+    {"title":"Gnome","descriptionId":"AVe1","weapon":{"allowed":["Dagger"],"forbidden":["Staff","Axeclub","Longsword","Longbow","Crossbow","Mace","Chaos","Hammer"]},"armor":{"allowed":[],"forbidden":["Leather","Plate","Chain","Chaos"]}},
+    {"title":"Gnomechamp","descriptionId":"AVO1","weapon":{"allowed":["Dagger"],"forbidden":["Staff","Axeclub","Longsword","Longbow","Crossbow","Mace","Chaos","Hammer"]},"armor":{"allowed":["Leather"],"forbidden":["Plate","Chain","Chaos"]}}
+  ]
+}

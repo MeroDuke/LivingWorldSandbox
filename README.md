@@ -129,7 +129,7 @@ Short-lived peasant targets used by deterministic checks are detached from the
 real Palace immediately after spawn, so they do not consume its internal
 worker slots or stop normal builder/repairer spawning.
 
-## Tiered weapon diagnostic
+## Tiered equipment diagnostic
 
 The first equipment implementation separates a weapon's quality tier from its
 drop affix. The tiers follow the Blacksmith research UI: `T2`, `T3`, and `T4`
@@ -160,15 +160,22 @@ is removed from the ground to prevent an endless retrieve/reject loop. This is
 an interim ground-loot cleanup rule until the later inventory system can replace
 it with selling, salvaging, or per-hero ignore memory.
 
-Only in the diagnostic quest, every defeated monster currently drops a
-`T2 Longsword +6`. Its effective value of 7 must replace the equipped `T3 +1`,
-producing weapon value 17 while lowering the stored tier from T3 to T2. LVL 3
-Weapons can then upgrade it to `T3 +6` and weapon value 18. This temporary 100%
-rate is disabled in the production sandbox. The diagnostic PASS signal remains
-the 7777 treasury-gold increase.
-Four deliberately weak Giant Rats start 550-700 units away from the Paladin.
-They remain available for the 100% diagnostic drop test without overriding the
-nearby starting weapon pickup with an immediate combat decision.
+The former forced 100% diagnostic weapon and armor drop rate is disabled now
+that the replacement and Blacksmith paths have been manually verified. The
+drop handlers and tier/affix logic remain available for the later production
+drop table. The diagnostic PASS signal remains the 7777 treasury-gold increase.
+Four deliberately weak Giant Rats start 550-700 units away from the Paladin
+without overriding the nearby starting equipment pickup with an immediate
+combat decision.
+
+## Equipment compatibility
+
+Every LWS weapon and armor item carries an explicit equipment family. Pickup is
+allowed only when that family matches the hero's Northern Expansion
+`AllowedWeapon` or `AllowedArmor` definition. The complete allowed and forbidden
+matrix is stored in `Docs/equipment-compatibility.json`, with a readable summary
+in `Docs/equipment-compatibility.md`. `tools/Test-EquipmentCompatibility.ps1`
+compares the matrix to both SDK character layers and verifies the runtime guard.
 
 ## Direct spell kill attribution
 
