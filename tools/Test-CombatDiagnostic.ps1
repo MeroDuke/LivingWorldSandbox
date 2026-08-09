@@ -89,7 +89,7 @@ $requiredLootPatterns = @(
     'Function\s+LWS_HealingPotion_Transfer',
     'LWS_LootResolved',
     'LWS_LootSlotsUsed"\s*>=\s*2',
-    'ChanceRoll\s*>=\s*8',
+    'ChanceRoll\s*<\s*8',
     '\$AdjustAttribute\s*\(\s*NewOwnerAgent\s*,\s*#ATTRIB_NumHealingPotions\s*,\s*1',
     '\$DeleteInventoryItem\s*\(\s*AttributeID\s*,\s*NewOwnerAgent',
     '\$SpawnUnit\s*\(\s*Defender\s*,\s*DropTitle[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*DropTitle',

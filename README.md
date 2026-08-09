@@ -135,8 +135,11 @@ consumable or special-item types share those slots. `LWS_ProgressClass` fixes
 the permitted rarity interval: Class 1 Common; Class 2 Common-Uncommon; Class 3
 Uncommon-Rare; Class 4 Rare-Epic; and Class 5 guaranteed Epic with Legendary
 available only to explicitly whitelisted sources. Monster level never raises
-this ceiling. The policy is stored in `Docs/monster-loot-policy.json`; concrete
-drop probabilities are intentionally deferred to the next balance step.
+this ceiling. The policy is stored in `Docs/monster-loot-policy.json`.
+Optional potion, weapon, and armor channels now each use an 8% base chance.
+On successful equipment drops, Classes 2-4 select the previous rarity 75% of
+the time and their ceiling 25% of the time. Class 5 guarantees one equipment
+candidate: 99% Epic, or a 1% replacement with a whitelisted Legendary Unique.
 
 ## Tiered equipment diagnostic
 

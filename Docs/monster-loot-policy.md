@@ -21,6 +21,23 @@ Healing Potion, weapon, armor és minden későbbi consumable vagy special item
 ugyanazokat a slotokat használja. A központi resolver egyszer fut le halálkor,
 és csak sikeresen létrehozott tárgy fogyaszt slotot.
 
-A konkrét drop- és rarity-esélyek szándékosan nincsenek még rögzítve. A jelenlegi
-8%-os Healing Potion esély átmenetileg változatlan marad a következő
-balanszlépésig.
+## Drop chance
+
+Az alap opcionális csatornák külön-külön 8%-os esélyt kapnak:
+
+- Healing Potion: 8%;
+- weapon: 8%;
+- armor: 8%.
+
+Sikeres equipment roll után külön rarity-roll fut:
+
+| Class | Rarity-eloszlás |
+|---:|---|
+| 1 | 100% Common |
+| 2 | 75% Common, 25% Uncommon |
+| 3 | 75% Uncommon, 25% Rare |
+| 4 | 75% Rare, 25% Epic |
+| 5 | 99% Epic, 1% Legendary Unique |
+
+A Class 5 egyetlen equipment jelöltje garantált. A sikeres 1%-os Legendary-roll
+ezt az Epic tárgyat cseréli Unique-ra, nem hoz létre további world dropot.
