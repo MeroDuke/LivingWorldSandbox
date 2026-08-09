@@ -72,6 +72,29 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_EquipmentRarityCode ( string Rarity ) is string
+Declare
+Begin
+    if ( Rarity == "Common" ) return "C";
+    if ( Rarity == "Uncommon" ) return "U";
+    if ( Rarity == "Rare" ) return "R";
+    return "E";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_EquipmentDropTitle ( string EquipmentType, string EquipmentFamily,
+                                  integer Tier, integer AffixBonus ) is string
+Declare
+    string Prefix, Rarity;
+Begin
+    if ( EquipmentType == "Armor" ) Prefix = "LWSDA_";
+    else Prefix = "LWSDW_";
+    Rarity = $LWS_EquipmentRarity ( EquipmentType, Tier, AffixBonus );
+    return $Concatenate ( Prefix, $LWS_EquipmentRarityCode ( Rarity ), "_",
+                          EquipmentFamily, "_", Tier, "_", AffixBonus );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_RandomWeaponDrop_Birth ( agent ThisAgent )
 Declare
 Begin
