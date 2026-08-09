@@ -152,6 +152,9 @@ foreach ($pattern in $requiredCombatPatterns) {
 }
 
 $requiredHookPatterns = @(
+    'Function\s+LWS_DetachDiagnosticPeasant',
+    'Palace''s\s+"num_peasants"\s*-=',
+    'Peasant''s\s+"home"\s*=\s*\$NullAgent',
     '\$LWS_EnsureMonsterState\s*\(\s*Attacker\s*\)',
     '\$LWS_ClassFromLevelXP\s*\(\s*2001\s*\)\s*!=\s*5',
     '\$LWS_KillsRequired\s*\(\s*5\s*,\s*1\s*\)\s*!=\s*20',
@@ -195,7 +198,8 @@ $requiredHookPatterns = @(
     'LWS_PrepareClassShowcase\s*\(\s*ShowcaseMonster\s*,\s*5\s*,\s*20\s*\)',
     'LWS_DiagnosticKills',
     'LWS_DiagnosticBuildings',
-    '\$ListObjects\s*\(\s*Palace\s*,\s*"Monster"\s*,\s*1200',
+    'LairTarget''s\s+"Has_Special_Spawn"\s*=\s*TRUE',
+    'LairTarget''s\s+"Special_Spawn_Type"\s*=\s*"xx"',
     '\$LWS_RunCombatDiagnostic\s*\(\s*AIRootAgent\s*,\s*Palace\s*\)'
 )
 foreach ($pattern in $requiredHookPatterns) {
@@ -208,6 +212,9 @@ if ($hookSource -match '\$NewThread\s*\(\s*\$LWS_RunCombatDiagnostic') {
 }
 if ($hookSource -match 'EnemyCount\s*<|PotionCount\s*<|PeasantCount\s*<') {
     throw 'Legacy crowd and potion arena setup must remain removed.'
+}
+if ($hookSource -match '\$ListObjects\s*\(\s*Palace\s*,\s*"Monster"\s*,\s*1200') {
+    throw 'Diagnostic cleanup must not broadly delete Palace-area monsters or workers.'
 }
 
 $generatorSource = Get-Content -LiteralPath $generatorPath -Raw

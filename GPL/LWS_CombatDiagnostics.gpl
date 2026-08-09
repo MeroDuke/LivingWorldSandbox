@@ -26,6 +26,20 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Peasant_Birth always increments the real Palace counter, even for short-lived diagnostic targets.
+// Detach test peasants immediately so they cannot block the Palace's autonomous worker spawner.
+Function LWS_DetachDiagnosticPeasant ( agent Palace, agent Peasant )
+Declare
+Begin
+    if ( $IsValidGamePiece ( Palace ) == FALSE ) return;
+    if ( $IsValidGamePiece ( Peasant ) == FALSE ) return;
+    if ( Peasant's "home" != Palace ) return;
+
+    Palace's "num_peasants" -= 1;
+    Peasant's "home" = $NullAgent ();
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_RunLootDiagnostic ( agent AIRootAgent, agent Palace, coordinate TestLocation ) is boolean
 Declare
     agent NoDropVictim, DropVictim, LootDrop, LootHero;
@@ -88,6 +102,7 @@ Begin
     EnemyTarget = $SpawnUnit ( Palace, "Peasant", $RandomCoord ( TestLocation, 80, 160 ), #Player_1 );
     if ( $IsValidGamePiece ( EnemyTarget ) == FALSE )
         return FALSE;
+    $LWS_DetachDiagnosticPeasant ( Palace, EnemyTarget );
     $SetAttribute ( EnemyTarget, #ATTRIB_HP, 1 );
     $spelldamage ( SpellMonster, EnemyTarget, 1, 1 );
     if ( SpellMonster's "LWS_TotalKills" != 1 )
@@ -101,6 +116,7 @@ Begin
             EnemyTarget = $SpawnUnit ( Palace, "Peasant", $RandomCoord ( SpellMonster, 80, 160 ), #Player_1 );
             if ( $IsValidGamePiece ( EnemyTarget ) == FALSE )
                 return FALSE;
+            $LWS_DetachDiagnosticPeasant ( Palace, EnemyTarget );
             $SetAttribute ( EnemyTarget, #ATTRIB_HP, 1 );
             $spelldamage ( SpellMonster, EnemyTarget, 1, 1 );
         end
@@ -223,8 +239,7 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_RunCombatDiagnostic ( agent AIRootAgent, agent Palace )
 Declare
-    agent Attacker, EnemyTarget, FriendlyTarget, LairTarget, BuildingTarget, ShowcaseMonster, PerkTester, CleanupMonster;
-    list CleanupMonsters;
+    agent Attacker, EnemyTarget, FriendlyTarget, LairTarget, BuildingTarget, ShowcaseMonster, PerkTester;
     coordinate TestLocation;
     integer OriginalStrength;
     integer OldHtoH, OldStrength, OldArmor, OldParry, OldDodge, OldMagicResistance;
@@ -286,6 +301,7 @@ Begin
     Attacker's "LWS_TotalKills" = 0;
 
     EnemyTarget = $SpawnUnit ( Palace, "Peasant", $RandomCoord ( TestLocation, 50 ), #Player_1 );
+    $LWS_DetachDiagnosticPeasant ( Palace, EnemyTarget );
     $SetAttribute ( EnemyTarget, #ATTRIB_HP, 1 );
     $SetAttribute ( EnemyTarget, #ATTRIB_armor_basic_damage, 0 );
     $damage ( Attacker, EnemyTarget );
@@ -308,6 +324,9 @@ Begin
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
     LairTarget = $SpawnUnit ( Palace, "Goblin_Hovel", $RandomCoord ( TestLocation, 100 ), "MaxHP", #Player_1 );
+    // Suppress the lair death payload so the controlled attribution check leaves no arena monsters.
+    LairTarget's "Has_Special_Spawn" = TRUE;
+    LairTarget's "Special_Spawn_Type" = "xx";
     $SetAttribute ( LairTarget, #ATTRIB_HP, 1 );
     $damage ( Attacker, LairTarget );
 
@@ -412,10 +431,7 @@ Begin
             $DebugOut ( 911, "LWS PROGRESSION CLASS DIAGNOSTIC: FAIL", AIRootAgent's "LWS_DiagnosticFailures" );
         end
 
-    // Remove diagnostic combat leftovers before creating the focused equipment arena.
-    $ListObjects ( Palace, "Monster", 1200, CleanupMonsters );
-    foreach CleanupMonster in CleanupMonsters do
-        if ( $IsValidGamePiece ( CleanupMonster )) $DeleteGamePiece ( CleanupMonster );
+    // Remove only the explicitly tracked diagnostic attacker.
     if ( $IsValidGamePiece ( Attacker )) $DeleteGamePiece ( Attacker );
 
     // Autonomous, observable equipment arena; its outcome cannot change PASS/FAIL.

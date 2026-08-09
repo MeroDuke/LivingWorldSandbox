@@ -125,6 +125,9 @@ Heroes already carrying the vanilla maximum of five healing potions ignore
 these drops, leaving them on the ground for another hero.
 The old peasant crowd, nearby weak monsters, and scattered potion pickups are
 not part of the current arena.
+Short-lived peasant targets used by deterministic checks are detached from the
+real Palace immediately after spawn, so they do not consume its internal
+worker slots or stop normal builder/repairer spawning.
 
 ## Tiered weapon diagnostic
 
