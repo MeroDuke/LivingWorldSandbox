@@ -1,5 +1,10 @@
 # Loot- és felszerelésrendszer – alapdesign
 
+> A rarity-, T1- és végleges power-szabályokat a
+> [equipment-rarity.md](equipment-rarity.md) és az
+> [equipment-rarity.json](equipment-rarity.json) tartalmazza. E dokumentum korábbi
+> példáiban szereplő T2–T4-only és azonos fegyver/páncél affix-súlyozás elavult.
+
 ## Státusz
 
 Ez a dokumentum a LivingWorldSandbox későbbi drop-, loot- és felszerelésrendszerének első rögzített tervezési döntését tartalmazza. Az itt leírt modell lesz az alap, amikor elkészítjük a további tárgytípusokat és a drop listákat.

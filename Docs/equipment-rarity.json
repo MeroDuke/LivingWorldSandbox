@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "tierBasePower": { "T1": 0, "T2": 1, "T3": 2, "T4": 3 },
+  "affixPowerMultiplier": { "Weapon": 1, "Armor": 2 },
+  "rarityBands": [
+    { "name": "Common", "minPower": 0, "maxPower": 1 },
+    { "name": "Uncommon", "minPower": 2, "maxPower": 3 },
+    { "name": "Rare", "minPower": 4, "maxPower": 6 },
+    { "name": "Epic", "minPower": 7, "maxPower": 10 }
+  ],
+  "legendary": {
+    "generatedByPowerBudget": false,
+    "requiresPredefinedUniqueItem": true
+  },
+  "replacementOrder": ["higherPower", "higherAffix", "higherTier"]
+}

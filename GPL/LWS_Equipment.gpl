@@ -7,7 +7,8 @@ Declare
 Begin
     if ( Tier == 4 ) return 3;
     if ( Tier == 3 ) return 2;
-    return 1;
+    if ( Tier == 2 ) return 1;
+    return 0;
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -28,7 +29,29 @@ End
 Function LWS_ArmorEffectiveBonus ( integer Tier, integer AffixBonus ) is integer
 Declare
 Begin
-    return $LWS_ArmorTierBaseBonus ( Tier ) + AffixBonus;
+    // Northern Expansion applies Armor_Magic_Bonus at twice its displayed value.
+    return $LWS_ArmorTierBaseBonus ( Tier ) + ( AffixBonus * 2 );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_EquipmentPower ( string EquipmentType, integer Tier, integer AffixBonus ) is integer
+Declare
+Begin
+    if ( EquipmentType == "Armor" ) return $LWS_ArmorEffectiveBonus ( Tier, AffixBonus );
+    return $LWS_WeaponEffectiveBonus ( Tier, AffixBonus );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Legendary is deliberately excluded: it is assigned only by the future unique-item whitelist.
+Function LWS_EquipmentRarity ( string EquipmentType, integer Tier, integer AffixBonus ) is string
+Declare
+    integer Power;
+Begin
+    Power = $LWS_EquipmentPower ( EquipmentType, Tier, AffixBonus );
+    if ( Power <= 1 ) return "Common";
+    if ( Power <= 3 ) return "Uncommon";
+    if ( Power <= 6 ) return "Rare";
+    return "Epic";
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,7 +110,7 @@ Begin
     if ( $HasAttribute ( "LWS_WeaponBaseDamage", Hero ) == FALSE )
         $AddAttribute ( Hero, "LWS_WeaponBaseDamage", "integer", $GetAttribute ( Hero, #ATTRIB_Weapon_Basic_Damage ));
     if ( $HasAttribute ( "LWS_WeaponTier", Hero ) == FALSE )
-        $AddAttribute ( Hero, "LWS_WeaponTier", "integer", 2 );
+        $AddAttribute ( Hero, "LWS_WeaponTier", "integer", 1 );
     if ( $HasAttribute ( "LWS_WeaponAffixBonus", Hero ) == FALSE )
         $AddAttribute ( Hero, "LWS_WeaponAffixBonus", "integer", 0 );
 End
@@ -97,7 +120,7 @@ Function LWS_EnsureArmorEquipmentState ( agent Hero )
 Declare
 Begin
     if ( $HasAttribute ( "LWS_ArmorTier", Hero ) == FALSE )
-        $AddAttribute ( Hero, "LWS_ArmorTier", "integer", 2 );
+        $AddAttribute ( Hero, "LWS_ArmorTier", "integer", 1 );
     if ( $HasAttribute ( "LWS_ArmorAffixBonus", Hero ) == FALSE )
         $AddAttribute ( Hero, "LWS_ArmorAffixBonus", "integer", 0 );
 End
@@ -121,7 +144,13 @@ Begin
         CurrentEffective = $LWS_WeaponEffectiveBonus ( Hero's "LWS_WeaponTier", Hero's "LWS_WeaponAffixBonus" );
     else
         CurrentEffective = $GetAttribute ( Hero, #ATTRIB_Weapon_Struct_Bonus );
-    return ItemEffective > CurrentEffective;
+    if ( ItemEffective > CurrentEffective ) return TRUE;
+    if ( ItemEffective < CurrentEffective ) return FALSE;
+    // Equal power: keep the larger affix because it retains more value after Blacksmith upgrades.
+    if ( $HasAttribute ( "LWS_WeaponTier", Hero ) == FALSE ) return FALSE;
+    if ( ItemAffix > Hero's "LWS_WeaponAffixBonus" ) return TRUE;
+    if ( ItemAffix < Hero's "LWS_WeaponAffixBonus" ) return FALSE;
+    return ItemTier > Hero's "LWS_WeaponTier";
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,8 +171,13 @@ Begin
     if ( $HasAttribute ( "LWS_ArmorTier", Hero ))
         CurrentEffective = $LWS_ArmorEffectiveBonus ( Hero's "LWS_ArmorTier", Hero's "LWS_ArmorAffixBonus" );
     else
-        CurrentEffective = $GetAttribute ( Hero, #ATTRIB_Armor_Struct_Bonus ) + $GetAttribute ( Hero, #ATTRIB_Armor_Magic_Bonus );
-    return ItemEffective > CurrentEffective;
+        CurrentEffective = $GetAttribute ( Hero, #ATTRIB_Armor_Struct_Bonus ) + ( $GetAttribute ( Hero, #ATTRIB_Armor_Magic_Bonus ) * 2 );
+    if ( ItemEffective > CurrentEffective ) return TRUE;
+    if ( ItemEffective < CurrentEffective ) return FALSE;
+    if ( $HasAttribute ( "LWS_ArmorTier", Hero ) == FALSE ) return FALSE;
+    if ( ItemAffix > Hero's "LWS_ArmorAffixBonus" ) return TRUE;
+    if ( ItemAffix < Hero's "LWS_ArmorAffixBonus" ) return FALSE;
+    return ItemTier > Hero's "LWS_ArmorTier";
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -245,6 +279,7 @@ Begin
     $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", "Longsword" );
     $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 2 );
     $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 5 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentRarity", "string", $LWS_EquipmentRarity ( "Weapon", 2, 5 ));
 End
 
 Function LWS_T2LongswordPlus6_Birth ( agent ThisAgent )
@@ -255,6 +290,7 @@ Begin
     $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", "Longsword" );
     $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 2 );
     $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 6 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentRarity", "string", $LWS_EquipmentRarity ( "Weapon", 2, 6 ));
 End
 
 Function LWS_T2LongswordPlus7_Birth ( agent ThisAgent )
@@ -265,6 +301,7 @@ Begin
     $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", "Longsword" );
     $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 2 );
     $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 7 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentRarity", "string", $LWS_EquipmentRarity ( "Weapon", 2, 7 ));
 End
 
 Function LWS_T3LongswordPlus1_Birth ( agent ThisAgent )
@@ -275,6 +312,7 @@ Begin
     $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", "Longsword" );
     $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 3 );
     $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 1 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentRarity", "string", $LWS_EquipmentRarity ( "Weapon", 3, 1 ));
 End
 
 Function LWS_T2ArmorPlus6_Birth ( agent ThisAgent )
@@ -285,6 +323,7 @@ Begin
     $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", "Plate" );
     $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 2 );
     $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 6 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentRarity", "string", $LWS_EquipmentRarity ( "Armor", 2, 6 ));
 End
 
 Function LWS_T3ArmorPlus1_Birth ( agent ThisAgent )
@@ -295,6 +334,7 @@ Begin
     $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", "Plate" );
     $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 3 );
     $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 1 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentRarity", "string", $LWS_EquipmentRarity ( "Armor", 3, 1 ));
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -312,7 +352,12 @@ Begin
             if ( Tier >= 4 ) return FALSE;
 
             ThisAgent's "Task_Number" = #ATTRIB_Armor_Struct_Bonus;
-            if ( Tier == 2 )
+            if ( Tier == 1 )
+                begin
+                    Gold_Needed = #Cost_Per_Struct_Upgrade1 * #armor_multiplier;
+                    Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchArmorLevel_2 );
+                end
+            else if ( Tier == 2 )
                 begin
                     Gold_Needed = #Cost_Per_Struct_Upgrade2 * #armor_multiplier;
                     Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchArmorLevel_3 );
@@ -336,7 +381,12 @@ Begin
             if ( Tier >= 4 ) return FALSE;
 
             ThisAgent's "Task_Number" = #ATTRIB_Weapon_Struct_Bonus;
-            if ( Tier == 2 )
+            if ( Tier == 1 )
+                begin
+                    Gold_Needed = #Cost_Per_Struct_Upgrade1;
+                    Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchWeaponLevel_2 );
+                end
+            else if ( Tier == 2 )
                 begin
                     Gold_Needed = #Cost_Per_Struct_Upgrade2;
                     Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchWeaponLevel_3 );
@@ -404,7 +454,12 @@ Begin
             Tier = ThisAgent's "LWS_WeaponTier";
             AffixBonus = ThisAgent's "LWS_WeaponAffixBonus";
 
-            if ( Tier == 2 && Total_Gold >= #Cost_Per_Struct_Upgrade2 && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchWeaponLevel_3 ) != 0 )
+            if ( Tier == 1 && Total_Gold >= #Cost_Per_Struct_Upgrade1 && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchWeaponLevel_2 ) != 0 )
+                begin
+                    Gold = #Cost_Per_Struct_Upgrade1;
+                    Tier = 2;
+                end
+            else if ( Tier == 2 && Total_Gold >= #Cost_Per_Struct_Upgrade2 && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchWeaponLevel_3 ) != 0 )
                 begin
                     Gold = #Cost_Per_Struct_Upgrade2;
                     Tier = 3;
@@ -434,7 +489,12 @@ Begin
             AffixBonus = ThisAgent's "LWS_ArmorAffixBonus";
             Mult = #armor_multiplier;
 
-            if ( Tier == 2 && Total_Gold >= #Cost_Per_Struct_Upgrade2 * Mult && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchArmorLevel_3 ) != 0 )
+            if ( Tier == 1 && Total_Gold >= #Cost_Per_Struct_Upgrade1 * Mult && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchArmorLevel_2 ) != 0 )
+                begin
+                    Gold = #Cost_Per_Struct_Upgrade1 * Mult;
+                    Tier = 2;
+                end
+            else if ( Tier == 2 && Total_Gold >= #Cost_Per_Struct_Upgrade2 * Mult && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchArmorLevel_3 ) != 0 )
                 begin
                     Gold = #Cost_Per_Struct_Upgrade2 * Mult;
                     Tier = 3;
