@@ -32,6 +32,55 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Northern Expansion equipment families, resolved from M_Characters.xml + MX_Characters.xml.
+Function LWS_HeroWeaponFamily ( agent Hero ) is string
+Declare
+    string Title;
+Begin
+    if ( $IsValidGamePiece ( Hero ) == FALSE ) return "None";
+    Title = Hero's "Title";
+    if ( Title == "Adept" || Title == "Priestess" || Title == "Wizard" ) return "Staff";
+    if ( Title == "Barbarian" ) return "Axeclub";
+    if ( Title == "Cultist" || Title == "Healer" || Title == "Gnome" || Title == "Gnomechamp" ) return "Dagger";
+    if ( Title == "Paladin" || Title == "Warrior" ) return "Longsword";
+    if ( Title == "Ranger" || Title == "Elf" ) return "Longbow";
+    if ( Title == "Rogue" ) return "Crossbow";
+    if ( Title == "Solarus" ) return "Mace";
+    if ( Title == "Warrior_of_Discord" ) return "Chaos";
+    if ( Title == "Dwarf" ) return "Hammer";
+    if ( Title == "Monk" ) return "None";
+    return "None";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_HeroArmorFamily ( agent Hero ) is string
+Declare
+    string Title;
+Begin
+    if ( $IsValidGamePiece ( Hero ) == FALSE ) return "None";
+    Title = Hero's "Title";
+    if ( Title == "Adept" || Title == "Cultist" || Title == "Ranger" || Title == "Rogue" || Title == "Gnomechamp" ) return "Leather";
+    if ( Title == "Paladin" || Title == "Warrior" || Title == "Dwarf" ) return "Plate";
+    if ( Title == "Solarus" || Title == "Elf" ) return "Chain";
+    if ( Title == "Warrior_of_Discord" ) return "Chaos";
+    if ( Title == "Barbarian" || Title == "Healer" || Title == "Monk" || Title == "Priestess" || Title == "Wizard" || Title == "Gnome" ) return "None";
+    return "None";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_IsEquipmentCompatible ( agent Hero, agent Item ) is boolean
+Declare
+Begin
+    if ( $HasAttribute ( "LWS_EquipmentType", Item ) == FALSE ) return FALSE;
+    if ( $HasAttribute ( "LWS_EquipmentFamily", Item ) == FALSE ) return FALSE;
+    if ( Item's "LWS_EquipmentType" == "Armor" )
+        return Item's "LWS_EquipmentFamily" == $LWS_HeroArmorFamily ( Hero );
+    if ( Item's "LWS_EquipmentType" == "Weapon" )
+        return Item's "LWS_EquipmentFamily" == $LWS_HeroWeaponFamily ( Hero );
+    return FALSE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_EnsureWeaponEquipmentState ( agent Hero )
 Declare
 Begin
@@ -61,6 +110,7 @@ Begin
     if ( $IsValidGamePiece ( Hero ) == FALSE ) return FALSE;
     if ( $IsValidGamePiece ( Item ) == FALSE ) return FALSE;
     if ( $GetAttribute ( Hero, #ATTRIB_WeaponTypeIndex ) <= 0 ) return FALSE;
+    if ( $LWS_IsEquipmentCompatible ( Hero, Item ) == FALSE ) return FALSE;
     if ( $HasAttribute ( "LWS_EquipmentTier", Item ) == FALSE ) return FALSE;
     if ( $HasAttribute ( "LWS_EquipmentAffixBonus", Item ) == FALSE ) return FALSE;
 
@@ -82,6 +132,7 @@ Begin
     if ( $IsValidGamePiece ( Hero ) == FALSE ) return FALSE;
     if ( $IsValidGamePiece ( Item ) == FALSE ) return FALSE;
     if ( $GetAttribute ( Hero, #ATTRIB_ArmorTypeIndex ) <= 0 ) return FALSE;
+    if ( $LWS_IsEquipmentCompatible ( Hero, Item ) == FALSE ) return FALSE;
     if ( $HasAttribute ( "LWS_EquipmentTier", Item ) == FALSE ) return FALSE;
     if ( $HasAttribute ( "LWS_EquipmentAffixBonus", Item ) == FALSE ) return FALSE;
 
@@ -191,6 +242,7 @@ Declare
 Begin
     $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipWeaponTransfer );
     $AddAttribute ( ThisAgent, "LWS_EquipmentType", "string", "Weapon" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", "Longsword" );
     $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 2 );
     $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 5 );
 End
@@ -200,6 +252,7 @@ Declare
 Begin
     $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipWeaponTransfer );
     $AddAttribute ( ThisAgent, "LWS_EquipmentType", "string", "Weapon" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", "Longsword" );
     $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 2 );
     $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 6 );
 End
@@ -209,6 +262,7 @@ Declare
 Begin
     $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipWeaponTransfer );
     $AddAttribute ( ThisAgent, "LWS_EquipmentType", "string", "Weapon" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", "Longsword" );
     $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 2 );
     $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 7 );
 End
@@ -218,6 +272,7 @@ Declare
 Begin
     $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipWeaponTransfer );
     $AddAttribute ( ThisAgent, "LWS_EquipmentType", "string", "Weapon" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", "Longsword" );
     $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 3 );
     $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 1 );
 End
@@ -227,6 +282,7 @@ Declare
 Begin
     $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipArmorTransfer );
     $AddAttribute ( ThisAgent, "LWS_EquipmentType", "string", "Armor" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", "Plate" );
     $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 2 );
     $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 6 );
 End
@@ -236,6 +292,7 @@ Declare
 Begin
     $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipArmorTransfer );
     $AddAttribute ( ThisAgent, "LWS_EquipmentType", "string", "Armor" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", "Plate" );
     $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 3 );
     $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 1 );
 End
