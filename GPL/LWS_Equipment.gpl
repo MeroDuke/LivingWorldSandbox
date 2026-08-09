@@ -55,6 +55,36 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_ConfigureEquipmentDrop ( agent Item, string EquipmentType, string EquipmentFamily,
+                                      integer Tier, integer AffixBonus )
+Declare
+Begin
+    if ( $IsValidGamePiece ( Item ) == FALSE ) return;
+    if ( EquipmentType == "Armor" )
+        $AddAttribute ( Item, "TransferScript", "function", $LWS_EquipArmorTransfer );
+    else
+        $AddAttribute ( Item, "TransferScript", "function", $LWS_EquipWeaponTransfer );
+    $AddAttribute ( Item, "LWS_EquipmentType", "string", EquipmentType );
+    $AddAttribute ( Item, "LWS_EquipmentFamily", "string", EquipmentFamily );
+    $AddAttribute ( Item, "LWS_EquipmentTier", "integer", Tier );
+    $AddAttribute ( Item, "LWS_EquipmentAffixBonus", "integer", AffixBonus );
+    $AddAttribute ( Item, "LWS_EquipmentRarity", "string", $LWS_EquipmentRarity ( EquipmentType, Tier, AffixBonus ));
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_RandomWeaponDrop_Birth ( agent ThisAgent )
+Declare
+Begin
+    // Runtime generator supplies family, tier, affix, rarity, and transfer script after spawn.
+End
+
+Function LWS_RandomArmorDrop_Birth ( agent ThisAgent )
+Declare
+Begin
+    // Runtime generator supplies family, tier, affix, rarity, and transfer script after spawn.
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Northern Expansion equipment families, resolved from M_Characters.xml + MX_Characters.xml.
 Function LWS_HeroWeaponFamily ( agent Hero ) is string
 Declare

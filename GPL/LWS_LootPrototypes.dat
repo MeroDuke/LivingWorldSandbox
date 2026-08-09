@@ -6,6 +6,22 @@
     }
 [end]
 
+[LWS_RandomWeaponDrop]
+    {Special_Item
+        (type Special_Item)
+        (Title LWS_RandomWeaponDrop)
+        (BirthScript LWS_RandomWeaponDrop_Birth)
+    }
+[end]
+
+[LWS_RandomArmorDrop]
+    {Special_Item
+        (type Special_Item)
+        (Title LWS_RandomArmorDrop)
+        (BirthScript LWS_RandomArmorDrop_Birth)
+    }
+[end]
+
 [LWS_T2_Armor_Plus6]
     {Special_Item
         (type Special_Item)
