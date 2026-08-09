@@ -127,6 +127,51 @@ Részletes szabályok:
 
 Részletek: [exploration-chests.md](exploration-chests.md).
 
+## Potion of Luck — későbbi custom item
+
+- [ ] **Potion of Luck alapdesign** — **Tervezésre vár.** Vásárolható buffital,
+  amely kizárólag annak esélyét növeli, hogy egy legyőzött monster loot chestet
+  hozzon létre. A már létrejött chest tartalmának rarity-, tier-, affix- és
+  jutalomtípus-esélyeit nem módosíthatja.
+
+Rögzített kezdőszabályok:
+
+| Potion | Alap chest-drop esély | Buffolt chest-drop esély |
+|---|---:|---:|
+| Level 1 | 8% | 16% |
+| Level 2 | 8% | 20% |
+| Level 3 | 8% | 24% |
+
+- [ ] **Marketplace kínálat** — minden Marketplace-szinten az adott Potion of
+  Luck szint válik elérhetővé. Magasabb szintű Marketplace az alacsonyabb
+  potionöket is kínálja, hogy a hős pénzétől függően olcsóbb változatot
+  választhasson.
+- [ ] **Healing Potion elsőbbsége** — a Marketplace vásárlási AI-ban a Healing
+  Potion marad az elsődleges fogyóeszköz. A Potion of Luck csak akkor versenyezhet
+  a hős pénzéért, ha az életben maradáshoz szükséges potionigény már teljesült.
+- [ ] **Trading Post kínálat** — kizárólag Level 3 Potion of Luck vásárolható,
+  pontosan ugyanazon az áron, mint a Marketplace Level 3 változata.
+- [ ] **Árazás** — előbb SDK-audittal meg kell állapítani a natív Healing Potion
+  árát és a hősök vásárlási feltételeit. A három Luck Potion ára csak ehhez
+  viszonyítva tervezhető meg.
+- [ ] **Buffmechanika SDK-audit** — a speed potion, Dirgo Strength és más,
+  shopban vásárolható ideiglenes buffok purchase/transfer/effector mintáját kell
+  feltérképezni és biztonságosan újrahasználni. A buff időtartama, halmozódása,
+  újravásárlása és halál utáni viselkedése még nincs eldöntve.
+- [ ] **Marketplace és Trading Post UI-audit** — meg kell vizsgálni, hogy az új
+  vásárlási elem adatból bővíthető-e, generált GPL/UI override szükséges-e, vagy
+  a kezelőfelület engine/BCD korlátba ütközik.
+- [ ] **Loot pipeline bekötés** — a buff csak a chest létrejöttét eldöntő 8%-os
+  roll előtt érvényesülhet. A chestbe már bezárt reward-recepthez nem férhet
+  hozzá, és nem emelheti a monster progression class rarity-plafonját.
+- [ ] **Egységes chest-drop roll** — a jelenlegi resolver külön 8%-os potion,
+  weapon és armor csatornából képez chestet. A Potion of Luck előtt ezt szét kell
+  választani egyetlen, jól látható alap `chest drops: 8%` döntésre és egy ettől
+  független chest-content generátorra. Csak az első roll kapja a 16/20/24%-os
+  buffot; a content generátor százalékai változatlanok maradnak.
+
+Az implementáció előtt külön designbeszélgetés és célzott tesztaréna szükséges.
+
 ## Sandbox világ és hosszú távú feature-ök
 
 - [ ] **Dynamic lair director** — a világ aktivitásához igazodó lair-kezelés.
