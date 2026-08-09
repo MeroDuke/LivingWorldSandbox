@@ -18,6 +18,7 @@
           <GPLSource>GPL</GPLSource>
           <Descriptions>Data/LWS_Descriptions.xml</Descriptions>
           <Strings>Data/LWS_Text.xml</Strings>
+          <Strings>Data/LWS_EquipmentNames.xml</Strings>
           <Template>Quests/LivingWorldSandbox.q</Template>
         </Load>
       </Dataset>
