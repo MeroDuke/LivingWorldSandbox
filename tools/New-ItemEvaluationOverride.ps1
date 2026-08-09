@@ -64,6 +64,10 @@ If (Target's "Title" == "LWS_HealingPotion" && `$GetAttribute (ThisAgent, #ATTRI
 
                     If (`$HasAttribute ("LWS_EquipmentTier", Target) && `$LWS_ShouldRetrieveWeapon (ThisAgent, Target) == FALSE)
                         begin
+                            // Precompiled hero decision trees can select this item again even though
+                            // the generated evaluator filters it. Remove inspected inferior loot to
+                            // prevent an endless retrieve/reject loop.
+                            `$DeleteGamePiece (Target);
                             `$Reset_Tasks (ThisAgent);
                             return;
                         end
@@ -74,7 +78,7 @@ If (Target's "Title" == "LWS_HealingPotion" && `$GetAttribute (ThisAgent, #ATTRI
 $header = @(
     '// GENERATED FILE - DO NOT EDIT OR COMMIT.',
     '// Derived at build time from the locally installed Northern Expansion SDK.',
-    '// LWS change: heroes ignore capped potions and equipment that is not an upgrade.',
+    '// LWS change: heroes ignore capped potions and remove inspected inferior equipment.',
     ''
 )
 New-Item -ItemType Directory -Force -Path (Split-Path -Parent $OutputPath) | Out-Null

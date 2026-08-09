@@ -149,8 +149,11 @@ affix does not prevent the visit.
 
 The generated item-evaluation override filters equipment before the hero starts
 retrieving it and repeats the comparison immediately before pickup. Inferior or
-equal weapons therefore stay on the ground instead of being collected and
-silently discarded after the hero has already equipped a better drop.
+equal weapons are never equipped. Some precompiled hero decision paths bypass
+the generated pre-filter, so an inferior drop that a hero has already reached
+is removed from the ground to prevent an endless retrieve/reject loop. This is
+an interim ground-loot cleanup rule until the later inventory system can replace
+it with selling, salvaging, or per-hero ignore memory.
 
 Only in the diagnostic quest, defeated monsters have a 50% chance to drop a
 `T2 Longsword +5` or `T2 Longsword +7`, selected evenly. A hero equips a dropped

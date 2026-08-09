@@ -241,6 +241,9 @@ if ($itemGeneratorSource -notmatch 'LWS_HealingPotion' -or $itemGeneratorSource 
 if ($itemGeneratorSource -notmatch 'LWS_SelectDesiredSpecialItem' -or $itemGeneratorSource -notmatch 'LWS_ShouldRetrieveWeapon') {
     throw 'Item evaluation override does not filter inferior tiered equipment.'
 }
+if ($itemGeneratorSource -notmatch '\$DeleteGamePiece\s*\(Target\)') {
+    throw 'Item evaluation override does not break the inferior-equipment retrieval loop.'
+}
 
 if (-not (Test-Path -LiteralPath $bytecodePath -PathType Leaf)) {
     throw 'Diagnostic bytecode is missing.'
