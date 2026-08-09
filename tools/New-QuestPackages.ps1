@@ -24,7 +24,6 @@ $packages = @(
             'Data\LivingWorldSandbox.bcd'
             'Data\LWS_Descriptions.xml'
             'Data\LWS_Text.xml'
-            'Data\LWS_EquipmentNames.xml'
             'Quests\LivingWorldSandbox.q'
         )
     },
@@ -35,7 +34,6 @@ $packages = @(
             'Data\LWSCombatDiagnostic.bcd'
             'Data\LWS_Descriptions.xml'
             'Data\LWS_Text.xml'
-            'Data\LWS_EquipmentNames.xml'
             'Quests\LivingWorldSandbox.q'
         )
     }

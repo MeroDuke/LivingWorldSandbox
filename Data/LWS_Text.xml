@@ -6,8 +6,8 @@
     <Text id="IDTXT_LWS_RUNE_HEALING_HELP">Legendary: Rune of Healing[newline]Teaches its bearer the ancient Item Healing spell.</Text>
     <Text id="IDTXT_LWS_HELM_DISPLACEMENT_HELP">Legendary: Helm of Displacement[newline]Teaches its bearer the Force spell.</Text>
     <Text id="IDTXT_LWS_STONEBACK_SHIELD_HELP">Legendary: Stoneback's Shield[newline]Teaches its bearer Stoneback's protective shield.</Text>
-    <Text id="IDTXT_LWS_RANDOM_WEAPON_HELP">Dropped Weapon[newline]The name shows rarity, weapon family, tier and affix. Power equals tier bonus plus affix.</Text>
-    <Text id="IDTXT_LWS_RANDOM_ARMOR_HELP">Dropped Armor[newline]The name shows rarity, armor family, tier and affix. Armor affixes count twice toward power.</Text>
+    <Text id="IDTXT_LWS_RANDOM_WEAPON_HELP">Dropped Weapon[newline]Its family, quality and affix are generated from the defeated monster's loot class.</Text>
+    <Text id="IDTXT_LWS_RANDOM_ARMOR_HELP">Dropped Armor[newline]Its family, quality and affix are generated from the defeated monster's loot class.</Text>
     <Text id="IDTXT_LWS_HEALING_POTION_HELP">Healing Potion[newline]Restores health when used by a hero.</Text>
     <Text id="IDTXT_LWS_T2_LONGSWORD_PLUS5_HELP">T2 Longsword +5[newline]Bronze-tier Paladin weapon. Effective structural bonus: 6.</Text>
     <Text id="IDTXT_LWS_T2_LONGSWORD_PLUS6_HELP">T2 Longsword +6[newline]Bronze-tier Paladin weapon. Effective structural bonus: 7.</Text>

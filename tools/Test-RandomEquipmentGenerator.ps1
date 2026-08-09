@@ -7,7 +7,6 @@ $lootSource = Get-Content -Raw (Join-Path $repositoryRoot 'GPL\LWS_Loot.gpl')
 $equipmentSource = Get-Content -Raw (Join-Path $repositoryRoot 'GPL\LWS_Equipment.gpl')
 $prototypeSource = Get-Content -Raw (Join-Path $repositoryRoot 'GPL\LWS_LootPrototypes.dat')
 $descriptionSource = Get-Content -Raw (Join-Path $repositoryRoot 'Data\LWS_Descriptions.xml')
-[xml]$equipmentNames = Get-Content -Raw (Join-Path $repositoryRoot 'Data\LWS_EquipmentNames.xml')
 
 $generatedWeaponFamilies = (@($generator.weaponFamilies) | Sort-Object) -join ','
 $compatibleWeaponFamilies = (@($compatibility.weaponFamilies) | Sort-Object) -join ','
@@ -68,20 +67,5 @@ foreach ($pattern in @(
 }
 if ($equipmentSource -notmatch 'Function\s+LWS_ConfigureEquipmentDrop') {
     throw 'Runtime equipment carrier configuration is missing.'
-}
-if ($equipmentSource -notmatch '\$SpecifyName\s*\(\s*Item\s*,\s*DisplayNameKey\s*\)') {
-    throw 'Runtime equipment display-name assignment is missing.'
-}
-$registeredNames = @($equipmentNames.Majesty.Language.Text)
-if ($registeredNames.Count -ne 422) {
-    throw "Expected 422 generated equipment display names, found $($registeredNames.Count)."
-}
-foreach ($requiredName in @(
-    'IDTXT_LWS_DROP_Weapon_Uncommon_Longsword_T3_P1',
-    'IDTXT_LWS_DROP_Armor_Rare_Plate_T3_P1'
-)) {
-    if ($requiredName -notin @($registeredNames.id)) {
-        throw "Missing generated equipment display name: $requiredName"
-    }
 }
 Write-Host 'Random equipment generator validation passed.'

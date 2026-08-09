@@ -58,7 +58,6 @@ End
 Function LWS_ConfigureEquipmentDrop ( agent Item, string EquipmentType, string EquipmentFamily,
                                       integer Tier, integer AffixBonus )
 Declare
-    string DisplayNameKey;
 Begin
     if ( $IsValidGamePiece ( Item ) == FALSE ) return;
     if ( EquipmentType == "Armor" )
@@ -70,13 +69,6 @@ Begin
     $AddAttribute ( Item, "LWS_EquipmentTier", "integer", Tier );
     $AddAttribute ( Item, "LWS_EquipmentAffixBonus", "integer", AffixBonus );
     $AddAttribute ( Item, "LWS_EquipmentRarity", "string", $LWS_EquipmentRarity ( EquipmentType, Tier, AffixBonus ));
-
-    // SpecifyName requires an existing scenario text-table key. Every combination
-    // reachable from the production generator is registered in LWS_Text.xml.
-    DisplayNameKey = $Concatenate ( "IDTXT_LWS_DROP_", EquipmentType, "_",
-                                    Item's "LWS_EquipmentRarity", "_", EquipmentFamily,
-                                    "_T", Tier, "_P", AffixBonus );
-    $SpecifyName ( Item, DisplayNameKey );
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
