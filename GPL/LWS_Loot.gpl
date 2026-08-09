@@ -111,6 +111,122 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_RandomWeaponFamily ( integer FamilyRoll ) is string
+Declare
+    integer Pick;
+Begin
+    Pick = FamilyRoll % 9;
+    if ( Pick == 0 ) return "Staff";
+    if ( Pick == 1 ) return "Axeclub";
+    if ( Pick == 2 ) return "Dagger";
+    if ( Pick == 3 ) return "Longsword";
+    if ( Pick == 4 ) return "Longbow";
+    if ( Pick == 5 ) return "Crossbow";
+    if ( Pick == 6 ) return "Mace";
+    if ( Pick == 7 ) return "Chaos";
+    return "Hammer";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_RandomArmorFamily ( integer FamilyRoll ) is string
+Declare
+    integer Pick;
+Begin
+    Pick = FamilyRoll % 4;
+    if ( Pick == 0 ) return "Leather";
+    if ( Pick == 1 ) return "Chain";
+    if ( Pick == 2 ) return "Plate";
+    return "Chaos";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_RarityMinimumPower ( integer Rarity ) is integer
+Declare
+Begin
+    if ( Rarity <= 1 ) return 0;
+    if ( Rarity == 2 ) return 2;
+    if ( Rarity == 3 ) return 4;
+    return 7;
+End
+
+Function LWS_RarityMaximumPower ( integer Rarity ) is integer
+Declare
+Begin
+    if ( Rarity <= 1 ) return 1;
+    if ( Rarity == 2 ) return 3;
+    if ( Rarity == 3 ) return 6;
+    return 10;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_GeneratedEquipmentTier ( integer Rarity, integer TierRoll ) is integer
+Declare
+Begin
+    // T3/T4 already exceed Common's power ceiling without an affix.
+    if ( Rarity <= 1 ) return 1 + ( TierRoll % 2 );
+    return 1 + ( TierRoll % 4 );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_GeneratedEquipmentAffix ( string EquipmentType, integer Rarity,
+                                       integer Tier, integer PowerRoll ) is integer
+Declare
+    integer MinimumPower, MaximumPower, Power, TierPower;
+Begin
+    MinimumPower = $LWS_RarityMinimumPower ( Rarity );
+    MaximumPower = $LWS_RarityMaximumPower ( Rarity );
+    Power = MinimumPower + ( PowerRoll % ( MaximumPower - MinimumPower + 1 ));
+    TierPower = $LWS_WeaponTierBaseBonus ( Tier );
+    if ( Power < TierPower ) Power = TierPower;
+
+    if ( EquipmentType == "Armor" )
+        begin
+            // Armor affixes contribute two power, so generated power must match tier parity.
+            if ((( Power - TierPower ) % 2 ) != 0 )
+                begin
+                    if ( Power < MaximumPower ) Power += 1;
+                    else Power -= 1;
+                end
+            return ( Power - TierPower ) / 2;
+        end
+    return Power - TierPower;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_SpawnRandomEquipment ( agent Defender, string EquipmentType, integer Rarity,
+                                    integer FamilyRoll, integer TierRoll, integer PowerRoll ) is boolean
+Declare
+    agent Drop;
+    string DropTitle, EquipmentFamily;
+    integer Tier, AffixBonus;
+Begin
+    if ( Defender's "LWS_LootSlotsUsed" >= 2 ) return FALSE;
+    // Named Legendary Unique prototypes are supplied by the later Legendary catalog.
+    if ( Rarity >= 5 ) Rarity = 4;
+
+    Tier = $LWS_GeneratedEquipmentTier ( Rarity, TierRoll );
+    AffixBonus = $LWS_GeneratedEquipmentAffix ( EquipmentType, Rarity, Tier, PowerRoll );
+    if ( EquipmentType == "Armor" )
+        begin
+            DropTitle = "LWS_RandomArmorDrop";
+            EquipmentFamily = $LWS_RandomArmorFamily ( FamilyRoll );
+        end
+    else
+        begin
+            DropTitle = "LWS_RandomWeaponDrop";
+            EquipmentFamily = $LWS_RandomWeaponFamily ( FamilyRoll );
+        end
+
+    Drop = $SpawnUnit ( Defender, DropTitle, "Override", $Concatenate ( $MakeInventoryAttribute ( DropTitle ), 0 ));
+    if ( $IsValidGamePiece ( Drop ) == FALSE ) return FALSE;
+    $LWS_ConfigureEquipmentDrop ( Drop, EquipmentType, EquipmentFamily, Tier, AffixBonus );
+    Defender's "LWS_LootSlotsUsed" += 1;
+    $DebugOut ( 911, "LWS EQUIPMENT DROP", EquipmentType, EquipmentFamily, "TIER", Tier,
+                "AFFIX", AffixBonus, "RARITY", $LWS_EquipmentRarity ( EquipmentType, Tier, AffixBonus ));
+    return TRUE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_SpawnLootItem ( agent Defender, string DropTitle ) is boolean
 Declare
     agent Drop;
@@ -166,7 +282,8 @@ End
 Function LWS_ResolveMonsterLoot ( agent Defender, integer FinalDamage,
                                   integer PotionRoll, integer WeaponRoll, integer ArmorRoll )
 Declare
-    integer DefenderHP;
+    integer DefenderHP, ProgressClass, OmitCandidate, Rarity;
+    boolean PotionCandidate, WeaponCandidate, ArmorCandidate;
 Begin
     if ( $IsValidGamePiece ( Defender ) == FALSE ) return;
     if ( $HasAttribute ( "original_type", Defender ) == FALSE ) return;
@@ -179,9 +296,47 @@ Begin
     $AddAttribute ( Defender, "LWS_LootResolved", "boolean", TRUE );
     $AddAttribute ( Defender, "LWS_LootSlotsUsed", "integer", 0 );
     $LWS_EnsureMonsterState ( Defender );
+    ProgressClass = Defender's "LWS_ProgressClass";
 
-    // Slot candidates are centralized. More item types may be inserted here without raising the cap.
-    $LWS_TryHealingPotionSlot ( Defender, PotionRoll );
+    PotionCandidate = FALSE;
+    WeaponCandidate = FALSE;
+    ArmorCandidate = FALSE;
+    if ( ProgressClass > 0 )
+        PotionCandidate = $LWS_OptionalLootDropSucceeds ( PotionRoll );
+    if ( ProgressClass == 5 )
+        begin
+            // Brutal monsters guarantee exactly one equipment candidate.
+            if ( $RandomNumber ( 2 ) == 0 ) WeaponCandidate = TRUE;
+            else ArmorCandidate = TRUE;
+        end
+    else if ( ProgressClass > 0 )
+        begin
+            WeaponCandidate = $LWS_EquipmentDropSucceeds ( ProgressClass, WeaponRoll );
+            ArmorCandidate = $LWS_EquipmentDropSucceeds ( ProgressClass, ArmorRoll );
+        end
+
+    // If all three optional candidates succeed, omit one uniformly instead of privileging call order.
+    OmitCandidate = -1;
+    if ( PotionCandidate && WeaponCandidate && ArmorCandidate )
+        OmitCandidate = $RandomNumber ( 3 );
+
+    if ( PotionCandidate && OmitCandidate != 0 ) $LWS_TryHealingPotionSlot ( Defender, PotionRoll );
+    if ( WeaponCandidate && OmitCandidate != 1 )
+        begin
+            Rarity = $LWS_SelectLootRarity ( ProgressClass, $RandomNumber ( 100 ));
+            if ( Rarity == 5 && $LWS_IsLegendaryLootSource ( Defender ) == FALSE ) Rarity = 4;
+            $LWS_SpawnRandomEquipment ( Defender, "Weapon", Rarity, $RandomNumber ( 100 ),
+                                        $RandomNumber ( 100 ), $RandomNumber ( 100 ));
+        end
+    if ( ArmorCandidate && OmitCandidate != 2 )
+        begin
+            Rarity = $LWS_SelectLootRarity ( ProgressClass, $RandomNumber ( 100 ));
+            if ( Rarity == 5 && $LWS_IsLegendaryLootSource ( Defender ) == FALSE ) Rarity = 4;
+            $LWS_SpawnRandomEquipment ( Defender, "Armor", Rarity, $RandomNumber ( 100 ),
+                                        $RandomNumber ( 100 ), $RandomNumber ( 100 ));
+        end
+
+    // Diagnostic-only carriers share any slots still available after production candidates.
     $LWS_TryDiagnosticWeaponSlot ( Defender, WeaponRoll );
     $LWS_TryDiagnosticArmorSlot ( Defender, ArmorRoll );
 End

@@ -1,4 +1,12 @@
 <Majesty>
+  <Description type="Unit" subType="Character" ID="LWS_RandomWeaponDrop" Name="LWS_RandomWeaponDrop" Description="IDTXT_LWS_RANDOM_WEAPON_HELP">
+    <Engine version="1"><Info value="Static"/><Info value="Directionless"/><Info value="BlockGround"/><CanUse value="HumanPlayer"/><Menu value="8"/><ImageIDBase value="AVk4"/><DefaultSound value="0"/></Engine>
+    <Game version="1"><DialogID value="APb1"/><MaxHP value="10"/><RecruitDelay value="10000"/><Flags value="NotFlaggable"/><Flags value="NotSpellTarget"/><Flags value="IsInventoryItem"/><HelpID value="IDTXT_LWS_RANDOM_WEAPON_HELP"/><Attributes><Attribute ID="CanDropItem" Value="0"/><Attribute ID="LWS_RandomWeaponDrop" Value="0"/></Attributes></Game>
+  </Description>
+  <Description type="Unit" subType="Character" ID="LWS_RandomArmorDrop" Name="LWS_RandomArmorDrop" Description="IDTXT_LWS_RANDOM_ARMOR_HELP">
+    <Engine version="1"><Info value="Static"/><Info value="Directionless"/><Info value="BlockGround"/><CanUse value="HumanPlayer"/><Menu value="8"/><ImageIDBase value="AVk4"/><DefaultSound value="0"/></Engine>
+    <Game version="1"><DialogID value="APb1"/><MaxHP value="10"/><RecruitDelay value="10000"/><Flags value="NotFlaggable"/><Flags value="NotSpellTarget"/><Flags value="IsInventoryItem"/><HelpID value="IDTXT_LWS_RANDOM_ARMOR_HELP"/><Attributes><Attribute ID="CanDropItem" Value="0"/><Attribute ID="LWS_RandomArmorDrop" Value="0"/></Attributes></Game>
+  </Description>
   <Description type="Unit" subType="Character" ID="LWS_HealingPotion" Name="LWS_HealingPotion" Description="IDTXT_LWS_HEALING_POTION_HELP">
     <Engine version="1">
       <Info value="Static"/>

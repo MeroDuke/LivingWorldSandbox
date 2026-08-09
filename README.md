@@ -141,6 +141,15 @@ On successful equipment drops, Classes 2-4 select the previous rarity 75% of
 the time and their ceiling 25% of the time. Class 5 guarantees one equipment
 candidate: 99% Epic, or a 1% replacement with a whitelisted Legendary Unique.
 
+Production weapon and armor rolls now create runtime-configured generic world
+items. The generator covers all nine Northern Expansion weapon families and all
+four armor families from the compatibility matrix, then chooses a T1-T4 tier
+and affix whose computed power stays inside the selected rarity band. Armor
+generation applies the native double magic-affix weight. If potion, weapon, and
+armor all succeed together, one candidate is omitted at random so the hard
+two-item cap has no fixed type-order bias. Named Legendary Unique items remain
+pending and therefore fall back to Epic until their catalog is implemented.
+
 ## Tiered equipment diagnostic
 
 The first equipment implementation separates a weapon's quality tier from its

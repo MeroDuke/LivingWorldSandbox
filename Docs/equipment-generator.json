@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "weaponFamilies": ["Staff", "Axeclub", "Dagger", "Longsword", "Longbow", "Crossbow", "Mace", "Chaos", "Hammer"],
+  "armorFamilies": ["Leather", "Chain", "Plate", "Chaos"],
+  "carrierPrototypes": {
+    "Weapon": "LWS_RandomWeaponDrop",
+    "Armor": "LWS_RandomArmorDrop"
+  },
+  "tierRange": { "minimum": 1, "maximum": 4 },
+  "powerBands": {
+    "Common": { "minimum": 0, "maximum": 1 },
+    "Uncommon": { "minimum": 2, "maximum": 3 },
+    "Rare": { "minimum": 4, "maximum": 6 },
+    "Epic": { "minimum": 7, "maximum": 10 }
+  },
+  "legendaryUsesGenericCarrier": false,
+  "legendaryCatalogPending": true
+}
