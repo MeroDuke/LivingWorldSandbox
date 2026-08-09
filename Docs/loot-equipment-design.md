@@ -1,0 +1,152 @@
+# Loot- és felszerelésrendszer – alapdesign
+
+## Státusz
+
+Ez a dokumentum a LivingWorldSandbox későbbi drop-, loot- és felszerelésrendszerének első rögzített tervezési döntését tartalmazza. Az itt leírt modell lesz az alap, amikor elkészítjük a további tárgytípusokat és a drop listákat.
+
+Ez még design, nem kész implementáció.
+
+## Cél
+
+A felszerelés minőségi tierje és az egyedi tárgybónusza két külön tulajdonság legyen.
+
+Ezzel elérhető, hogy:
+
+- egy alacsonyabb tierű, de kivételesen jó drop ideiglenesen jobb lehessen egy magasabb tierű átlagos tárgynál;
+- a hősnek magas `+` érték mellett is legyen oka felkeresni a Blacksmitht;
+- a Blacksmith a tárgy alapminőségét fejlessze, ne törölje vagy írja felül annak egyedi bónuszát;
+- ugyanaz a modell később fegyverekre, páncélokra és mágikus módosítókra is alkalmazható legyen.
+
+## Fogalmak
+
+### Tier
+
+A tier a tárgy alapanyagát vagy gyártási minőségét jelöli.
+
+A tervezett sorrend:
+
+1. `T3` – alapminőség, például bronze
+2. `T2` – fejlesztett minőség
+3. `T1` – legjobb hagyományos Blacksmith-minőség
+
+A kisebb tierszám jobb minőséget jelent: `T1 > T2 > T3`.
+
+### Affix bonus
+
+Az affix bonus a tárgy saját, droppal kapott egyedi értéke. A tárgy nevében ez jelenik meg `+N` formában.
+
+Példák:
+
+- `T3 Armor +6`
+- `T2 Longsword +2`
+
+Az affix nem azonos a tierrel, és Blacksmith-fejlesztéskor alapértelmezés szerint nem változik.
+
+### Tényleges harci érték
+
+A motor által használt tényleges structural érték a tier alapértékéből és az affixből áll össze:
+
+```text
+EffectiveStructuralBonus = TierBaseBonus + AffixBonus
+```
+
+Kezdeti tieralapok:
+
+| Tier | Alap structural bónusz |
+|---|---:|
+| T3 | +1 |
+| T2 | +2 |
+| T1 | +3 |
+
+Ezek kezdeti balanszértékek; tesztelés után módosíthatók anélkül, hogy az adatmodell megváltozna.
+
+## Tárgycsere
+
+Loot felvételekor a hős nem önmagában a tiert vagy az affixet vizsgálja, hanem a felszerelt és a talált tárgy teljes harci értékét hasonlítja össze.
+
+Alapesetben a jobb tényleges értékű tárgyat szereli fel.
+
+Példa:
+
+| Tárgy | Tieralap | Affix | Tényleges structural érték |
+|---|---:|---:|---:|
+| felszerelt `T2 Armor +2` | 2 | 2 | 4 |
+| talált `T3 Armor +6` | 1 | 6 | 7 |
+
+Ebben az esetben a hős lecseréli a `T2 +2` páncélt a `T3 +6` páncélra, mert `7 > 4`.
+
+Az azonos összértékű tárgyak közötti döntés, valamint a structural és magical bónuszok későbbi súlyozása külön design-döntés lesz.
+
+## Blacksmith-fejlesztés
+
+A Blacksmith látogatásának szükségességét nem a tárgy teljes `+` értéke, hanem annak külön tárolt tierje határozza meg.
+
+Ez eltér a vanilla működéstől, amely csak a hős `Armor_Struct_Bonus` vagy `Weapon_Struct_Bonus` értékét vizsgálja, és `+3` felett már nem keres további fejlesztést.
+
+Az új döntési logika:
+
+1. A hős ellenőrzi a felszerelt tárgy tierjét.
+2. Megvizsgálja, hogy egy elérhető Blacksmith képes-e ennél jobb tiert készíteni.
+3. Ha képes rá, a hősnek van elég pénze, és az AI vásárlási feltételei teljesülnek, felkeresi a Blacksmitht.
+4. A Blacksmith egy szinttel javítja a tárgy tierjét.
+5. A tárgy affixe változatlan marad.
+6. A rendszer újraszámolja a motor által használt tényleges structural bónuszt.
+
+Példa:
+
+```text
+T3 Armor +6 -> T2 Armor +6 -> T1 Armor +6
+```
+
+A kezdeti tieralapokkal:
+
+```text
+T3 +6 = 7 structural
+T2 +6 = 8 structural
+T1 +6 = 9 structural
+```
+
+A Blacksmith tehát a tiert fejleszti, nem alakítja a `T3 +6` tárgyat `T2 +7` tárggyá. Így megmarad a különbség a tárgy droppal szerzett egyedi affixe és a kovácsolással javított alapminősége között.
+
+## Tervezett belső adatmodell
+
+A Majesty eredetileg nem teljes értékű, különálló felszerelési tárgyként kezeli a hős használt fegyverét és páncélját. Emiatt a modnak külön kell tárolnia legalább az alábbi adatokat:
+
+```text
+EquipmentType
+EquipmentTier
+EquipmentAffixBonus
+EquipmentMagicBonus
+```
+
+A vanilla harcrendszerrel használt attribútumokat ebből kell kiszámítani és szinkronizálni:
+
+```text
+Armor_Struct_Bonus
+Armor_Magic_Bonus
+Weapon_Struct_Bonus
+Weapon_Magic_Bonus
+```
+
+A hős kasztja továbbra is meghatározza a használható alap felszereléstípust, például a Paladin a saját engedélyezett fegyver- és páncéltípusát használja. A loot ennek egy tierrel és affixekkel ellátott változata lesz.
+
+## Rögzített döntések
+
+- A tier és a `+N` affix külön adat.
+- A tárgy felvételét a teljes effektív harci érték dönti el.
+- A Blacksmith látogatását a tier motiválja, nem a teljes bónusz.
+- A Blacksmith-fejlesztés javítja a tiert, de megtartja az affixet.
+- A kezdeti hagyományos tiersorrend `T3 -> T2 -> T1`.
+- A mágikus bónusz külön dimenzió marad.
+- A további tárgyak és drop listák erre a modellre épülnek.
+
+## Később eldöntendő kérdések
+
+- A fegyverek és páncélok pontos tiernevei.
+- Az affixek lehetséges minimuma, maximuma és eloszlása.
+- A structural és magical értékek súlyozása tárgycserénél.
+- Döntetlen értékű tárgyak kezelése.
+- A lecserélt felszerelés sorsa: eldobás, eladás, tárolás vagy megsemmisítés.
+- Artifact tárgyak és a hagyományos `T1` fölötti kategóriák.
+- Treasure chestek és szörnyek külön drop táblái.
+- Fegyver- és páncéltípusonkénti kompatibilitási szabályok.
