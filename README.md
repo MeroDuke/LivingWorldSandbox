@@ -177,6 +177,16 @@ matrix is stored in `Docs/equipment-compatibility.json`, with a readable summary
 in `Docs/equipment-compatibility.md`. `tools/Test-EquipmentCompatibility.ps1`
 compares the matrix to both SDK character layers and verifies the runtime guard.
 
+## Equipment rarity and power
+
+Weapons and armor use separate tier and affix values. T1-T4 contribute 0-3
+base power; weapon affixes count once and armor affixes count twice, matching
+the Northern Expansion armor-magic calculation. Power maps to Common,
+Uncommon, Rare, or Epic. Legendary is reserved for predefined Unique items and
+is never produced by the normal power budget. The machine-readable rules live
+in `Docs/equipment-rarity.json`, with rationale and examples in
+`Docs/equipment-rarity.md`.
+
 ## Direct spell kill attribution
 
 Monster-cast direct damage spells use the Northern Expansion

@@ -303,9 +303,14 @@ Begin
     if ( $LWS_KillsRequired ( 5, 1 ) != 20 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
     // Tier/affix arithmetic is deterministic and independent of Blacksmith AI timing.
+    if ( $LWS_WeaponTierBaseBonus ( 1 ) != 0 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_WeaponTierBaseBonus ( 2 ) != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_WeaponTierBaseBonus ( 3 ) != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_WeaponTierBaseBonus ( 4 ) != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_EquipmentRarity ( "Weapon", 1, 0 ) != "Common" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_EquipmentRarity ( "Weapon", 1, 3 ) != "Uncommon" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_EquipmentRarity ( "Armor", 2, 2 ) != "Rare" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_EquipmentRarity ( "Weapon", 4, 4 ) != "Epic" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_WeaponEffectiveBonus ( 2, 6 ) != 7 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_WeaponEffectiveBonus ( 3, 6 ) != 8 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_WeaponEffectiveBonus ( 4, 6 ) != 9 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
