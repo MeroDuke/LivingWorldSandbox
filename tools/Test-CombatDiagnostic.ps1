@@ -110,6 +110,7 @@ $requiredEquipmentPatterns = @(
     'Function\s+LWS_WeaponTierBaseBonus',
     'Function\s+LWS_WeaponEffectiveBonus',
     'Function\s+LWS_ShouldRetrieveWeapon',
+    'Function\s+LWS_SelectDesiredSpecialItem',
     'Function\s+LWS_EquipWeaponTransfer',
     'LWS_WeaponTier',
     'LWS_WeaponAffixBonus',
@@ -166,7 +167,13 @@ $requiredHookPatterns = @(
     'Function\s+LWS_SetupEquipmentArena',
     '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Warriors_Guild"',
     '\$SpawnUnit\s*\(\s*WarriorsGuild\s*,\s*"Paladin"',
-    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Blacksmith1"',
+    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Blacksmith3"',
+    '#ATTRIB_ResearchArmorLevel_2\s*,\s*0',
+    '#ATTRIB_ResearchArmorLevel_3\s*,\s*0',
+    '#ATTRIB_ResearchArmorLevel_4\s*,\s*0',
+    '#ATTRIB_ResearchWeaponLevel_2\s*,\s*0',
+    '#ATTRIB_ResearchWeaponLevel_3\s*,\s*0',
+    '#ATTRIB_ResearchWeaponLevel_4\s*,\s*0',
     '\$Adopt\s*\(\s*WarriorsGuild\s*,\s*Paladin\s*\)',
     '\$Advance_To_Level\s*\(\s*Paladin\s*,\s*8\s*\)',
     '#ATTRIB_Gold\s*,\s*1000',
@@ -220,6 +227,9 @@ if ($itemGeneratorSource -notmatch 'OriginalQuests\\GPLMx\\DecisionTrees\\Module
 }
 if ($itemGeneratorSource -notmatch 'LWS_HealingPotion' -or $itemGeneratorSource -notmatch '#Max_Heal_Potions') {
     throw 'Item evaluation override does not protect the vanilla healing potion cap.'
+}
+if ($itemGeneratorSource -notmatch 'LWS_SelectDesiredSpecialItem' -or $itemGeneratorSource -notmatch 'LWS_ShouldRetrieveWeapon') {
+    throw 'Item evaluation override does not filter inferior tiered equipment.'
 }
 
 if (-not (Test-Path -LiteralPath $bytecodePath -PathType Leaf)) {

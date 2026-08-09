@@ -46,6 +46,32 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Returns the first special item this hero can currently use. Inferior equipment remains available
+// on the ground instead of being consumed by the vanilla retrieve-and-transfer sequence.
+Function LWS_SelectDesiredSpecialItem ( agent Hero, list Items ) is agent
+Declare
+    agent Candidate;
+Begin
+    foreach Candidate in Items do
+        begin
+            if ( Candidate's "Title" == "LWS_HealingPotion" )
+                begin
+                    if ( $GetAttribute ( Hero, #ATTRIB_NumHealingPotions ) < #Max_Heal_Potions )
+                        return Candidate;
+                end
+            else if ( $HasAttribute ( "LWS_EquipmentTier", Candidate ))
+                begin
+                    if ( $LWS_ShouldRetrieveWeapon ( Hero, Candidate ))
+                        return Candidate;
+                end
+            else
+                return Candidate;
+        end
+
+    return $NullAgent ();
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_EquipWeaponTransfer ( agent OldOwnerAgent, agent NewOwnerAgent, integer AttributeID )
 Declare
     integer ItemTier, ItemAffix, ItemEffective;

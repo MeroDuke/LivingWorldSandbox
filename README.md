@@ -135,12 +135,18 @@ tier. A `T3 Longsword +6` therefore has effective structural bonus 7 and becomes
 `T2 +6` (effective 8), then `T1 +6` (effective 9).
 
 After PASS the diagnostic creates a focused arena containing one level-8
-Paladin, its completed Warriors Guild, one completed Blacksmith, and a nearby
+Paladin, its completed Warriors Guild, one level-3 Blacksmith with all equipment
+research explicitly cleared, and a nearby
 `T3 Longsword +6` pickup. The Paladin has 1000 carried gold plus 1000 stored
 gold and a guaranteed equipment-upgrade consideration roll. Research the next
 weapon quality at the Blacksmith and allow the autonomous Paladin time to visit
 it. The Blacksmith decision uses the separate tier, so the already-high `+6`
 affix does not prevent the visit.
+
+The generated item-evaluation override filters equipment before the hero starts
+retrieving it and repeats the comparison immediately before pickup. Inferior or
+equal weapons therefore stay on the ground instead of being collected and
+silently discarded after the hero has already equipped a better drop.
 
 Only in the diagnostic quest, defeated monsters have a 50% chance to drop a
 `T3 Longsword +5` or `T3 Longsword +7`, selected evenly. A hero equips a dropped

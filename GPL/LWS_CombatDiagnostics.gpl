@@ -144,9 +144,16 @@ Begin
     $SetAttribute ( Paladin, #ATTRIB_StoredGold, 1000 );
     Paladin's "Upgrade_Weapon_Chance" = 100;
 
-    Blacksmith = $SpawnUnit ( Palace, "Blacksmith1", $RandomCoord ( WarriorsGuild, 180, 260 ), "MaxHP", #Player_1 );
+    Blacksmith = $SpawnUnit ( Palace, "Blacksmith3", $RandomCoord ( WarriorsGuild, 180, 260 ), "MaxHP", #Player_1 );
     if ( $IsValidGamePiece ( Blacksmith ) == FALSE )
         return;
+    // Max-level building shell, deliberately without researched equipment technologies.
+    $SetAttribute ( Blacksmith, #ATTRIB_ResearchArmorLevel_2, 0 );
+    $SetAttribute ( Blacksmith, #ATTRIB_ResearchArmorLevel_3, 0 );
+    $SetAttribute ( Blacksmith, #ATTRIB_ResearchArmorLevel_4, 0 );
+    $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_2, 0 );
+    $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_3, 0 );
+    $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_4, 0 );
 
     WeaponDrop = $SpawnUnit ( Paladin, "LWS_T3_Longsword_Plus6", $RandomCoord ( Paladin, 30, 70 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_T3_Longsword_Plus6" ), 0 ));
 
