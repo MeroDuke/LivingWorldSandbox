@@ -1,13 +1,10 @@
 {
-  "version": 2,
+  "version": 1,
   "weaponFamilies": ["Staff", "Axeclub", "Dagger", "Longsword", "Longbow", "Crossbow", "Mace", "Chaos", "Hammer"],
   "armorFamilies": ["Leather", "Chain", "Plate", "Chaos"],
-  "staticCatalog": {
-    "weaponPrefix": "LWSDW_",
-    "armorPrefix": "LWSDA_",
-    "weaponEntries": 342,
-    "armorEntries": 80,
-    "totalEntries": 422
+  "carrierPrototypes": {
+    "Weapon": "LWS_RandomWeaponDrop",
+    "Armor": "LWS_RandomArmorDrop"
   },
   "tierRange": { "minimum": 1, "maximum": 4 },
   "powerBands": {

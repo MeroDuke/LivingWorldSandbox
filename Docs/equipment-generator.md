@@ -1,10 +1,8 @@
 # Random equipment generator
 
-A production monsterdrop egy 422 elemű, motorhű statikus world-item katalógust
-használ. Minden generálható fegyver- és páncélkombinációnak saját prototípusa,
-Description rekordja és help-szövege van. A GPL előbb kiszámítja a családot,
-tiert, affixet és rarityt, majd közvetlenül a megfelelő konkrét tárgyat spawnolja.
-Nincs futásidejű név- vagy leírásmódosítás.
+A production monsterdrop két generikus world-item hordozót használ: egy fegyvert
+és egy páncélt. Spawn után a GPL ráírja a konkrét családot, tiert, affixet és
+rarityt. Ez elkerüli több száz statikus prototípus karbantartását.
 
 A fegyverpool minden használható Northern Expansion családot tartalmaz:
 `Staff`, `Axeclub`, `Dagger`, `Longsword`, `Longbow`, `Crossbow`, `Mace`,

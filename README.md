@@ -141,12 +141,10 @@ On successful equipment drops, Classes 2-4 select the previous rarity 75% of
 the time and their ceiling 25% of the time. Class 5 guarantees one equipment
 candidate: 99% Epic, or a 1% replacement with a whitelisted Legendary Unique.
 
-Production weapon and armor rolls now select from a 422-entry static world-item
-catalog. Every generated family, tier, affix, and rarity combination has its own
-native prototype, visible name, and help description. The generator covers all
-nine Northern Expansion weapon families and all four armor families from the
-compatibility matrix, then chooses a T1-T4 tier and affix whose computed power
-stays inside the selected rarity band. Armor
+Production weapon and armor rolls now create runtime-configured generic world
+items. The generator covers all nine Northern Expansion weapon families and all
+four armor families from the compatibility matrix, then chooses a T1-T4 tier
+and affix whose computed power stays inside the selected rarity band. Armor
 generation applies the native double magic-affix weight. If potion, weapon, and
 armor all succeed together, one candidate is omitted at random so the hard
 two-item cap has no fixed type-order bias. Named Legendary Unique items remain
@@ -163,7 +161,7 @@ The combat diagnostic now performs an agent-free deterministic runtime sweep of
 all nine weapon-family mappings, all four armor-family mappings, all six
 Legendary catalog mappings, and the hard two-world-item cap. It does not spawn a
 hidden hero roster or trigger automatic test housing. It then leaves a small visual smoke arena containing a
-Paladin, statically described Longsword and Plate drops, a Wand of Immolation,
+Paladin, runtime-configured Longsword and Plate drops, a Wand of Immolation,
 Warriors Guild, Blacksmith, and four distant weak rats. See
 `Docs/loot-diagnostic-guide.md`; normal 8% and 1% rolls do not need to be waited
 out during this test.
