@@ -140,7 +140,7 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_SetupEquipmentArena ( agent AIRootAgent, agent Palace )
 Declare
-    agent WarriorsGuild, Blacksmith, Paladin, WeaponDrop, WeakMonster;
+    agent WarriorsGuild, Blacksmith, Paladin, WeaponDrop, ArmorDrop, WeakMonster;
     coordinate ArenaLocation;
     integer WeakMonsterCount;
 Begin
@@ -161,6 +161,7 @@ Begin
     $SetAttribute ( Paladin, #ATTRIB_Gold, 1000 );
     $SetAttribute ( Paladin, #ATTRIB_StoredGold, 1000 );
     Paladin's "Upgrade_Weapon_Chance" = 100;
+    Paladin's "Upgrade_Armor_Chance" = 100;
 
     Blacksmith = $SpawnUnit ( Palace, "Blacksmith3", $RandomCoord ( WarriorsGuild, 180, 260 ), "MaxHP", #Player_1 );
     if ( $IsValidGamePiece ( Blacksmith ) == FALSE )
@@ -174,9 +175,11 @@ Begin
     $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_4, 0 );
 
     WeaponDrop = $SpawnUnit ( Paladin, "LWS_T3_Longsword_Plus1", $RandomCoord ( Paladin, 30, 70 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_T3_Longsword_Plus1" ), 0 ));
+    ArmorDrop = $SpawnUnit ( Paladin, "LWS_T3_Armor_Plus1", $RandomCoord ( Paladin, 30, 70 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_T3_Armor_Plus1" ), 0 ));
 
-    // Test-only: every defeated monster drops a T2 +6 weapon for fast replacement testing.
+    // Test-only: every defeated monster drops T2 +6 equipment for fast replacement testing.
     $AddAttribute ( AIRootAgent, "LWS_DiagnosticWeaponDropChance", "integer", 100 );
+    $AddAttribute ( AIRootAgent, "LWS_DiagnosticArmorDropChance", "integer", 100 );
 
     WeakMonsterCount = 0;
     while ( WeakMonsterCount < 4 ) do

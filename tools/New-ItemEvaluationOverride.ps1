@@ -62,7 +62,7 @@ If (Target's "Title" == "LWS_HealingPotion" && `$GetAttribute (ThisAgent, #ATTRI
                             return;
                         end
 
-                    If (`$HasAttribute ("LWS_EquipmentTier", Target) && `$LWS_ShouldRetrieveWeapon (ThisAgent, Target) == FALSE)
+                    If (`$HasAttribute ("LWS_EquipmentTier", Target) && `$LWS_ShouldRetrieveEquipment (ThisAgent, Target) == FALSE)
                         begin
                             // Precompiled hero decision trees can select this item again even though
                             // the generated evaluator filters it. Remove inspected inferior loot to

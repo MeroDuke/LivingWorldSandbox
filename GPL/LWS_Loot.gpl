@@ -8,6 +8,34 @@ Begin
     $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_HealingPotion_Transfer );
 End
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Temporary diagnostic armor drops. Production quests do not enable the AIRoot flag.
+Function LWS_TryDiagnosticArmorDrop ( agent Defender, integer FinalDamage, integer ChanceRoll )
+Declare
+    integer DefenderHP;
+    string DropTitle;
+    agent Drop, AIRootAgent;
+Begin
+    if ( $IsValidGamePiece ( Defender ) == FALSE ) return;
+    if ( $HasAttribute ( "original_type", Defender ) == FALSE ) return;
+    if ( Defender's "original_type" != "Monster" ) return;
+
+    AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
+    if ( $HasAttribute ( "LWS_DiagnosticArmorDropChance", AIRootAgent ) == FALSE ) return;
+
+    DefenderHP = $GetAttribute ( Defender, #ATTRIB_HP );
+    if (( DefenderHP <= 0 ) || ( DefenderHP > FinalDamage )) return;
+    if ( $HasAttribute ( "LWS_ArmorLootResolved", Defender )) return;
+    $AddAttribute ( Defender, "LWS_ArmorLootResolved", "boolean", TRUE );
+
+    if ( ChanceRoll >= AIRootAgent's "LWS_DiagnosticArmorDropChance" ) return;
+    DropTitle = "LWS_T2_Armor_Plus6";
+    Drop = $SpawnUnit ( Defender, DropTitle, "Override", $Concatenate ( $MakeInventoryAttribute ( DropTitle ), 0 ));
+    if ( $IsValidGamePiece ( Drop ))
+        $DebugOut ( 911, "LWS DIAGNOSTIC ARMOR DROP", DropTitle );
+End
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Temporary diagnostic weapon drops. Production quests do not enable the AIRoot flag.
 Function LWS_TryDiagnosticWeaponDrop ( agent Defender, integer FinalDamage, integer ChanceRoll )

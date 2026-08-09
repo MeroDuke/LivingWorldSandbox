@@ -89,7 +89,10 @@ $requiredLootPatterns = @(
     '\$SpawnUnit\s*\(\s*Defender\s*,\s*"LWS_HealingPotion"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_HealingPotion"',
     'Function\s+LWS_TryDiagnosticWeaponDrop',
     'LWS_DiagnosticWeaponDropChance',
-    'LWS_T2_Longsword_Plus6'
+    'LWS_T2_Longsword_Plus6',
+    'Function\s+LWS_TryDiagnosticArmorDrop',
+    'LWS_DiagnosticArmorDropChance',
+    'LWS_T2_Armor_Plus6'
 )
 foreach ($pattern in $requiredLootPatterns) {
     if ($lootSource -notmatch $pattern) {
@@ -108,18 +111,27 @@ if ($descriptionSource -notmatch 'ID="LWS_HealingPotion"' -or $descriptionSource
 $requiredEquipmentPatterns = @(
     'Function\s+LWS_WeaponTierBaseBonus',
     'Function\s+LWS_WeaponEffectiveBonus',
+    'Function\s+LWS_ArmorTierBaseBonus',
+    'Function\s+LWS_ArmorEffectiveBonus',
     'Function\s+LWS_ShouldRetrieveWeapon',
+    'Function\s+LWS_ShouldRetrieveArmor',
+    'Function\s+LWS_ShouldRetrieveEquipment',
     'Function\s+LWS_SelectDesiredSpecialItem',
     'Function\s+LWS_EquipWeaponTransfer',
     'LWS_WeaponTier',
     'LWS_WeaponAffixBonus',
     'LWS_WeaponBaseDamage',
+    'LWS_ArmorTier',
+    'LWS_ArmorAffixBonus',
+    'LWS_ArmorBaseDefense',
     'Function\s+BlackSmith_Check',
     'Function\s+Obtain_Upgrade',
     'Tier\s*==\s*2[^}]+Tier\s*=\s*3',
     'Tier\s*==\s*3[^}]+Tier\s*=\s*4',
     '#ATTRIB_Weapon_Struct_Bonus\s*,\s*\$LWS_WeaponTierBaseBonus\s*\(\s*Tier',
-    '#ATTRIB_Weapon_Basic_Damage\s*,\s*ThisAgent''s\s+"LWS_WeaponBaseDamage"\s*\+\s*AffixBonus'
+    '#ATTRIB_Weapon_Basic_Damage\s*,\s*ThisAgent''s\s+"LWS_WeaponBaseDamage"\s*\+\s*AffixBonus',
+    '#ATTRIB_Armor_Struct_Bonus\s*,\s*\$LWS_ArmorTierBaseBonus\s*\(\s*Tier',
+    '#ATTRIB_Armor_Basic_Damage\s*,\s*ThisAgent''s\s+"LWS_ArmorBaseDefense"\s*\+\s*AffixBonus'
 )
 foreach ($pattern in $requiredEquipmentPatterns) {
     if ($equipmentSource -notmatch $pattern) {
@@ -129,6 +141,11 @@ foreach ($pattern in $requiredEquipmentPatterns) {
 foreach ($itemName in @('LWS_T2_Longsword_Plus6', 'LWS_T3_Longsword_Plus1')) {
     if ($lootPrototypeSource -notmatch [regex]::Escape("[$itemName]") -or $descriptionSource -notmatch ('ID="' + [regex]::Escape($itemName) + '"')) {
         throw "Tiered weapon item is incomplete: $itemName"
+    }
+}
+foreach ($itemName in @('LWS_T2_Armor_Plus6', 'LWS_T3_Armor_Plus1')) {
+    if ($lootPrototypeSource -notmatch [regex]::Escape("[$itemName]") -or $descriptionSource -notmatch ('ID="' + [regex]::Escape($itemName) + '"')) {
+        throw "Tiered armor item is incomplete: $itemName"
     }
 }
 $requiredCombatPatterns = @(
@@ -144,7 +161,8 @@ $requiredCombatPatterns = @(
     'LWS_RecordUnitKill',
     'LWS_ProcessBuildingDestroyed',
     'LWS_TryHealingPotionDrop',
-    'LWS_TryDiagnosticWeaponDrop'
+    'LWS_TryDiagnosticWeaponDrop',
+    'LWS_TryDiagnosticArmorDrop'
 )
 foreach ($pattern in $requiredCombatPatterns) {
     if ($combatSource -notmatch $pattern) {
@@ -183,8 +201,11 @@ $requiredHookPatterns = @(
     '#ATTRIB_Gold\s*,\s*1000',
     '#ATTRIB_StoredGold\s*,\s*1000',
     'Upgrade_Weapon_Chance"\s*=\s*100',
+    'Upgrade_Armor_Chance"\s*=\s*100',
     '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_T3_Longsword_Plus1"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_T3_Longsword_Plus1"',
+    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_T3_Armor_Plus1"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_T3_Armor_Plus1"',
     'LWS_DiagnosticWeaponDropChance"\s*,\s*"integer"\s*,\s*100',
+    'LWS_DiagnosticArmorDropChance"\s*,\s*"integer"\s*,\s*100',
     'WeakMonsterCount\s*<\s*4',
     '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Giant_Rat"\s*,\s*\$RandomCoord\s*\(\s*Paladin\s*,\s*550\s*,\s*700',
     '#ATTRIB_MaxHP\s*,\s*10',
@@ -243,7 +264,7 @@ if ($itemGeneratorSource -notmatch 'OriginalQuests\\GPLMx\\DecisionTrees\\Module
 if ($itemGeneratorSource -notmatch 'LWS_HealingPotion' -or $itemGeneratorSource -notmatch '#Max_Heal_Potions') {
     throw 'Item evaluation override does not protect the vanilla healing potion cap.'
 }
-if ($itemGeneratorSource -notmatch 'LWS_SelectDesiredSpecialItem' -or $itemGeneratorSource -notmatch 'LWS_ShouldRetrieveWeapon') {
+if ($itemGeneratorSource -notmatch 'LWS_SelectDesiredSpecialItem' -or $itemGeneratorSource -notmatch 'LWS_ShouldRetrieveEquipment') {
     throw 'Item evaluation override does not filter inferior tiered equipment.'
 }
 if ($itemGeneratorSource -notmatch '\$DeleteGamePiece\s*\(Target\)') {

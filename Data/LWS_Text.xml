@@ -5,5 +5,7 @@
     <Text id="IDTXT_LWS_T2_LONGSWORD_PLUS6_HELP">T2 Longsword +6[newline]Bronze-tier Paladin weapon. Effective structural bonus: 7.</Text>
     <Text id="IDTXT_LWS_T2_LONGSWORD_PLUS7_HELP">T2 Longsword +7[newline]Bronze-tier Paladin weapon. Effective structural bonus: 8.</Text>
     <Text id="IDTXT_LWS_T3_LONGSWORD_PLUS1_HELP">T3 Longsword +1[newline]Third-level Paladin weapon. Effective structural bonus: 3.</Text>
+    <Text id="IDTXT_LWS_T2_ARMOR_PLUS6_HELP">T2 Armor +6[newline]Bronze-tier armor. Effective structural bonus: 7.</Text>
+    <Text id="IDTXT_LWS_T3_ARMOR_PLUS1_HELP">T3 Armor +1[newline]Third-level armor. Effective structural bonus: 3.</Text>
   </Language>
 </Majesty>
