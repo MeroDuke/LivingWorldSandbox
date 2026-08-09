@@ -88,3 +88,11 @@
         (BirthScript LWS_T3LongswordPlus1_Birth)
     }
 [end]
+
+[LWS_Test_Longbow_Resource]
+    {Special_Item
+        (type resource)
+        (Title LWS_Test_Longbow_Resource)
+        (BirthScript LWS_LongbowDrop_Birth)
+    }
+[end]

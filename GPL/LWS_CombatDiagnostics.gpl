@@ -202,7 +202,7 @@ Begin
     if ( $IsValidGamePiece ( WeaponDrop )) $LWS_ConfigureEquipmentDrop ( WeaponDrop, "Weapon", "Longsword", 3, 1 );
     // Regression: classification must already exist when BirthScript returns. The Paladin
     // must ignore this Longbow and leave it available for an Elf or Ranger.
-    RejectedWeaponDrop = $SpawnUnit ( WeaponDrop, "LWSDW_U_Longbow_3_1", $RandomCoord ( WeaponDrop, 30, 60 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWSDW_U_Longbow_3_1" ), 0 ));
+    RejectedWeaponDrop = $SpawnUnit ( WeaponDrop, "LWS_Test_Longbow_Resource", $RandomCoord ( WeaponDrop, 30, 60 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_Test_Longbow_Resource" ), 0 ));
     if ( $IsValidGamePiece ( RejectedWeaponDrop ))
         begin
             if ( $HasAttribute ( "LWS_EquipmentType", RejectedWeaponDrop ) == FALSE || RejectedWeaponDrop's "LWS_EquipmentFamily" != "Longbow" )

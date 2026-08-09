@@ -15,5 +15,6 @@
     <Text id="IDTXT_LWS_T3_LONGSWORD_PLUS1_HELP">T3 Longsword +1[newline]Third-level Paladin weapon. Effective structural bonus: 3.</Text>
     <Text id="IDTXT_LWS_T2_ARMOR_PLUS6_HELP">T2 Armor +6[newline]Bronze-tier armor. Effective structural bonus: 7.</Text>
     <Text id="IDTXT_LWS_T3_ARMOR_PLUS1_HELP">T3 Armor +1[newline]Third-level armor. Effective structural bonus: 3.</Text>
+    <Text id="IDTXT_LWS_TEST_LONGBOW_RESOURCE_HELP">Compatibility Probe Longbow[newline]Diagnostic-only native resource carrier. Paladin must ignore it.</Text>
   </Language>
 </Majesty>
