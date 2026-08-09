@@ -241,6 +241,17 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_SpawnLegendaryUnique ( agent Defender, integer ItemRoll ) is boolean
+Declare
+    string DropTitle;
+Begin
+    DropTitle = $LWS_RandomLegendaryTitle ( ItemRoll );
+    if ( $LWS_SpawnLootItem ( Defender, DropTitle ) == FALSE ) return FALSE;
+    $DebugOut ( 911, "LWS LEGENDARY DROP", DropTitle );
+    return TRUE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_TryHealingPotionSlot ( agent Defender, integer ChanceRoll )
 Declare
     agent AIRootAgent;
@@ -325,15 +336,17 @@ Begin
         begin
             Rarity = $LWS_SelectLootRarity ( ProgressClass, $RandomNumber ( 100 ));
             if ( Rarity == 5 && $LWS_IsLegendaryLootSource ( Defender ) == FALSE ) Rarity = 4;
-            $LWS_SpawnRandomEquipment ( Defender, "Weapon", Rarity, $RandomNumber ( 100 ),
-                                        $RandomNumber ( 100 ), $RandomNumber ( 100 ));
+            if ( Rarity == 5 ) $LWS_SpawnLegendaryUnique ( Defender, $RandomNumber ( 100 ));
+            else $LWS_SpawnRandomEquipment ( Defender, "Weapon", Rarity, $RandomNumber ( 100 ),
+                                              $RandomNumber ( 100 ), $RandomNumber ( 100 ));
         end
     if ( ArmorCandidate && OmitCandidate != 2 )
         begin
             Rarity = $LWS_SelectLootRarity ( ProgressClass, $RandomNumber ( 100 ));
             if ( Rarity == 5 && $LWS_IsLegendaryLootSource ( Defender ) == FALSE ) Rarity = 4;
-            $LWS_SpawnRandomEquipment ( Defender, "Armor", Rarity, $RandomNumber ( 100 ),
-                                        $RandomNumber ( 100 ), $RandomNumber ( 100 ));
+            if ( Rarity == 5 ) $LWS_SpawnLegendaryUnique ( Defender, $RandomNumber ( 100 ));
+            else $LWS_SpawnRandomEquipment ( Defender, "Armor", Rarity, $RandomNumber ( 100 ),
+                                              $RandomNumber ( 100 ), $RandomNumber ( 100 ));
         end
 
     // Diagnostic-only carriers share any slots still available after production candidates.
