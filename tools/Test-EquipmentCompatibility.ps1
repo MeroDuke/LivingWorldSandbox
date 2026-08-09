@@ -75,6 +75,8 @@ foreach ($requiredPattern in @(
     'Function\s+LWS_HeroWeaponFamily',
     'Function\s+LWS_HeroArmorFamily',
     'Function\s+LWS_IsEquipmentCompatible',
+    'Function\s+LWS_EquipmentPickupDirector',
+    '"LWS_EquipmentDrop"',
     'LWS_EquipmentFamily',
     '\$LWS_IsEquipmentCompatible\s*\(\s*Hero\s*,\s*Item\s*\)\s*==\s*FALSE'
 )) {

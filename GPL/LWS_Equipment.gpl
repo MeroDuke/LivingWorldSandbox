@@ -271,6 +271,58 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Equipment drops deliberately use a private world type. Original hero BCDs contain direct calls to
+// the vanilla Special_Item evaluator, so a quest-level replacement cannot reliably intercept every
+// path. This selector is the sole entry point for equippable world loot.
+Function LWS_SelectDesiredEquipmentDrop ( agent Hero, list Items ) is agent
+Declare
+    agent Candidate;
+Begin
+    foreach Candidate in Items do
+        begin
+            if ( $LWS_ShouldRetrieveEquipment ( Hero, Candidate ))
+                return Candidate;
+        end
+    return $NullAgent ();
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_EquipmentPickupDirector ( agent ThisAgent )
+Declare
+    agent Palace, Hero, Candidate, LegacyDrop;
+    list Palaces, Heroes, Drops, LegacyDrops;
+Begin
+    Palaces = $ListPalaces ();
+    Palace = $ListMember ( Palaces, 1 );
+    if ( $IsValidGamePiece ( Palace ) == FALSE ) return;
+
+    // Migrate equipment created by an older save/package before the private type existed.
+    $ListObjects ( Palace, "Special_Item", -1, LegacyDrops, #NoHiddenMap );
+    foreach LegacyDrop in LegacyDrops do
+        begin
+            if ( $HasAttribute ( "LWS_EquipmentType", LegacyDrop ))
+                LegacyDrop's "Type" = "LWS_EquipmentDrop";
+        end
+
+    $ListObjects ( Palace, "hero", -1, Heroes, #NoHiddenMap, #MyPlayer );
+    foreach Hero in Heroes do
+        begin
+            if ( Hero's "BackScript" != $Grab_Item )
+                begin
+                    $ListObjects ( Hero, "LWS_EquipmentDrop", $GetAttribute ( Hero, #ATTRIB_SightRange ), Drops, #NoHiddenMap );
+                    Candidate = $LWS_SelectDesiredEquipmentDrop ( Hero, Drops );
+                    if ( $IsValidGamePiece ( Candidate ) && $Is_Free_Task ( Hero, $Grab_Item, Candidate ))
+                        begin
+                            Hero's "Target" = Candidate;
+                            Hero's "ActiveScript" = $Grab_Item;
+                            Hero's "BackScript" = $Grab_Item;
+                            $SpecifyIntent ( Hero, #intent_recovering_item );
+                        end
+                end
+        end
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_EquipArmorTransfer ( agent OldOwnerAgent, agent NewOwnerAgent, integer AttributeID )
 Declare
     integer ItemTier, ItemAffix, ItemEffective;

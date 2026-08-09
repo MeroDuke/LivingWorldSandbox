@@ -30,6 +30,10 @@ $textIds = @($catalogText.Majesty.Language.Text | ForEach-Object { $_.id })
 if ($prototypeTitles.Count -ne 422 -or $descriptionIds.Count -ne 422 -or $textIds.Count -ne 422) {
     throw "Static equipment catalog counts are invalid: prototypes=$($prototypeTitles.Count), descriptions=$($descriptionIds.Count), text=$($textIds.Count)."
 }
+if (([regex]::Matches($catalogPrototypeSource, '\(type\s+LWS_EquipmentDrop\)')).Count -ne 422 -or
+    $catalogPrototypeSource -match '\(type\s+Special_Item\)') {
+    throw 'All generated equipment must be hidden from the vanilla Special_Item evaluator.'
+}
 foreach ($title in $prototypeTitles) {
     $description = @($descriptionRecords | Where-Object { $_.ID -eq $title })
     if ($description.Count -ne 1 -or $description[0].Name -ne $title) {
@@ -106,6 +110,10 @@ if ($equipmentSource -notmatch 'Function\s+LWS_ConfigureEquipmentDrop') {
 if ($equipmentSource -notmatch 'Function\s+LWS_InitializeWeaponDrop' -or
     $equipmentSource -notmatch 'Function\s+LWS_InitializeArmorDrop') {
     throw 'Birth-time equipment classification is missing.'
+}
+if ($equipmentSource -notmatch 'Function\s+LWS_EquipmentPickupDirector' -or
+    $equipmentSource -notmatch 'Function\s+LWS_SelectDesiredEquipmentDrop') {
+    throw 'Private equipment pickup director is missing.'
 }
 if ($catalogResolverSource -notmatch 'Function\s+LWS_StaticEquipmentDropTitle') {
     throw 'Static equipment resolver entry point is missing.'

@@ -39,3 +39,7 @@ smoke tesztben nem kell kivárni.
 A felszerelési arénában egy Longbow is található a többi vizsgálati tárgy mellett.
 Ez szándékosan inkompatibilis a Paladinnal: a földön kell maradnia, és a Paladinnak
 nem szabad odamennie vagy eltüntetnie. Egy Ranger vagy Elf később felveheti.
+
+A teszt egyben ellenőrzi, hogy mindhárom normál felszerelés a privát
+`LWS_EquipmentDrop` világobjektum-típuson keresztül látható, és a saját selector
+nem a Longbow-t adja vissza a Paladinnak.
