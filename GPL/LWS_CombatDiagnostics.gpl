@@ -162,7 +162,7 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_SetupEquipmentArena ( agent AIRootAgent, agent Palace )
 Declare
-    agent WarriorsGuild, Blacksmith, Paladin, WeaponDrop, RejectedWeaponDrop, ArmorDrop, LegendaryDrop, WeakMonster, Chest;
+    agent WarriorsGuild, Blacksmith, Paladin, WeakMonster, Chest;
     coordinate ArenaLocation;
     integer WeakMonsterCount;
 Begin
@@ -196,30 +196,10 @@ Begin
     $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_3, 0 );
     $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_4, 0 );
 
-    // Keep inspection items outside the Paladin's initial awareness radius so
-    // the player has time to select and read both UI cards before retrieval.
-    WeaponDrop = $SpawnUnit ( Paladin, "LWSDW_U_Longsword_3_1", $RandomCoord ( Paladin, 500, 600 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWSDW_U_Longsword_3_1" ), 0 ));
-    if ( $IsValidGamePiece ( WeaponDrop )) $LWS_ConfigureEquipmentDrop ( WeaponDrop, "Weapon", "Longsword", 3, 1 );
-    // Regression: classification must already exist when BirthScript returns. The Paladin
-    // must ignore this Longbow and leave it available for an Elf or Ranger.
-    RejectedWeaponDrop = $SpawnUnit ( WeaponDrop, "LWSDW_U_Longbow_3_1", $RandomCoord ( WeaponDrop, 30, 60 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWSDW_U_Longbow_3_1" ), 0 ));
-    if ( $IsValidGamePiece ( RejectedWeaponDrop ))
-        begin
-            if ( $HasAttribute ( "LWS_EquipmentType", RejectedWeaponDrop ) == FALSE || RejectedWeaponDrop's "LWS_EquipmentFamily" != "Longbow" )
-                AIRootAgent's "LWS_DiagnosticFailures" += 1;
-            if ( $LWS_IsEquipmentCompatible ( Paladin, RejectedWeaponDrop ))
-                AIRootAgent's "LWS_DiagnosticFailures" += 1;
-            $LWS_ConfigureEquipmentDrop ( RejectedWeaponDrop, "Weapon", "Longbow", 3, 1 );
-        end
-    ArmorDrop = $SpawnUnit ( WeaponDrop, "LWSDA_R_Plate_3_1", $RandomCoord ( WeaponDrop, 30, 60 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWSDA_R_Plate_3_1" ), 0 ));
-    if ( $IsValidGamePiece ( ArmorDrop )) $LWS_ConfigureEquipmentDrop ( ArmorDrop, "Armor", "Plate", 3, 1 );
-    LegendaryDrop = $SpawnUnit ( Paladin, "LWS_WandOfImmolation", $RandomCoord ( Paladin, 100, 140 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_WandOfImmolation" ), 0 ));
-
     WeakMonsterCount = 0;
     while ( WeakMonsterCount < 4 ) do
         begin
-            // Keep combat outside the Paladin's initial awareness so the nearby
-            // T3 +1 pickup is resolved before any fight can take priority.
+            // Keep combat outside the Paladin's initial awareness.
             WeakMonster = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( Paladin, 550, 700 ), #Monster_Player );
             if ( $IsValidGamePiece ( WeakMonster ))
                 begin
@@ -230,17 +210,17 @@ Begin
             WeakMonsterCount += 1;
         end
 
-    // Exploration-chest showcase: one locked recipe per class, scattered well outside
-    // the Paladin's initial awareness. Odd classes carry two rewards, even classes one.
-    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 900, 1200 ), 1, 2 );
+    // Exploration-chest showcase: visible around the Palace and far from the arena Paladin.
+    // Odd classes carry two rewards, even classes one.
+    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 180, 320 ), 1, 2 );
     if ( $IsValidGamePiece ( Chest ) == FALSE || Chest's "LWS_ChestClass" != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 900, 1200 ), 2, 1 );
+    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 180, 320 ), 2, 1 );
     if ( $IsValidGamePiece ( Chest ) == FALSE || Chest's "LWS_ChestClass" != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 900, 1200 ), 3, 2 );
+    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 180, 320 ), 3, 2 );
     if ( $IsValidGamePiece ( Chest ) == FALSE || Chest's "LWS_ChestClass" != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 900, 1200 ), 4, 1 );
+    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 180, 320 ), 4, 1 );
     if ( $IsValidGamePiece ( Chest ) == FALSE || Chest's "LWS_ChestClass" != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 900, 1200 ), 5, 2 );
+    Chest = $LWS_SpawnExplorationChest ( Palace, $RandomCoord ( Palace, 180, 320 ), 5, 2 );
     if ( $IsValidGamePiece ( Chest ) == FALSE || Chest's "LWS_ChestClass" != 5 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
 End
 

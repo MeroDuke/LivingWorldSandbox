@@ -26,16 +26,10 @@ PASS/FAIL után megmarad:
 - egy 8-as szintű Paladin;
 - egy Warriors Guild;
 - egy fejlesztés nélküli, harmadik szintű Blacksmith;
-- egy runtime generált `T3 Longsword +1`;
-- egy runtime generált `T3 Plate +1`;
-- egy Wand of Immolation;
-- négy gyenge Giant Rat biztonságosabb távolságban.
+- négy gyenge Giant Rat biztonságosabb távolságban;
+- öt C1–C5 exploration chest közvetlenül a kastély körül.
 
-Szemmel csak azt kell figyelni, hogy a Paladin felveszi-e a közeli kompatibilis
-tárgyakat, nem ragad-e bele a földi loot vizsgálatába, és a Legendary felvétele
-után képes-e használni az új képességet. A 8%/1% természetes esélyeket ebben a
-smoke tesztben nem kell kivárni.
-
-A felszerelési arénában egy Longbow is található a többi vizsgálati tárgy mellett.
-Ez szándékosan inkompatibilis a Paladinnal: a földön kell maradnia, és a Paladinnak
-nem szabad odamennie vagy eltüntetnie. Egy Ranger vagy Elf később felveheti.
+Szemmel azt kell figyelni, hogy a kastély körüli chesteket megtalálják-e a
+felfedező hősök, a chest eltűnik-e nyitáskor, és a hős statjai, potionje vagy
+aranya megkapja-e a lezárt jutalmat. A régi közvetlen Longsword, Plate, Longbow
+és Legendary teszttárgyak már nem jelennek meg.

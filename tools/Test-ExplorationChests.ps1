@@ -45,5 +45,8 @@ foreach ($chestClass in 1..5) {
         throw "Diagnostic arena is missing exploration chest class $chestClass."
     }
 }
+if (($diagnosticSource | Select-String -Pattern '\$RandomCoord\s*\(\s*Palace\s*,\s*180\s*,\s*320\s*\)' -AllMatches).Matches.Count -ne 5) {
+    throw 'All five diagnostic chests must spawn visibly around the Palace.'
+}
 
 Write-Host 'Exploration chest validation passed.'

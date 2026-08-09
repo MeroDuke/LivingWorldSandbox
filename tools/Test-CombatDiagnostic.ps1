@@ -191,11 +191,8 @@ $requiredHookPatterns = @(
     'LWS_RandomArmorFamily\s*\(\s*3\s*\)\s*!=\s*"Chaos"',
     'LWS_StaticEquipmentDropTitle\s*\(\s*"Weapon"\s*,\s*"Longsword"\s*,\s*1\s*,\s*7\s*\)\s*!=\s*"LWSDW_E_Longsword_1_7"',
     'LWS_StaticEquipmentDropTitle\s*\(\s*"Armor"\s*,\s*"Plate"\s*,\s*3\s*,\s*1\s*\)\s*!=\s*"LWSDA_R_Plate_3_1"',
-    '\$SpawnUnit\s*\(\s*WeaponDrop\s*,\s*"LWSDW_U_Longbow_3_1"',
-    'LWS_IsEquipmentCompatible\s*\(\s*Paladin\s*,\s*RejectedWeaponDrop\s*\)',
     'LWS_RandomLegendaryTitle\s*\(\s*5\s*\)\s*!=\s*"LWS_StonebacksShield"',
     'LWS_LootSlotsUsed"\s*!=\s*2',
-    'LWSDW_U_Longsword_3_1',
     'LWSDA_R_Plate_3_1',
     'LWS_WandOfImmolation',
     'Function\s+LWS_EnsurePalacePeasantSpawner',
@@ -229,8 +226,6 @@ $requiredHookPatterns = @(
     '#ATTRIB_StoredGold\s*,\s*1000',
     'Upgrade_Weapon_Chance"\s*=\s*100',
     'Upgrade_Armor_Chance"\s*=\s*100',
-    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWSDW_U_Longsword_3_1"\s*,\s*\$RandomCoord\s*\(\s*Paladin\s*,\s*500\s*,\s*600',
-    '\$SpawnUnit\s*\(\s*WeaponDrop\s*,\s*"LWSDA_R_Plate_3_1"\s*,\s*\$RandomCoord\s*\(\s*WeaponDrop\s*,\s*30\s*,\s*60',
     'WeakMonsterCount\s*<\s*4',
     '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Giant_Rat"\s*,\s*\$RandomCoord\s*\(\s*Paladin\s*,\s*550\s*,\s*700',
     '#ATTRIB_MaxHP\s*,\s*10',
@@ -263,6 +258,11 @@ if ($hookSource -match '\$NewThread\s*\(\s*\$LWS_RunCombatDiagnostic') {
 }
 if ($hookSource -match 'EnemyCount\s*<|PotionCount\s*<|PeasantCount\s*<') {
     throw 'Legacy crowd and potion arena setup must remain removed.'
+}
+if ($hookSource -match '\$SpawnUnit\s*\([^;]+"LWSDW_U_Longsword_3_1"' -or
+    $hookSource -match '\$SpawnUnit\s*\([^;]+"LWSDW_U_Longbow_3_1"' -or
+    $hookSource -match '\$SpawnUnit\s*\([^;]+"LWSDA_R_Plate_3_1"') {
+    throw 'Legacy direct inspection equipment must not be spawned in the chest arena.'
 }
 if ($hookSource -match '\$SpawnUnit\s*\([^;]+"Peasant"') {
     throw 'Diagnostic checks must not spawn real Palace peasants.'
