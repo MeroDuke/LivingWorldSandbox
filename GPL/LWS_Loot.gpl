@@ -10,7 +10,7 @@ End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Temporary diagnostic weapon drops. Production quests do not enable the AIRoot flag.
-Function LWS_TryDiagnosticWeaponDrop ( agent Defender, integer FinalDamage, integer ChanceRoll, integer AffixRoll )
+Function LWS_TryDiagnosticWeaponDrop ( agent Defender, integer FinalDamage, integer ChanceRoll )
 Declare
     integer DefenderHP;
     string DropTitle;
@@ -29,8 +29,7 @@ Begin
     $AddAttribute ( Defender, "LWS_EquipmentLootResolved", "boolean", TRUE );
 
     if ( ChanceRoll >= AIRootAgent's "LWS_DiagnosticWeaponDropChance" ) return;
-    if ( AffixRoll == 0 ) DropTitle = "LWS_T2_Longsword_Plus5";
-    else DropTitle = "LWS_T2_Longsword_Plus7";
+    DropTitle = "LWS_T2_Longsword_Plus6";
 
     Drop = $SpawnUnit ( Defender, DropTitle, "Override", $Concatenate ( $MakeInventoryAttribute ( DropTitle ), 0 ));
     if ( $IsValidGamePiece ( Drop ))

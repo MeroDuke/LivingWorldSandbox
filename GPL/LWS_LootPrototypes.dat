@@ -29,3 +29,11 @@
         (BirthScript LWS_T2LongswordPlus7_Birth)
     }
 [end]
+
+[LWS_T3_Longsword_Plus1]
+    {Special_Item
+        (type Special_Item)
+        (Title LWS_T3_Longsword_Plus1)
+        (BirthScript LWS_T3LongswordPlus1_Birth)
+    }
+[end]

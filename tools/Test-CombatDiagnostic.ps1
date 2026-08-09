@@ -89,8 +89,7 @@ $requiredLootPatterns = @(
     '\$SpawnUnit\s*\(\s*Defender\s*,\s*"LWS_HealingPotion"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_HealingPotion"',
     'Function\s+LWS_TryDiagnosticWeaponDrop',
     'LWS_DiagnosticWeaponDropChance',
-    'LWS_T2_Longsword_Plus5',
-    'LWS_T2_Longsword_Plus7'
+    'LWS_T2_Longsword_Plus6'
 )
 foreach ($pattern in $requiredLootPatterns) {
     if ($lootSource -notmatch $pattern) {
@@ -125,7 +124,7 @@ foreach ($pattern in $requiredEquipmentPatterns) {
         throw "Missing tiered equipment pattern: $pattern"
     }
 }
-foreach ($itemName in @('LWS_T2_Longsword_Plus5', 'LWS_T2_Longsword_Plus6', 'LWS_T2_Longsword_Plus7')) {
+foreach ($itemName in @('LWS_T2_Longsword_Plus6', 'LWS_T3_Longsword_Plus1')) {
     if ($lootPrototypeSource -notmatch [regex]::Escape("[$itemName]") -or $descriptionSource -notmatch ('ID="' + [regex]::Escape($itemName) + '"')) {
         throw "Tiered weapon item is incomplete: $itemName"
     }
@@ -182,8 +181,8 @@ $requiredHookPatterns = @(
     '#ATTRIB_Gold\s*,\s*1000',
     '#ATTRIB_StoredGold\s*,\s*1000',
     'Upgrade_Weapon_Chance"\s*=\s*100',
-    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_T2_Longsword_Plus6"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_T2_Longsword_Plus6"',
-    'LWS_DiagnosticWeaponDropChance"\s*,\s*"integer"\s*,\s*50',
+    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_T3_Longsword_Plus1"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_T3_Longsword_Plus1"',
+    'LWS_DiagnosticWeaponDropChance"\s*,\s*"integer"\s*,\s*100',
     '\$IsValidGamePiece\s*\(\s*ShowcaseMonster\s*\)',
     '#ATTRIB_NumHealingPotions\s*\)\s*!=\s*\(\s*PotionsBefore\s*\+\s*1',
     '\$SpawnUnit\s*\(\s*Palace\s*,\s*"GoblinOverlord"',

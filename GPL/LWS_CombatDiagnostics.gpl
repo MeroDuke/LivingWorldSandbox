@@ -172,10 +172,10 @@ Begin
     $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_3, 0 );
     $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_4, 0 );
 
-    WeaponDrop = $SpawnUnit ( Paladin, "LWS_T2_Longsword_Plus6", $RandomCoord ( Paladin, 30, 70 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_T2_Longsword_Plus6" ), 0 ));
+    WeaponDrop = $SpawnUnit ( Paladin, "LWS_T3_Longsword_Plus1", $RandomCoord ( Paladin, 30, 70 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_T3_Longsword_Plus1" ), 0 ));
 
-    // Test-only: defeated monsters now have a 50% chance to drop either T2 +5 or T2 +7.
-    $AddAttribute ( AIRootAgent, "LWS_DiagnosticWeaponDropChance", "integer", 50 );
+    // Test-only: every defeated monster drops a T2 +6 weapon for fast replacement testing.
+    $AddAttribute ( AIRootAgent, "LWS_DiagnosticWeaponDropChance", "integer", 100 );
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -141,7 +141,8 @@ becomes `T3 +6` (effective 8), then `T4 +6` (effective 9).
 After PASS the diagnostic creates a focused arena containing one level-8
 Paladin, its completed Warriors Guild, one level-3 Blacksmith with all equipment
 research explicitly cleared, and a nearby
-`T2 Longsword +6` pickup. The Paladin has 1000 carried gold plus 1000 stored
+`T3 Longsword +1` pickup. Its effective structural bonus is 3, producing a
+visible Paladin weapon value of 13. The Paladin has 1000 carried gold plus 1000 stored
 gold and a guaranteed equipment-upgrade consideration roll. Research the next
 weapon quality at the Blacksmith and allow the autonomous Paladin time to visit
 it. The Blacksmith decision uses the separate tier, so the already-high `+6`
@@ -155,11 +156,12 @@ is removed from the ground to prevent an endless retrieve/reject loop. This is
 an interim ground-loot cleanup rule until the later inventory system can replace
 it with selling, salvaging, or per-hero ignore memory.
 
-Only in the diagnostic quest, defeated monsters have a 50% chance to drop a
-`T2 Longsword +5` or `T2 Longsword +7`, selected evenly. A hero equips a dropped
-weapon only when its effective structural value is strictly greater than the
-currently equipped value. This temporary rate is disabled in the production
-sandbox. The diagnostic PASS signal remains the 7777 treasury-gold increase.
+Only in the diagnostic quest, every defeated monster currently drops a
+`T2 Longsword +6`. Its effective value of 7 must replace the equipped `T3 +1`,
+producing weapon value 17 while lowering the stored tier from T3 to T2. LVL 3
+Weapons can then upgrade it to `T3 +6` and weapon value 18. This temporary 100%
+rate is disabled in the production sandbox. The diagnostic PASS signal remains
+the 7777 treasury-gold increase.
 
 ## Direct spell kill attribution
 

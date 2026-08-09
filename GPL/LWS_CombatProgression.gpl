@@ -15,7 +15,7 @@ Begin
 
     // Loot belongs to the defeated monster, independently of who dealt the fatal hit.
     $LWS_TryHealingPotionDrop ( Defender, FinalDamage, $RandomNumber ( 100 ));
-    $LWS_TryDiagnosticWeaponDrop ( Defender, FinalDamage, $RandomNumber ( 100 ), $RandomNumber ( 2 ));
+    $LWS_TryDiagnosticWeaponDrop ( Defender, FinalDamage, $RandomNumber ( 100 ));
 
     if ( $HasAttribute ( "original_type", Attacker ) == FALSE )
         return;

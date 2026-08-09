@@ -121,6 +121,14 @@ Begin
     $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 7 );
 End
 
+Function LWS_T3LongswordPlus1_Birth ( agent ThisAgent )
+Declare
+Begin
+    $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipWeaponTransfer );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 3 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 1 );
+End
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Overrides the Northern Expansion Blacksmith decision. Vanilla equipment remains unchanged;
 // only heroes carrying LWS tier metadata use the tier-aware branch.
