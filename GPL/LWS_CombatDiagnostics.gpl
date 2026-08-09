@@ -196,9 +196,9 @@ Begin
     $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_3, 0 );
     $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_4, 0 );
 
-    WeaponDrop = $SpawnUnit ( Paladin, "LWS_RandomWeaponDrop", $RandomCoord ( Paladin, 30, 70 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_RandomWeaponDrop" ), 0 ));
+    WeaponDrop = $SpawnUnit ( Paladin, "LWS_Test_U_Long_T3P1", $RandomCoord ( Paladin, 30, 70 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_Test_U_Long_T3P1" ), 0 ));
     if ( $IsValidGamePiece ( WeaponDrop )) $LWS_ConfigureEquipmentDrop ( WeaponDrop, "Weapon", "Longsword", 3, 1 );
-    ArmorDrop = $SpawnUnit ( Paladin, "LWS_RandomArmorDrop", $RandomCoord ( Paladin, 30, 70 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_RandomArmorDrop" ), 0 ));
+    ArmorDrop = $SpawnUnit ( Paladin, "LWS_Test_R_Plate_T3P1", $RandomCoord ( Paladin, 30, 70 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_Test_R_Plate_T3P1" ), 0 ));
     if ( $IsValidGamePiece ( ArmorDrop )) $LWS_ConfigureEquipmentDrop ( ArmorDrop, "Armor", "Plate", 3, 1 );
     LegendaryDrop = $SpawnUnit ( Paladin, "LWS_WandOfImmolation", $RandomCoord ( Paladin, 100, 140 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_WandOfImmolation" ), 0 ));
 

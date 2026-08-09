@@ -8,6 +8,8 @@
     <Text id="IDTXT_LWS_STONEBACK_SHIELD_HELP">Legendary: Stoneback's Shield[newline]Teaches its bearer Stoneback's protective shield.</Text>
     <Text id="IDTXT_LWS_RANDOM_WEAPON_HELP">Dropped Weapon[newline]Its family, quality and affix are generated from the defeated monster's loot class.</Text>
     <Text id="IDTXT_LWS_RANDOM_ARMOR_HELP">Dropped Armor[newline]Its family, quality and affix are generated from the defeated monster's loot class.</Text>
+    <Text id="IDTXT_LWS_TEST_U_LONG_T3P1_HELP">Uncommon Longsword T3+1[newline]Weapon drop. Paladin/Warrior Longsword. Tier 3, affix +1, effective power 3.</Text>
+    <Text id="IDTXT_LWS_TEST_R_PLATE_T3P1_HELP">Rare Plate T3+1[newline]Armor drop. Paladin/Warrior/Dwarf Plate. Tier 3, affix +1, effective power 4.</Text>
     <Text id="IDTXT_LWS_HEALING_POTION_HELP">Healing Potion[newline]Restores health when used by a hero.</Text>
     <Text id="IDTXT_LWS_T2_LONGSWORD_PLUS5_HELP">T2 Longsword +5[newline]Bronze-tier Paladin weapon. Effective structural bonus: 6.</Text>
     <Text id="IDTXT_LWS_T2_LONGSWORD_PLUS6_HELP">T2 Longsword +6[newline]Bronze-tier Paladin weapon. Effective structural bonus: 7.</Text>
