@@ -18,8 +18,8 @@ $compatibleArmorFamilies = (@($compatibility.armorFamilies) | Sort-Object) -join
 if ($generatedArmorFamilies -ne $compatibleArmorFamilies) {
     throw 'Random armor families differ from the compatibility matrix.'
 }
-if ($generator.legendaryUsesGenericCarrier -ne $false -or $generator.legendaryCatalogPending -ne $true) {
-    throw 'Legendary drops must wait for named Unique prototypes.'
+if ($generator.legendaryUsesGenericCarrier -ne $false -or $generator.legendaryCatalogPending -ne $false) {
+    throw 'Legendary drops must use the completed named Unique catalog.'
 }
 foreach ($type in @('Weapon', 'Armor')) {
     $prototype = $generator.carrierPrototypes.$type
@@ -61,8 +61,7 @@ foreach ($pattern in @(
     'Function\s+LWS_GeneratedEquipmentTier',
     'Function\s+LWS_GeneratedEquipmentAffix',
     'Function\s+LWS_SpawnRandomEquipment',
-    'OmitCandidate\s*=\s*\$RandomNumber\s*\(\s*3\s*\)',
-    'if\s*\(\s*Rarity\s*>=\s*5\s*\)\s*Rarity\s*=\s*4'
+    'OmitCandidate\s*=\s*\$RandomNumber\s*\(\s*3\s*\)'
 )) {
     if ($lootSource -notmatch $pattern) { throw "Missing random generator pattern: $pattern" }
 }

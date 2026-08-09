@@ -1,0 +1,76 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LivingWorldSandbox - Northern Expansion Legendary Heroes artifact catalog.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Function LWS_LegendaryMarker ( string ItemTitle ) is string
+Declare
+Begin
+    if ( ItemTitle == "LWS_WandOfImmolation" ) return "LWS_HasWandOfImmolation";
+    if ( ItemTitle == "LWS_BeltOfReflection" ) return "LWS_HasBeltOfReflection";
+    if ( ItemTitle == "LWS_TeevusWand" ) return "LWS_HasTeevusWand";
+    if ( ItemTitle == "LWS_RuneOfHealing" ) return "LWS_HasRuneOfHealing";
+    if ( ItemTitle == "LWS_HelmOfDisplacement" ) return "LWS_HasHelmOfDisplacement";
+    if ( ItemTitle == "LWS_StonebacksShield" ) return "LWS_HasStonebacksShield";
+    return "";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_CanReceiveLegendary ( agent Hero, agent Item ) is boolean
+Declare
+    string Marker;
+Begin
+    if ( $IsValidGamePiece ( Hero ) == FALSE ) return FALSE;
+    if ( $IsValidGamePiece ( Item ) == FALSE ) return FALSE;
+    if ( $HasAttribute ( "LWS_LegendaryUnique", Item ) == FALSE ) return FALSE;
+    Marker = $LWS_LegendaryMarker ( Item's "Title" );
+    if ( Marker == "" ) return FALSE;
+    return $HasAttribute ( Marker, Hero ) == FALSE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_LegendaryBirth ( agent ThisAgent )
+Declare
+Begin
+    $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_LegendaryTransfer );
+    $AddAttribute ( ThisAgent, "LWS_LegendaryUnique", "boolean", TRUE );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentRarity", "string", "Legendary" );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_LegendaryTransfer ( agent OldOwnerAgent, agent NewOwnerAgent, integer AttributeID )
+Declare
+    string ItemTitle, Marker;
+Begin
+    if ( $IsValidGamePiece ( NewOwnerAgent ) == FALSE ) return;
+    ItemTitle = OldOwnerAgent's "Title";
+    Marker = $LWS_LegendaryMarker ( ItemTitle );
+
+    if ( Marker != "" && $HasAttribute ( Marker, NewOwnerAgent ) == FALSE )
+        begin
+            $AddAttribute ( NewOwnerAgent, Marker, "boolean", TRUE );
+            if ( ItemTitle == "LWS_WandOfImmolation" ) $LearnSpell ( NewOwnerAgent, "Item_Damage_Shield", FALSE );
+            else if ( ItemTitle == "LWS_BeltOfReflection" ) $LearnSpell ( NewOwnerAgent, "magic_mirror", FALSE );
+            else if ( ItemTitle == "LWS_TeevusWand" ) $LearnSpell ( NewOwnerAgent, "Vortex", FALSE );
+            else if ( ItemTitle == "LWS_RuneOfHealing" ) $LearnSpell ( NewOwnerAgent, "Item_Healing", FALSE );
+            else if ( ItemTitle == "LWS_HelmOfDisplacement" ) $LearnSpell ( NewOwnerAgent, "Force", FALSE );
+            else if ( ItemTitle == "LWS_StonebacksShield" ) $LearnSpell ( NewOwnerAgent, "Stonebacks_Shield", FALSE );
+            $CreateEffector ( NewOwnerAgent, "level_up", 0 );
+            $DebugOut ( 911, "LWS LEGENDARY ACQUIRED", NewOwnerAgent, ItemTitle );
+        end
+
+    $DeleteInventoryItem ( AttributeID, NewOwnerAgent );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_RandomLegendaryTitle ( integer ItemRoll ) is string
+Declare
+    integer Pick;
+Begin
+    Pick = ItemRoll % 6;
+    if ( Pick == 0 ) return "LWS_WandOfImmolation";
+    if ( Pick == 1 ) return "LWS_BeltOfReflection";
+    if ( Pick == 2 ) return "LWS_TeevusWand";
+    if ( Pick == 3 ) return "LWS_RuneOfHealing";
+    if ( Pick == 4 ) return "LWS_HelmOfDisplacement";
+    return "LWS_StonebacksShield";
+End

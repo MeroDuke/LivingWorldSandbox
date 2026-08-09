@@ -45,7 +45,7 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_RunLootDiagnostic ( agent AIRootAgent, agent Palace, coordinate TestLocation ) is boolean
 Declare
-    agent NoDropVictim, DropVictim, LootDrop, LootHero;
+    agent NoDropVictim, DropVictim, LootDrop, LootHero, LegendaryDrop;
     list LootDrops;
     integer PotionsBefore;
 Begin
@@ -87,6 +87,16 @@ Begin
         return FALSE;
     if ( $IsValidGamePiece ( LootDrop ))
         return FALSE;
+
+    LegendaryDrop = $SpawnUnit ( LootHero, "LWS_WandOfImmolation", "Override",
+                                  $Concatenate ( $MakeInventoryAttribute ( "LWS_WandOfImmolation" ), 0 ));
+    if ( $IsValidGamePiece ( LegendaryDrop ) == FALSE ) return FALSE;
+    $TransferInventoryItem ( "LWS_WandOfImmolation", LegendaryDrop, LootHero );
+    $LWS_LegendaryTransfer ( LegendaryDrop, LootHero, $MakeInventoryAttribute ( "LWS_WandOfImmolation" ));
+    $DeleteGamePiece ( LegendaryDrop );
+    if ( $HasAttribute ( "LWS_HasWandOfImmolation", LootHero ) == FALSE ) return FALSE;
+    if ( $IsValidGamePiece ( LegendaryDrop )) return FALSE;
+
     $DeleteGamePiece ( LootHero );
     $DeleteGamePiece ( NoDropVictim );
     $DeleteGamePiece ( DropVictim );

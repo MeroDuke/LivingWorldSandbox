@@ -6,6 +6,25 @@
     }
 [end]
 
+[LWS_WandOfImmolation]
+    {Special_Item (type Special_Item) (Title LWS_WandOfImmolation) (BirthScript LWS_LegendaryBirth)}
+[end]
+[LWS_BeltOfReflection]
+    {Special_Item (type Special_Item) (Title LWS_BeltOfReflection) (BirthScript LWS_LegendaryBirth)}
+[end]
+[LWS_TeevusWand]
+    {Special_Item (type Special_Item) (Title LWS_TeevusWand) (BirthScript LWS_LegendaryBirth)}
+[end]
+[LWS_RuneOfHealing]
+    {Special_Item (type Special_Item) (Title LWS_RuneOfHealing) (BirthScript LWS_LegendaryBirth)}
+[end]
+[LWS_HelmOfDisplacement]
+    {Special_Item (type Special_Item) (Title LWS_HelmOfDisplacement) (BirthScript LWS_LegendaryBirth)}
+[end]
+[LWS_StonebacksShield]
+    {Special_Item (type Special_Item) (Title LWS_StonebacksShield) (BirthScript LWS_LegendaryBirth)}
+[end]
+
 [LWS_RandomWeaponDrop]
     {Special_Item
         (type Special_Item)

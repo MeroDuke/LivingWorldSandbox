@@ -14,5 +14,5 @@
     "Epic": { "minimum": 7, "maximum": 10 }
   },
   "legendaryUsesGenericCarrier": false,
-  "legendaryCatalogPending": true
+  "legendaryCatalogPending": false
 }

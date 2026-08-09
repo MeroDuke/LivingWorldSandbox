@@ -148,7 +148,14 @@ and affix whose computed power stays inside the selected rarity band. Armor
 generation applies the native double magic-affix weight. If potion, weapon, and
 armor all succeed together, one candidate is omitted at random so the hard
 two-item cap has no fixed type-order bias. Named Legendary Unique items remain
-pending and therefore fall back to Epic until their catalog is implemented.
+available through the completed six-item catalog. The artifacts reproduce the
+Northern Expansion Legendary Heroes abilities with isolated LWS world items:
+Wand of Immolation, Belt of Reflection, Teevus' Wand, Rune of Healing, Helm of
+Displacement, and Stoneback's Shield. They are universally retrievable, grant a
+permanent learned ability, and cannot be applied twice to the same hero. Only
+Class 5 Witch King, Liche Queen, Black Phantom, Url Shekk, Dirgo, Rrongol, and
+Lorphus instances receive the Legendary source marker. Original quest-item IDs
+and their campaign flags remain untouched.
 
 ## Tiered equipment diagnostic
 

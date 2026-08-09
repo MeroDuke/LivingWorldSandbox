@@ -48,6 +48,13 @@ Begin
                         $LWS_ClassFromLevelXP ( $GetAttribute ( Monster, #ATTRIB_LevelXP )));
     if ( $HasAttribute ( "LWS_Perks", Monster ) == FALSE )
         $AddAttribute ( Monster, "LWS_Perks", "integer", 0 );
+    // Only named Northern Expansion Unique Class 5 monsters enter the Legendary source whitelist.
+    if ( Monster's "LWS_ProgressClass" == 5 && $HasAttribute ( "LWS_LegendaryLootSource", Monster ) == FALSE )
+        if ( Monster's "Title" == "Witch_King" || Monster's "Title" == "Liche_Queen" ||
+             Monster's "Title" == "Black_Phantom" || Monster's "Title" == "Url_Shekk" ||
+             Monster's "Title" == "Dirgo" || Monster's "Title" == "Rrongol" ||
+             Monster's "Title" == "Lorphus" )
+            $AddAttribute ( Monster, "LWS_LegendaryLootSource", "boolean", TRUE );
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

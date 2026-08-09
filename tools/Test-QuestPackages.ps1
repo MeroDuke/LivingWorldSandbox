@@ -52,3 +52,4 @@ Write-Host 'Ready-to-copy quest package validation passed.'
 & (Join-Path $PSScriptRoot 'Test-EquipmentRarity.ps1')
 & (Join-Path $PSScriptRoot 'Test-MonsterLootPolicy.ps1')
 & (Join-Path $PSScriptRoot 'Test-RandomEquipmentGenerator.ps1')
+& (Join-Path $PSScriptRoot 'Test-LegendaryCatalog.ps1')

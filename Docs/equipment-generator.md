@@ -18,5 +18,5 @@ Ha potion, weapon és armor egyszerre nyerné meg a saját rollját, a rendszer
 véletlenszerűen hagy el egy jelöltet. Így egyik tárgytípus sem élvez állandó
 sorrendi előnyt, és a két world-drop limit megmarad.
 
-A Legendary nem használhat generikus hordozót. Amíg a névvel rendelkező Unique
-katalógus el nem készül, a Legendary-roll Epic tárgyra esik vissza.
+A Legendary nem használ generikus hordozót. A sikeres whitelistelt Legendary-roll
+a külön, névvel rendelkező Unique katalógusból választ tárgyat.

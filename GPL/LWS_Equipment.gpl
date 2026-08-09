@@ -233,6 +233,11 @@ Begin
                     if ( $GetAttribute ( Hero, #ATTRIB_NumHealingPotions ) < #Max_Heal_Potions )
                         return Candidate;
                 end
+            else if ( $HasAttribute ( "LWS_LegendaryUnique", Candidate ))
+                begin
+                    if ( $LWS_CanReceiveLegendary ( Hero, Candidate ))
+                        return Candidate;
+                end
             else if ( $HasAttribute ( "LWS_EquipmentTier", Candidate ))
                 begin
                     if ( $LWS_ShouldRetrieveEquipment ( Hero, Candidate ))
