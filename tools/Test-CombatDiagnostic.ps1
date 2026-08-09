@@ -129,6 +129,8 @@ $requiredHookPatterns = @(
     'Function\s+LWS_RunSpellAttributionDiagnostic',
     '\$spelldamage\s*\(\s*SpellMonster\s*,\s*EnemyTarget\s*,\s*1\s*,\s*1\s*\)',
     '\$spelldamage\s*\(\s*SpellMonster\s*,\s*FriendlyTarget\s*,\s*1\s*,\s*1\s*\)',
+    'RequiredKills\s*=\s*\$LWS_KillsRequired',
+    'SpellMonster''s\s+"LWS_Level"\s*!=\s*2',
     'LWS_TryHealingPotionDrop\s*\(\s*NoDropVictim\s*,\s*1\s*,\s*99\s*\)',
     'LWS_TryHealingPotionDrop\s*\(\s*DropVictim\s*,\s*1\s*,\s*0\s*\)',
     'Function\s+LWS_SetupPotionArena',

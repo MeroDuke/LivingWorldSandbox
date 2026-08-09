@@ -144,4 +144,5 @@ the same fatal-hit rules as normal attacks. Enemy kills count; friendly Monster
 Player targets do not. Player-cast spells have no attacker agent and therefore
 cannot grant monster progression. Poison and other engine-periodic damage are
 not yet attributed because the vanilla periodic HP drain does not retain its
-source agent.
+source agent. The diagnostic advances a Goblin Priest to level 2 using only
+direct spell damage and leaves it alive near the Palace for visible inspection.
