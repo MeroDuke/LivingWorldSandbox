@@ -25,11 +25,11 @@ if ($generator.legendaryUsesGenericCarrier -ne $false -or $generator.legendaryCa
 if ($generator.version -ne 2 -or $generator.staticCatalog.totalEntries -ne 422) {
     throw 'Static equipment catalog metadata is invalid.'
 }
-$prototypeTitles = @([regex]::Matches($catalogPrototypeSource, '(?m)^\[(LWSD[WA]_[^\]]+)\]$') | ForEach-Object { $_.Groups[1].Value })
+$prototypeTitles = @([regex]::Matches($catalogPrototypeSource, '(?m)^\[(LWSD[WA]_[^\]\r\n]+)\]\r?$') | ForEach-Object { $_.Groups[1].Value })
 $descriptionIds = @($catalogDescriptions.Majesty.Description | ForEach-Object { $_.ID })
 $textIds = @($catalogText.Majesty.Language.Text | ForEach-Object { $_.id })
 if ($prototypeTitles.Count -ne 422 -or $descriptionIds.Count -ne 422 -or $textIds.Count -ne 422) {
-    throw 'Static equipment catalog must contain 422 prototypes, descriptions, and text records.'
+    throw "Static equipment catalog counts are invalid: prototypes=$($prototypeTitles.Count), descriptions=$($descriptionIds.Count), text=$($textIds.Count)."
 }
 foreach ($title in $prototypeTitles) {
     if ($title -notin $descriptionIds -or ("IDTXT_${title}_HELP") -notin $textIds) {
