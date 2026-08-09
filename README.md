@@ -135,3 +135,14 @@ The arena includes a completed player-owned Warriors Guild which adopts the
 Paladin as a member, preventing the otherwise homeless hero from leaving the
 map. The arena makes combat and loot visible, but its random outcome cannot
 change PASS/FAIL.
+
+## Direct spell kill attribution
+
+Monster-cast direct damage spells use the Northern Expansion
+`spelldamage(attacker, defender, ...)` pipeline and receive kill credit through
+the same fatal-hit rules as normal attacks. Enemy kills count; friendly Monster
+Player targets do not. Player-cast spells have no attacker agent and therefore
+cannot grant monster progression. Poison and other engine-periodic damage are
+not yet attributed because the vanilla periodic HP drain does not retain its
+source agent. The diagnostic advances a Goblin Priest to level 2 using only
+direct spell damage and leaves it alive near the Palace for visible inspection.

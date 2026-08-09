@@ -71,6 +71,50 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_RunSpellAttributionDiagnostic ( agent Palace, coordinate TestLocation ) is boolean
+Declare
+    agent SpellMonster, EnemyTarget, FriendlyTarget;
+    integer RequiredKills;
+Begin
+    SpellMonster = $SpawnUnit ( Palace, "Goblin_Priest", $RandomCoord ( Palace, 250, 400 ), #Monster_Player );
+    if ( $IsValidGamePiece ( SpellMonster ) == FALSE )
+        return FALSE;
+    $LWS_EnsureMonsterState ( SpellMonster );
+
+    EnemyTarget = $SpawnUnit ( Palace, "Peasant", $RandomCoord ( TestLocation, 80, 160 ), #Player_1 );
+    if ( $IsValidGamePiece ( EnemyTarget ) == FALSE )
+        return FALSE;
+    $SetAttribute ( EnemyTarget, #ATTRIB_HP, 1 );
+    $spelldamage ( SpellMonster, EnemyTarget, 1, 1 );
+    if ( SpellMonster's "LWS_TotalKills" != 1 )
+        return FALSE;
+
+    // Reach level 2 using only direct spell kills, then leave the priest alive
+    // near the Palace as a visible runtime result.
+    RequiredKills = $LWS_KillsRequired ( SpellMonster's "LWS_ProgressClass", 1 );
+    while ( SpellMonster's "LWS_TotalKills" < RequiredKills ) do
+        begin
+            EnemyTarget = $SpawnUnit ( Palace, "Peasant", $RandomCoord ( SpellMonster, 80, 160 ), #Player_1 );
+            if ( $IsValidGamePiece ( EnemyTarget ) == FALSE )
+                return FALSE;
+            $SetAttribute ( EnemyTarget, #ATTRIB_HP, 1 );
+            $spelldamage ( SpellMonster, EnemyTarget, 1, 1 );
+        end
+    if ( SpellMonster's "LWS_Level" != 2 )
+        return FALSE;
+
+    FriendlyTarget = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( TestLocation, 80, 160 ), #Monster_Player );
+    if ( $IsValidGamePiece ( FriendlyTarget ) == FALSE )
+        return FALSE;
+    $SetAttribute ( FriendlyTarget, #ATTRIB_HP, 1 );
+    $spelldamage ( SpellMonster, FriendlyTarget, 1, 1 );
+    if ( SpellMonster's "LWS_TotalKills" != 1 )
+        return FALSE;
+
+    return TRUE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_SetupPotionArena ( agent Palace )
 Declare
     agent WarriorsGuild, Paladin, Enemy, PotionDrop;
@@ -341,6 +385,9 @@ Begin
     if ( $IsValidGamePiece ( ShowcaseMonster )) $DeleteGamePiece ( ShowcaseMonster );
 
     if ( $LWS_RunLootDiagnostic ( AIRootAgent, Palace, TestLocation ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    if ( $LWS_RunSpellAttributionDiagnostic ( Palace, TestLocation ) == FALSE )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
     if ( AIRootAgent's "LWS_DiagnosticFailures" == 0 )
