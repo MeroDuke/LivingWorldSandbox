@@ -5,18 +5,11 @@
 
 Function LivingWorldSandbox ()
 Declare
-    agent Palace, AIRootAgent;
+    agent Palace;
     list Palaces;
 Begin
     Palaces = $ListPalaces ();
     Palace = $ListMember ( Palaces, 1 );
-    AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
-
-    if ( $HasAttribute ( "LWS_EquipmentPickupDirector", AIRootAgent ) == FALSE )
-        begin
-            $AddAttribute ( AIRootAgent, "LWS_EquipmentPickupDirector", "function", $LWS_EquipmentPickupDirector );
-            $NewThread ( AIRootAgent's "LWS_EquipmentPickupDirector", 2000, AIRootAgent );
-        end
 
     $LWS_SeedStarterLairs ( Palace );
     $LWS_SeedStarterMonsters ( Palace );

@@ -193,8 +193,6 @@ $requiredHookPatterns = @(
     'LWS_StaticEquipmentDropTitle\s*\(\s*"Armor"\s*,\s*"Plate"\s*,\s*3\s*,\s*1\s*\)\s*!=\s*"LWSDA_R_Plate_3_1"',
     '\$SpawnUnit\s*\(\s*WeaponDrop\s*,\s*"LWSDW_U_Longbow_3_1"',
     'LWS_IsEquipmentCompatible\s*\(\s*Paladin\s*,\s*RejectedWeaponDrop\s*\)',
-    '\$ListObjects\s*\(\s*WeaponDrop\s*,\s*"LWS_EquipmentDrop"',
-    'LWS_SelectDesiredEquipmentDrop\s*\(\s*Paladin\s*,\s*EquipmentDrops\s*\)',
     'LWS_RandomLegendaryTitle\s*\(\s*5\s*\)\s*!=\s*"LWS_StonebacksShield"',
     'LWS_LootSlotsUsed"\s*!=\s*2',
     'LWSDW_U_Longsword_3_1',
@@ -297,9 +295,8 @@ if ($itemGeneratorSource -notmatch 'LWS_HealingPotion' -or $itemGeneratorSource 
 if ($itemGeneratorSource -notmatch 'LWS_SelectDesiredSpecialItem' -or $itemGeneratorSource -notmatch 'LWS_ShouldRetrieveEquipment') {
     throw 'Item evaluation override does not filter inferior tiered equipment.'
 }
-if ($itemGeneratorSource -notmatch 'Target''s\s+"Type"\s*=\s*"LWS_EquipmentDrop"' -or
-    $itemGeneratorSource -notmatch '\$Reset_Tasks\s*\(ThisAgent\)') {
-    throw 'Item evaluation override does not migrate legacy equipment out of the vanilla pickup loop.'
+if ($itemGeneratorSource -notmatch '\$DeleteGamePiece\s*\(Target\)') {
+    throw 'Item evaluation override does not break the inferior-equipment retrieval loop.'
 }
 
 if (-not (Test-Path -LiteralPath $bytecodePath -PathType Leaf)) {

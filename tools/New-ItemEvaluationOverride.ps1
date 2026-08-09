@@ -64,9 +64,10 @@ If (Target's "Title" == "LWS_HealingPotion" && `$GetAttribute (ThisAgent, #ATTRI
 
                     If (`$HasAttribute ("LWS_EquipmentType", Target) && `$LWS_ShouldRetrieveEquipment (ThisAgent, Target) == FALSE)
                         begin
-                            // Safety gate for legacy saves. Current equipment drops use a private
-                            // world type and are assigned only by LWS_EquipmentPickupDirector.
-                            Target's "Type" = "LWS_EquipmentDrop";
+                            // Precompiled hero decision trees can select this item again even though
+                            // the generated evaluator filters it. Remove inspected inferior loot to
+                            // prevent an endless retrieve/reject loop.
+                            `$DeleteGamePiece (Target);
                             `$Reset_Tasks (ThisAgent);
                             return;
                         end

@@ -47,11 +47,6 @@ megelőzi a tier + affix összehasonlítást.
 - A statikus dropok már a saját BirthScriptjükben megkapják a típus- és családbesorolást.
   Így a hős AI a tárgy megjelenésének első pillanatától kiszűrheti az inkompatibilis
   felszerelést; például a Paladin nem választhat Longbow dropot.
-- A felszerelések világobjektum-típusa `LWS_EquipmentDrop`, nem `Special_Item`.
-  Az eredeti hős-BCD-k közvetlen vanilla itemkeresése questből nem írható felül
-  minden hívási útvonalon. A kompatibilis célpontot ezért az
-  `LWS_EquipmentPickupDirector` választja ki; a potionök, Legendary tárgyak és
-  treasure chestek továbbra is a játék eredeti `Special_Item` útvonalát használják.
 - A Ranger és az Elf közös Longbow-dropokat használhat, de eltérő páncélt viselnek.
 - A Healer és a Gnome használhat Daggert, de nem viselhet páncélt.
 - A Monk sem fegyver-, sem páncéldroppot nem használhat.

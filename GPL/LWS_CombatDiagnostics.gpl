@@ -162,8 +162,7 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_SetupEquipmentArena ( agent AIRootAgent, agent Palace )
 Declare
-    agent WarriorsGuild, Blacksmith, Paladin, WeaponDrop, RejectedWeaponDrop, ArmorDrop, LegendaryDrop, WeakMonster, DesiredDrop;
-    list EquipmentDrops;
+    agent WarriorsGuild, Blacksmith, Paladin, WeaponDrop, RejectedWeaponDrop, ArmorDrop, LegendaryDrop, WeakMonster;
     coordinate ArenaLocation;
     integer WeakMonsterCount;
 Begin
@@ -214,11 +213,6 @@ Begin
         end
     ArmorDrop = $SpawnUnit ( WeaponDrop, "LWSDA_R_Plate_3_1", $RandomCoord ( WeaponDrop, 30, 60 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWSDA_R_Plate_3_1" ), 0 ));
     if ( $IsValidGamePiece ( ArmorDrop )) $LWS_ConfigureEquipmentDrop ( ArmorDrop, "Armor", "Plate", 3, 1 );
-    $ListObjects ( WeaponDrop, "LWS_EquipmentDrop", 120, EquipmentDrops, #NoHiddenMap );
-    if ( $ListSize ( EquipmentDrops ) < 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    DesiredDrop = $LWS_SelectDesiredEquipmentDrop ( Paladin, EquipmentDrops );
-    if ( $IsValidGamePiece ( DesiredDrop ) == FALSE || DesiredDrop == RejectedWeaponDrop )
-        AIRootAgent's "LWS_DiagnosticFailures" += 1;
     LegendaryDrop = $SpawnUnit ( Paladin, "LWS_WandOfImmolation", $RandomCoord ( Paladin, 100, 140 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_WandOfImmolation" ), 0 ));
 
     WeakMonsterCount = 0;
