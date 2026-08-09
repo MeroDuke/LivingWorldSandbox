@@ -36,14 +36,20 @@ if ([regex]::Matches($source, [regex]::Escape($globalNeedle)).Count -ne 1) { thr
 if ([regex]::Matches($source, [regex]::Escape($pickupNeedle)).Count -ne 1) { throw 'Could not locate unique item pickup point.' }
 
 $source = $source.Replace($nearbyNeedle, @"
-$nearbyNeedle
+Item = `$LWS_SelectDesiredSpecialItem (ThisAgent, Items);
+
+                    If (`$IsValidGamePiece (Item) == FALSE)
+                        return False;
 
                     // LWS: do not reserve a potion that this hero cannot carry.
                     If (Item's "Title" == "LWS_HealingPotion" && `$GetAttribute (ThisAgent, #ATTRIB_NumHealingPotions) >= #Max_Heal_Potions)
                         return False;
 "@)
 $source = $source.Replace($globalNeedle, @"
-$globalNeedle
+This_resource = `$LWS_SelectDesiredSpecialItem (ThisAgent, Resources);
+
+            If (`$IsValidGamePiece (This_resource) == FALSE)
+                return False;
 
             // LWS: leave capped potion drops available for another hero.
             If (This_resource's "Title" == "LWS_HealingPotion" && `$GetAttribute (ThisAgent, #ATTRIB_NumHealingPotions) >= #Max_Heal_Potions)
@@ -56,13 +62,23 @@ If (Target's "Title" == "LWS_HealingPotion" && `$GetAttribute (ThisAgent, #ATTRI
                             return;
                         end
 
+                    If (`$HasAttribute ("LWS_EquipmentTier", Target) && `$LWS_ShouldRetrieveEquipment (ThisAgent, Target) == FALSE)
+                        begin
+                            // Precompiled hero decision trees can select this item again even though
+                            // the generated evaluator filters it. Remove inspected inferior loot to
+                            // prevent an endless retrieve/reject loop.
+                            `$DeleteGamePiece (Target);
+                            `$Reset_Tasks (ThisAgent);
+                            return;
+                        end
+
                     $pickupNeedle
 "@)
 
 $header = @(
     '// GENERATED FILE - DO NOT EDIT OR COMMIT.',
     '// Derived at build time from the locally installed Northern Expansion SDK.',
-    '// LWS change: heroes at the vanilla potion cap ignore Healing Potion drops.',
+    '// LWS change: heroes ignore capped potions and remove inspected inferior equipment.',
     ''
 )
 New-Item -ItemType Directory -Force -Path (Split-Path -Parent $OutputPath) | Out-Null

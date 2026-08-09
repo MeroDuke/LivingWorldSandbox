@@ -26,9 +26,27 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Reconcile the Palace's cached worker count and restart its autonomous spawner if necessary.
+Function LWS_EnsurePalacePeasantSpawner ( agent Palace )
+Declare
+    list PlayerHeroes, Peasants;
+Begin
+    if ( $IsValidGamePiece ( Palace ) == FALSE ) return;
+
+    $ListObjects ( Palace, "Hero", -1, PlayerHeroes, #MyPlayer );
+    Peasants = $ListTitles ( PlayerHeroes, "Peasant" );
+    Palace's "num_peasants" = $ListSize ( Peasants );
+
+    if ( Palace's "num_peasants" < Palace's "max_peasants" )
+        if ( $IsRunning ( Palace's "peasant_spawn" ) == FALSE )
+            $RunThread ( Palace's "peasant_spawn", #Normal_Cycle, Palace );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_RunLootDiagnostic ( agent AIRootAgent, agent Palace, coordinate TestLocation ) is boolean
 Declare
     agent NoDropVictim, DropVictim, LootDrop, LootHero;
+    list LootDrops;
     integer PotionsBefore;
 Begin
     NoDropVictim = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( TestLocation, 80, 160 ), #Monster_Player );
@@ -49,7 +67,8 @@ Begin
     if ( AIRootAgent's "LWS_DiagnosticLootDrops" != 1 )
         return FALSE;
 
-    LootDrop = $SpawnUnit ( DropVictim, "LWS_HealingPotion", "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_HealingPotion" ), 0 ));
+    $ListObjects ( DropVictim, "Special_Item", 100, LootDrops );
+    LootDrop = $ListMember ( LootDrops, 1 );
     if ( $IsValidGamePiece ( LootDrop ) == FALSE )
         return FALSE;
 
@@ -67,6 +86,8 @@ Begin
     if ( $IsValidGamePiece ( LootDrop ))
         return FALSE;
     $DeleteGamePiece ( LootHero );
+    $DeleteGamePiece ( NoDropVictim );
+    $DeleteGamePiece ( DropVictim );
     return TRUE;
 End
 
@@ -81,7 +102,7 @@ Begin
         return FALSE;
     $LWS_EnsureMonsterState ( SpellMonster );
 
-    EnemyTarget = $SpawnUnit ( Palace, "Peasant", $RandomCoord ( TestLocation, 80, 160 ), #Player_1 );
+    EnemyTarget = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( TestLocation, 80, 160 ), #Player_1 );
     if ( $IsValidGamePiece ( EnemyTarget ) == FALSE )
         return FALSE;
     $SetAttribute ( EnemyTarget, #ATTRIB_HP, 1 );
@@ -94,7 +115,7 @@ Begin
     RequiredKills = $LWS_KillsRequired ( SpellMonster's "LWS_ProgressClass", 1 );
     while ( SpellMonster's "LWS_TotalKills" < RequiredKills ) do
         begin
-            EnemyTarget = $SpawnUnit ( Palace, "Peasant", $RandomCoord ( SpellMonster, 80, 160 ), #Player_1 );
+            EnemyTarget = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( SpellMonster, 80, 160 ), #Player_1 );
             if ( $IsValidGamePiece ( EnemyTarget ) == FALSE )
                 return FALSE;
             $SetAttribute ( EnemyTarget, #ATTRIB_HP, 1 );
@@ -111,15 +132,17 @@ Begin
     if ( SpellMonster's "LWS_TotalKills" != 1 )
         return FALSE;
 
+    $DeleteGamePiece ( FriendlyTarget );
+    $DeleteGamePiece ( SpellMonster );
     return TRUE;
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function LWS_SetupPotionArena ( agent Palace )
+Function LWS_SetupEquipmentArena ( agent AIRootAgent, agent Palace )
 Declare
-    agent WarriorsGuild, Paladin, Enemy, PotionDrop;
+    agent WarriorsGuild, Blacksmith, Paladin, WeaponDrop, ArmorDrop, WeakMonster;
     coordinate ArenaLocation;
-    integer EnemyCount, PotionCount;
+    integer WeakMonsterCount;
 Begin
     ArenaLocation = $RandomCoord ( Palace, 700, 900 );
     WarriorsGuild = $SpawnUnit ( Palace, "Warriors_Guild", ArenaLocation, "MaxHP", #Player_1 );
@@ -133,24 +156,40 @@ Begin
         $Adopt ( WarriorsGuild, Paladin );
 
     $Advance_To_Level ( Paladin, 8 );
-    $SetAttribute ( Paladin, #ATTRIB_HP, $GetAttribute ( Paladin, #ATTRIB_MaxHP ) / 2 );
+    $SetAttribute ( Paladin, #ATTRIB_HP, $GetAttribute ( Paladin, #ATTRIB_MaxHP ));
     $SetAttribute ( Paladin, #ATTRIB_NumHealingPotions, 0 );
+    $SetAttribute ( Paladin, #ATTRIB_Gold, 1000 );
+    $SetAttribute ( Paladin, #ATTRIB_StoredGold, 1000 );
+    Paladin's "Upgrade_Weapon_Chance" = 100;
+    Paladin's "Upgrade_Armor_Chance" = 100;
 
-    EnemyCount = 0;
-    while ( EnemyCount < 6 ) do
-        begin
-            if (( EnemyCount % 2 ) == 0 )
-                Enemy = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( Paladin, 60, 150 ), #Monster_Player );
-            else
-                Enemy = $SpawnUnit ( Palace, "Skeleton", $RandomCoord ( Paladin, 60, 150 ), #Monster_Player );
-            EnemyCount += 1;
-        end
+    Blacksmith = $SpawnUnit ( Palace, "Blacksmith3", $RandomCoord ( WarriorsGuild, 180, 260 ), "MaxHP", #Player_1 );
+    if ( $IsValidGamePiece ( Blacksmith ) == FALSE )
+        return;
+    // Max-level building shell, deliberately without researched equipment technologies.
+    $SetAttribute ( Blacksmith, #ATTRIB_ResearchArmorLevel_2, 0 );
+    $SetAttribute ( Blacksmith, #ATTRIB_ResearchArmorLevel_3, 0 );
+    $SetAttribute ( Blacksmith, #ATTRIB_ResearchArmorLevel_4, 0 );
+    $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_2, 0 );
+    $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_3, 0 );
+    $SetAttribute ( Blacksmith, #ATTRIB_ResearchWeaponLevel_4, 0 );
 
-    PotionCount = 0;
-    while ( PotionCount < 10 ) do
+    WeaponDrop = $SpawnUnit ( Paladin, "LWS_T3_Longsword_Plus1", $RandomCoord ( Paladin, 30, 70 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_T3_Longsword_Plus1" ), 0 ));
+    ArmorDrop = $SpawnUnit ( Paladin, "LWS_T3_Armor_Plus1", $RandomCoord ( Paladin, 30, 70 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_T3_Armor_Plus1" ), 0 ));
+
+    WeakMonsterCount = 0;
+    while ( WeakMonsterCount < 4 ) do
         begin
-            PotionDrop = $SpawnUnit ( Paladin, "LWS_HealingPotion", $RandomCoord ( Paladin, 30, 100 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_HealingPotion" ), 0 ));
-            PotionCount += 1;
+            // Keep combat outside the Paladin's initial awareness so the nearby
+            // T3 +1 pickup is resolved before any fight can take priority.
+            WeakMonster = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( Paladin, 550, 700 ), #Monster_Player );
+            if ( $IsValidGamePiece ( WeakMonster ))
+                begin
+                    $SetAttribute ( WeakMonster, #ATTRIB_MaxHP, 10 );
+                    $SetAttribute ( WeakMonster, #ATTRIB_HP, 10 );
+                    $SetAttribute ( WeakMonster, #ATTRIB_Strength, 1 );
+                end
+            WeakMonsterCount += 1;
         end
 End
 
@@ -216,9 +255,9 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_RunCombatDiagnostic ( agent AIRootAgent, agent Palace )
 Declare
-    agent Attacker, EnemyTarget, FriendlyTarget, LairTarget, BuildingTarget, ArenaPeasant, ShowcaseMonster, PerkTester;
+    agent Attacker, EnemyTarget, FriendlyTarget, LairTarget, BuildingTarget, ShowcaseMonster, PerkTester;
     coordinate TestLocation;
-    integer OriginalStrength, PeasantCount;
+    integer OriginalStrength;
     integer OldHtoH, OldStrength, OldArmor, OldParry, OldDodge, OldMagicResistance;
 Begin
     TestLocation = $RandomCoord ( Palace, 300, 500 );
@@ -263,13 +302,21 @@ Begin
     if ( $LWS_KillsRequired ( 4, 1 ) != 12 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_KillsRequired ( 5, 1 ) != 20 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
+    // Tier/affix arithmetic is deterministic and independent of Blacksmith AI timing.
+    if ( $LWS_WeaponTierBaseBonus ( 2 ) != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_WeaponTierBaseBonus ( 3 ) != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_WeaponTierBaseBonus ( 4 ) != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_WeaponEffectiveBonus ( 2, 6 ) != 7 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_WeaponEffectiveBonus ( 3, 6 ) != 8 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_WeaponEffectiveBonus ( 4, 6 ) != 9 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
     Attacker's "LWS_TotalKills" = 7;
     $LWS_EnsureMonsterState ( Attacker );
     if ( Attacker's "LWS_TotalKills" != 7 )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
     Attacker's "LWS_TotalKills" = 0;
 
-    EnemyTarget = $SpawnUnit ( Palace, "Peasant", $RandomCoord ( TestLocation, 50 ), #Player_1 );
+    EnemyTarget = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( TestLocation, 50 ), #Player_1 );
     $SetAttribute ( EnemyTarget, #ATTRIB_HP, 1 );
     $SetAttribute ( EnemyTarget, #ATTRIB_armor_basic_damage, 0 );
     $damage ( Attacker, EnemyTarget );
@@ -292,6 +339,9 @@ Begin
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
     LairTarget = $SpawnUnit ( Palace, "Goblin_Hovel", $RandomCoord ( TestLocation, 100 ), "MaxHP", #Player_1 );
+    // Suppress the lair death payload so the controlled attribution check leaves no arena monsters.
+    LairTarget's "Has_Special_Spawn" = TRUE;
+    LairTarget's "Special_Spawn_Type" = "xx";
     $SetAttribute ( LairTarget, #ATTRIB_HP, 1 );
     $damage ( Attacker, LairTarget );
 
@@ -348,15 +398,8 @@ Begin
     $DeleteGamePiece ( PerkTester );
         end
 
-    // Observable arena: the same surviving rat can naturally hunt nine nearby peasants.
-    // Together with the controlled first kill, ten total kills take a starter from level 1 to level 5.
+    // The old peasant/monster showcase is intentionally removed from the visible arena.
     $SetAttribute ( Attacker, #ATTRIB_Strength, OriginalStrength );
-    PeasantCount = 0;
-    while ( PeasantCount < 9 ) do
-        begin
-            ArenaPeasant = $SpawnUnit ( Palace, "Peasant", $RandomCoord ( TestLocation, 50, 220 ), #Player_1 );
-            PeasantCount += 1;
-        end
 
     // Visible progression-class showcase. Each survivor is prepared exactly to level 2.
     ShowcaseMonster = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
@@ -403,6 +446,10 @@ Begin
             $DebugOut ( 911, "LWS PROGRESSION CLASS DIAGNOSTIC: FAIL", AIRootAgent's "LWS_DiagnosticFailures" );
         end
 
-    // Autonomous, observable loot arena; its random combat outcome cannot change PASS/FAIL.
-    $LWS_SetupPotionArena ( Palace );
+    // Remove only the explicitly tracked diagnostic attacker.
+    if ( $IsValidGamePiece ( Attacker )) $DeleteGamePiece ( Attacker );
+
+    // Autonomous, observable equipment arena; its outcome cannot change PASS/FAIL.
+    $LWS_SetupEquipmentArena ( AIRootAgent, Palace );
+    $LWS_EnsurePalacePeasantSpawner ( Palace );
 End

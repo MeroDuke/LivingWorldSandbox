@@ -5,3 +5,51 @@
         (BirthScript LWS_HealingPotion_Birth)
     }
 [end]
+
+[LWS_T2_Armor_Plus6]
+    {Special_Item
+        (type Special_Item)
+        (Title LWS_T2_Armor_Plus6)
+        (BirthScript LWS_T2ArmorPlus6_Birth)
+    }
+[end]
+
+[LWS_T3_Armor_Plus1]
+    {Special_Item
+        (type Special_Item)
+        (Title LWS_T3_Armor_Plus1)
+        (BirthScript LWS_T3ArmorPlus1_Birth)
+    }
+[end]
+
+[LWS_T2_Longsword_Plus5]
+    {Special_Item
+        (type Special_Item)
+        (Title LWS_T2_Longsword_Plus5)
+        (BirthScript LWS_T2LongswordPlus5_Birth)
+    }
+[end]
+
+[LWS_T2_Longsword_Plus6]
+    {Special_Item
+        (type Special_Item)
+        (Title LWS_T2_Longsword_Plus6)
+        (BirthScript LWS_T2LongswordPlus6_Birth)
+    }
+[end]
+
+[LWS_T2_Longsword_Plus7]
+    {Special_Item
+        (type Special_Item)
+        (Title LWS_T2_Longsword_Plus7)
+        (BirthScript LWS_T2LongswordPlus7_Birth)
+    }
+[end]
+
+[LWS_T3_Longsword_Plus1]
+    {Special_Item
+        (type Special_Item)
+        (Title LWS_T3_Longsword_Plus1)
+        (BirthScript LWS_T3LongswordPlus1_Birth)
+    }
+[end]

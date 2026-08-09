@@ -8,6 +8,7 @@ $hookPath = Join-Path $repositoryRoot 'GPL\LWS_CombatDiagnostics.gpl'
 $combatPath = Join-Path $repositoryRoot 'GPL\LWS_CombatProgression.gpl'
 $buildingRewardsPath = Join-Path $repositoryRoot 'GPL\LWS_BuildingRewards.gpl'
 $lootPath = Join-Path $repositoryRoot 'GPL\LWS_Loot.gpl'
+$equipmentPath = Join-Path $repositoryRoot 'GPL\LWS_Equipment.gpl'
 $lootPrototypePath = Join-Path $repositoryRoot 'GPL\LWS_LootPrototypes.dat'
 $descriptionPath = Join-Path $repositoryRoot 'Data\LWS_Descriptions.xml'
 $statePath = Join-Path $repositoryRoot 'GPL\LWS_MonsterState.gpl'
@@ -32,6 +33,7 @@ $hookSource = Get-Content -LiteralPath $hookPath -Raw
 $combatSource = Get-Content -LiteralPath $combatPath -Raw
 $buildingRewardsSource = Get-Content -LiteralPath $buildingRewardsPath -Raw
 $lootSource = Get-Content -LiteralPath $lootPath -Raw
+$equipmentSource = Get-Content -LiteralPath $equipmentPath -Raw
 $lootPrototypeSource = Get-Content -LiteralPath $lootPrototypePath -Raw
 $descriptionSource = Get-Content -LiteralPath $descriptionPath -Raw
 $stateSource = Get-Content -LiteralPath $statePath -Raw
@@ -84,7 +86,13 @@ $requiredLootPatterns = @(
     'ChanceRoll\s*>=\s*8',
     '\$AdjustAttribute\s*\(\s*NewOwnerAgent\s*,\s*#ATTRIB_NumHealingPotions\s*,\s*1',
     '\$DeleteInventoryItem\s*\(\s*AttributeID\s*,\s*NewOwnerAgent',
-    '\$SpawnUnit\s*\(\s*Defender\s*,\s*"LWS_HealingPotion"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_HealingPotion"'
+    '\$SpawnUnit\s*\(\s*Defender\s*,\s*"LWS_HealingPotion"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_HealingPotion"',
+    'Function\s+LWS_TryDiagnosticWeaponDrop',
+    'LWS_DiagnosticWeaponDropChance',
+    'LWS_T2_Longsword_Plus6',
+    'Function\s+LWS_TryDiagnosticArmorDrop',
+    'LWS_DiagnosticArmorDropChance',
+    'LWS_T2_Armor_Plus6'
 )
 foreach ($pattern in $requiredLootPatterns) {
     if ($lootSource -notmatch $pattern) {
@@ -100,6 +108,45 @@ if ($lootPrototypeSource -notmatch '\[LWS_HealingPotion\]' -or $lootPrototypeSou
 if ($descriptionSource -notmatch 'ID="LWS_HealingPotion"' -or $descriptionSource -notmatch 'IsInventoryItem') {
     throw 'Healing potion unit description is missing or is not an inventory item.'
 }
+$requiredEquipmentPatterns = @(
+    'Function\s+LWS_WeaponTierBaseBonus',
+    'Function\s+LWS_WeaponEffectiveBonus',
+    'Function\s+LWS_ArmorTierBaseBonus',
+    'Function\s+LWS_ArmorEffectiveBonus',
+    'Function\s+LWS_ShouldRetrieveWeapon',
+    'Function\s+LWS_ShouldRetrieveArmor',
+    'Function\s+LWS_ShouldRetrieveEquipment',
+    'Function\s+LWS_SelectDesiredSpecialItem',
+    'Function\s+LWS_EquipWeaponTransfer',
+    'LWS_WeaponTier',
+    'LWS_WeaponAffixBonus',
+    'LWS_WeaponBaseDamage',
+    'LWS_ArmorTier',
+    'LWS_ArmorAffixBonus',
+    'Function\s+BlackSmith_Check',
+    'Function\s+Obtain_Upgrade',
+    'Tier\s*==\s*2[^}]+Tier\s*=\s*3',
+    'Tier\s*==\s*3[^}]+Tier\s*=\s*4',
+    '#ATTRIB_Weapon_Struct_Bonus\s*,\s*\$LWS_WeaponTierBaseBonus\s*\(\s*Tier',
+    '#ATTRIB_Weapon_Basic_Damage\s*,\s*ThisAgent''s\s+"LWS_WeaponBaseDamage"\s*\+\s*AffixBonus',
+    '#ATTRIB_Armor_Struct_Bonus\s*,\s*\$LWS_ArmorTierBaseBonus\s*\(\s*Tier',
+    '#ATTRIB_Armor_Magic_Bonus\s*,\s*AffixBonus'
+)
+foreach ($pattern in $requiredEquipmentPatterns) {
+    if ($equipmentSource -notmatch $pattern) {
+        throw "Missing tiered equipment pattern: $pattern"
+    }
+}
+foreach ($itemName in @('LWS_T2_Longsword_Plus6', 'LWS_T3_Longsword_Plus1')) {
+    if ($lootPrototypeSource -notmatch [regex]::Escape("[$itemName]") -or $descriptionSource -notmatch ('ID="' + [regex]::Escape($itemName) + '"')) {
+        throw "Tiered weapon item is incomplete: $itemName"
+    }
+}
+foreach ($itemName in @('LWS_T2_Armor_Plus6', 'LWS_T3_Armor_Plus1')) {
+    if ($lootPrototypeSource -notmatch [regex]::Escape("[$itemName]") -or $descriptionSource -notmatch ('ID="' + [regex]::Escape($itemName) + '"')) {
+        throw "Tiered armor item is incomplete: $itemName"
+    }
+}
 $requiredCombatPatterns = @(
     'Function\s+LWS_CombatCredit',
     'FinalDamage\s*<=\s*0',
@@ -112,7 +159,9 @@ $requiredCombatPatterns = @(
     'LWS_DiagnosticBuildings',
     'LWS_RecordUnitKill',
     'LWS_ProcessBuildingDestroyed',
-    'LWS_TryHealingPotionDrop'
+    'LWS_TryHealingPotionDrop',
+    'LWS_TryDiagnosticWeaponDrop',
+    'LWS_TryDiagnosticArmorDrop'
 )
 foreach ($pattern in $requiredCombatPatterns) {
     if ($combatSource -notmatch $pattern) {
@@ -121,6 +170,9 @@ foreach ($pattern in $requiredCombatPatterns) {
 }
 
 $requiredHookPatterns = @(
+    'Function\s+LWS_EnsurePalacePeasantSpawner',
+    'Palace''s\s+"num_peasants"\s*=\s*\$ListSize',
+    '\$RunThread\s*\(\s*Palace''s\s+"peasant_spawn"',
     '\$LWS_EnsureMonsterState\s*\(\s*Attacker\s*\)',
     '\$LWS_ClassFromLevelXP\s*\(\s*2001\s*\)\s*!=\s*5',
     '\$LWS_KillsRequired\s*\(\s*5\s*,\s*1\s*\)\s*!=\s*20',
@@ -133,14 +185,28 @@ $requiredHookPatterns = @(
     'SpellMonster''s\s+"LWS_Level"\s*!=\s*2',
     'LWS_TryHealingPotionDrop\s*\(\s*NoDropVictim\s*,\s*1\s*,\s*99\s*\)',
     'LWS_TryHealingPotionDrop\s*\(\s*DropVictim\s*,\s*1\s*,\s*0\s*\)',
-    'Function\s+LWS_SetupPotionArena',
+    'Function\s+LWS_SetupEquipmentArena',
     '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Warriors_Guild"',
     '\$SpawnUnit\s*\(\s*WarriorsGuild\s*,\s*"Paladin"',
+    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Blacksmith3"',
+    '#ATTRIB_ResearchArmorLevel_2\s*,\s*0',
+    '#ATTRIB_ResearchArmorLevel_3\s*,\s*0',
+    '#ATTRIB_ResearchArmorLevel_4\s*,\s*0',
+    '#ATTRIB_ResearchWeaponLevel_2\s*,\s*0',
+    '#ATTRIB_ResearchWeaponLevel_3\s*,\s*0',
+    '#ATTRIB_ResearchWeaponLevel_4\s*,\s*0',
     '\$Adopt\s*\(\s*WarriorsGuild\s*,\s*Paladin\s*\)',
     '\$Advance_To_Level\s*\(\s*Paladin\s*,\s*8\s*\)',
-    'EnemyCount\s*<\s*6',
-    'PotionCount\s*<\s*10',
-    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_HealingPotion"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_HealingPotion"',
+    '#ATTRIB_Gold\s*,\s*1000',
+    '#ATTRIB_StoredGold\s*,\s*1000',
+    'Upgrade_Weapon_Chance"\s*=\s*100',
+    'Upgrade_Armor_Chance"\s*=\s*100',
+    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_T3_Longsword_Plus1"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_T3_Longsword_Plus1"',
+    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_T3_Armor_Plus1"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_T3_Armor_Plus1"',
+    'WeakMonsterCount\s*<\s*4',
+    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Giant_Rat"\s*,\s*\$RandomCoord\s*\(\s*Paladin\s*,\s*550\s*,\s*700',
+    '#ATTRIB_MaxHP\s*,\s*10',
+    '#ATTRIB_Strength\s*,\s*1',
     '\$IsValidGamePiece\s*\(\s*ShowcaseMonster\s*\)',
     '#ATTRIB_NumHealingPotions\s*\)\s*!=\s*\(\s*PotionsBefore\s*\+\s*1',
     '\$SpawnUnit\s*\(\s*Palace\s*,\s*"GoblinOverlord"',
@@ -155,7 +221,8 @@ $requiredHookPatterns = @(
     'LWS_PrepareClassShowcase\s*\(\s*ShowcaseMonster\s*,\s*5\s*,\s*20\s*\)',
     'LWS_DiagnosticKills',
     'LWS_DiagnosticBuildings',
-    'PeasantCount\s*<\s*9',
+    'LairTarget''s\s+"Has_Special_Spawn"\s*=\s*TRUE',
+    'LairTarget''s\s+"Special_Spawn_Type"\s*=\s*"xx"',
     '\$LWS_RunCombatDiagnostic\s*\(\s*AIRootAgent\s*,\s*Palace\s*\)'
 )
 foreach ($pattern in $requiredHookPatterns) {
@@ -165,6 +232,15 @@ foreach ($pattern in $requiredHookPatterns) {
 }
 if ($hookSource -match '\$NewThread\s*\(\s*\$LWS_RunCombatDiagnostic') {
     throw 'Diagnostic callback must not be passed directly to NewThread.'
+}
+if ($hookSource -match 'EnemyCount\s*<|PotionCount\s*<|PeasantCount\s*<') {
+    throw 'Legacy crowd and potion arena setup must remain removed.'
+}
+if ($hookSource -match '\$SpawnUnit\s*\([^;]+"Peasant"') {
+    throw 'Diagnostic checks must not spawn real Palace peasants.'
+}
+if ($hookSource -match '\$ListObjects\s*\(\s*Palace\s*,\s*"Monster"\s*,\s*1200') {
+    throw 'Diagnostic cleanup must not broadly delete Palace-area monsters or workers.'
 }
 
 $generatorSource = Get-Content -LiteralPath $generatorPath -Raw
@@ -184,6 +260,12 @@ if ($itemGeneratorSource -notmatch 'OriginalQuests\\GPLMx\\DecisionTrees\\Module
 }
 if ($itemGeneratorSource -notmatch 'LWS_HealingPotion' -or $itemGeneratorSource -notmatch '#Max_Heal_Potions') {
     throw 'Item evaluation override does not protect the vanilla healing potion cap.'
+}
+if ($itemGeneratorSource -notmatch 'LWS_SelectDesiredSpecialItem' -or $itemGeneratorSource -notmatch 'LWS_ShouldRetrieveEquipment') {
+    throw 'Item evaluation override does not filter inferior tiered equipment.'
+}
+if ($itemGeneratorSource -notmatch '\$DeleteGamePiece\s*\(Target\)') {
+    throw 'Item evaluation override does not break the inferior-equipment retrieval loop.'
 }
 
 if (-not (Test-Path -LiteralPath $bytecodePath -PathType Leaf)) {
