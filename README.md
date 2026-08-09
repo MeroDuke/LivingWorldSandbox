@@ -2,6 +2,9 @@
 
 A Majesty Gold HD / Northern Expansion sandbox quest.
 
+A teljes, folyamatosan frissített feature- és státuszlista:
+[Docs/roadmap.md](Docs/roadmap.md).
+
 The current baseline intentionally contains only:
 
 - one player Palace supplied by the quest template;
