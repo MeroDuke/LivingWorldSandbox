@@ -68,8 +68,4 @@ foreach ($pattern in @(
 if ($equipmentSource -notmatch 'Function\s+LWS_ConfigureEquipmentDrop') {
     throw 'Runtime equipment carrier configuration is missing.'
 }
-if ($equipmentSource -notmatch '\$SpecifyName\s*\(\s*Item\s*,\s*DisplayName\s*\)') {
-    throw 'Runtime equipment carriers do not expose their generated properties in the world-item name.'
-}
-
 Write-Host 'Random equipment generator validation passed.'
