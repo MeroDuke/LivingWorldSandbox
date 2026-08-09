@@ -7,13 +7,14 @@ majd indítsd el az `LWS Combat Diagnostic` küldetést.
 
 A quest harc és játékosi beavatkozás nélkül ellenőrzi:
 
-- mind a 9 fegyvercsalád generikus carrierét és kompatibilis hősre helyezését;
-- mind a 4 páncélcsalád carrierét;
-- mind a 6 Legendary átadását és permanens markerét;
+- mind a 9 fegyvercsalád runtime kiválasztását;
+- mind a 4 páncélcsalád runtime kiválasztását;
+- mind a 6 Legendary katalógus-hozzárendelését;
 - két world drop sikerét és a harmadik blokkolását;
 - a korábbi progression-, perk-, potion- és spell-attribution teszteket.
 
-Ezek a tesztalanyok automatikusan eltűnnek. Az eredmény:
+Az automatikus rész nem spawnol valódi hősroster-t, ezért nem generál tesztházakat.
+Az eredmény:
 
 - induló 10000 goldból **17777**: minden automatikus ellenőrzés PASS;
 - induló 10000 goldból **10111**: legalább egy ellenőrzés FAIL.

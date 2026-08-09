@@ -178,12 +178,10 @@ foreach ($pattern in $requiredCombatPatterns) {
 }
 
 $requiredHookPatterns = @(
-    'Function\s+LWS_TestRuntimeEquipmentCarrier',
-    'Function\s+LWS_RunEquipmentFamilyDiagnostic',
-    'Function\s+LWS_RunLegendaryCatalogDiagnostic',
     'Function\s+LWS_RunTwoSlotDiagnostic',
-    'LWS_TestRuntimeEquipmentCarrier\s*\(\s*Palace[^;]+"Hammer"',
-    'LWS_TestRuntimeEquipmentCarrier\s*\(\s*Palace[^;]+"Chaos"',
+    'LWS_RandomWeaponFamily\s*\(\s*8\s*\)\s*!=\s*"Hammer"',
+    'LWS_RandomArmorFamily\s*\(\s*3\s*\)\s*!=\s*"Chaos"',
+    'LWS_RandomLegendaryTitle\s*\(\s*5\s*\)\s*!=\s*"LWS_StonebacksShield"',
     'LWS_LootSlotsUsed"\s*!=\s*2',
     'LWS_RandomWeaponDrop',
     'LWS_RandomArmorDrop',
@@ -256,6 +254,9 @@ if ($hookSource -match 'EnemyCount\s*<|PotionCount\s*<|PeasantCount\s*<') {
 }
 if ($hookSource -match '\$SpawnUnit\s*\([^;]+"Peasant"') {
     throw 'Diagnostic checks must not spawn real Palace peasants.'
+}
+if ($hookSource -match 'LWS_TestRuntimeEquipmentCarrier|LWS_RunLegendaryCatalogDiagnostic') {
+    throw 'Hidden loot diagnostics must not spawn a roster of real heroes.'
 }
 if ($hookSource -match '\$ListObjects\s*\(\s*Palace\s*,\s*"Monster"\s*,\s*1200') {
     throw 'Diagnostic cleanup must not broadly delete Palace-area monsters or workers.'

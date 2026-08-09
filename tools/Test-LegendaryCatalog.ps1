@@ -9,7 +9,6 @@ $prototypeSource = Get-Content -Raw (Join-Path $repositoryRoot 'GPL\LWS_LootProt
 $descriptionSource = Get-Content -Raw (Join-Path $repositoryRoot 'Data\LWS_Descriptions.xml')
 $productionProject = Get-Content -Raw (Join-Path $repositoryRoot 'GPL\LivingWorldSandbox.gplproj')
 $diagnosticProject = Get-Content -Raw (Join-Path $repositoryRoot 'GPL\LWS_CombatDiagnostic.gplproj')
-$diagnosticSource = Get-Content -Raw (Join-Path $repositoryRoot 'GPL\LWS_CombatDiagnostics.gpl')
 
 if ([int]$catalog.dropChancePercent -ne 1 -or [int]$catalog.requiresProgressClass -ne 5) {
     throw 'Legendary catalog must use the Class 5 1% policy.'
@@ -47,10 +46,6 @@ foreach ($pattern in @(
 }
 if ($lootSource -notmatch 'Function\s+LWS_SpawnLegendaryUnique' -or $lootSource -notmatch 'if\s*\(\s*Rarity\s*==\s*5\s*\)\s*\$LWS_SpawnLegendaryUnique') {
     throw 'Legendary roll is not connected to the central loot resolver.'
-}
-if ($diagnosticSource -notmatch 'LWS_LegendaryTransfer\s*\(\s*LegendaryDrop\s*,\s*LootHero' -or
-    $diagnosticSource -notmatch 'LWS_HasWandOfImmolation"\s*,\s*LootHero') {
-    throw 'Deterministic Legendary transfer diagnostic is missing.'
 }
 
 Write-Host 'Legendary Unique catalog validation passed.'

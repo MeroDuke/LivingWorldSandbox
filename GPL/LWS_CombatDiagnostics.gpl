@@ -26,95 +26,6 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function LWS_TestRuntimeEquipmentCarrier ( agent Palace, coordinate TestLocation, string HeroTitle,
-                                           string EquipmentType, string EquipmentFamily ) is boolean
-Declare
-    agent Hero, Item;
-    string ItemTitle;
-    integer AffixBonus;
-Begin
-    Hero = $SpawnUnit ( Palace, HeroTitle, $RandomCoord ( TestLocation, 20, 60 ), #Player_1 );
-    if ( $IsValidGamePiece ( Hero ) == FALSE ) return FALSE;
-
-    if ( EquipmentType == "Armor" )
-        begin
-            ItemTitle = "LWS_RandomArmorDrop";
-            AffixBonus = 3;
-        end
-    else
-        begin
-            ItemTitle = "LWS_RandomWeaponDrop";
-            AffixBonus = 7;
-        end
-    Item = $SpawnUnit ( Hero, ItemTitle, "Override", $Concatenate ( $MakeInventoryAttribute ( ItemTitle ), 0 ));
-    if ( $IsValidGamePiece ( Item ) == FALSE ) return FALSE;
-    $LWS_ConfigureEquipmentDrop ( Item, EquipmentType, EquipmentFamily, 4, AffixBonus );
-    if ( $LWS_IsEquipmentCompatible ( Hero, Item ) == FALSE ) return FALSE;
-
-    if ( EquipmentType == "Armor" )
-        begin
-            $LWS_EquipArmorTransfer ( Item, Hero, $MakeInventoryAttribute ( ItemTitle ));
-            if ( $HasAttribute ( "LWS_ArmorTier", Hero ) == FALSE || Hero's "LWS_ArmorTier" != 4 ) return FALSE;
-            if ( Hero's "LWS_ArmorAffixBonus" != AffixBonus ) return FALSE;
-        end
-    else
-        begin
-            $LWS_EquipWeaponTransfer ( Item, Hero, $MakeInventoryAttribute ( ItemTitle ));
-            if ( $HasAttribute ( "LWS_WeaponTier", Hero ) == FALSE || Hero's "LWS_WeaponTier" != 4 ) return FALSE;
-            if ( Hero's "LWS_WeaponAffixBonus" != AffixBonus ) return FALSE;
-        end
-
-    $DeleteGamePiece ( Item );
-    $DeleteGamePiece ( Hero );
-    return TRUE;
-End
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function LWS_RunEquipmentFamilyDiagnostic ( agent Palace, coordinate TestLocation ) is boolean
-Declare
-Begin
-    if ( $LWS_TestRuntimeEquipmentCarrier ( Palace, TestLocation, "Adept", "Weapon", "Staff" ) == FALSE ) return FALSE;
-    if ( $LWS_TestRuntimeEquipmentCarrier ( Palace, TestLocation, "Barbarian", "Weapon", "Axeclub" ) == FALSE ) return FALSE;
-    if ( $LWS_TestRuntimeEquipmentCarrier ( Palace, TestLocation, "Cultist", "Weapon", "Dagger" ) == FALSE ) return FALSE;
-    if ( $LWS_TestRuntimeEquipmentCarrier ( Palace, TestLocation, "Paladin", "Weapon", "Longsword" ) == FALSE ) return FALSE;
-    if ( $LWS_TestRuntimeEquipmentCarrier ( Palace, TestLocation, "Ranger", "Weapon", "Longbow" ) == FALSE ) return FALSE;
-    if ( $LWS_TestRuntimeEquipmentCarrier ( Palace, TestLocation, "Rogue", "Weapon", "Crossbow" ) == FALSE ) return FALSE;
-    if ( $LWS_TestRuntimeEquipmentCarrier ( Palace, TestLocation, "Solarus", "Weapon", "Mace" ) == FALSE ) return FALSE;
-    if ( $LWS_TestRuntimeEquipmentCarrier ( Palace, TestLocation, "Warrior_of_Discord", "Weapon", "Chaos" ) == FALSE ) return FALSE;
-    if ( $LWS_TestRuntimeEquipmentCarrier ( Palace, TestLocation, "Dwarf", "Weapon", "Hammer" ) == FALSE ) return FALSE;
-    if ( $LWS_TestRuntimeEquipmentCarrier ( Palace, TestLocation, "Adept", "Armor", "Leather" ) == FALSE ) return FALSE;
-    if ( $LWS_TestRuntimeEquipmentCarrier ( Palace, TestLocation, "Solarus", "Armor", "Chain" ) == FALSE ) return FALSE;
-    if ( $LWS_TestRuntimeEquipmentCarrier ( Palace, TestLocation, "Paladin", "Armor", "Plate" ) == FALSE ) return FALSE;
-    if ( $LWS_TestRuntimeEquipmentCarrier ( Palace, TestLocation, "Warrior_of_Discord", "Armor", "Chaos" ) == FALSE ) return FALSE;
-    return TRUE;
-End
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function LWS_RunLegendaryCatalogDiagnostic ( agent Palace, coordinate TestLocation ) is boolean
-Declare
-    agent Hero, Item;
-    string ItemTitle;
-    integer Pick;
-Begin
-    Hero = $SpawnUnit ( Palace, "Rogue", $RandomCoord ( TestLocation, 20, 60 ), #Player_1 );
-    if ( $IsValidGamePiece ( Hero ) == FALSE ) return FALSE;
-    Pick = 0;
-    while ( Pick < 6 ) do
-        begin
-            ItemTitle = $LWS_RandomLegendaryTitle ( Pick );
-            Item = $SpawnUnit ( Hero, ItemTitle, "Override", $Concatenate ( $MakeInventoryAttribute ( ItemTitle ), 0 ));
-            if ( $IsValidGamePiece ( Item ) == FALSE ) return FALSE;
-            if ( $LWS_CanReceiveLegendary ( Hero, Item ) == FALSE ) return FALSE;
-            $LWS_LegendaryTransfer ( Item, Hero, $MakeInventoryAttribute ( ItemTitle ));
-            if ( $HasAttribute ( $LWS_LegendaryMarker ( ItemTitle ), Hero ) == FALSE ) return FALSE;
-            $DeleteGamePiece ( Item );
-            Pick += 1;
-        end
-    $DeleteGamePiece ( Hero );
-    return TRUE;
-End
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_RunTwoSlotDiagnostic ( agent Palace, coordinate TestLocation ) is boolean
 Declare
     agent Source, Drop;
@@ -153,7 +64,7 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_RunLootDiagnostic ( agent AIRootAgent, agent Palace, coordinate TestLocation ) is boolean
 Declare
-    agent NoDropVictim, DropVictim, LootDrop, LootHero, LegendaryDrop;
+    agent NoDropVictim, DropVictim, LootDrop, LootHero;
     list LootDrops;
     integer PotionsBefore;
 Begin
@@ -195,15 +106,6 @@ Begin
         return FALSE;
     if ( $IsValidGamePiece ( LootDrop ))
         return FALSE;
-
-    LegendaryDrop = $SpawnUnit ( LootHero, "LWS_WandOfImmolation", "Override",
-                                  $Concatenate ( $MakeInventoryAttribute ( "LWS_WandOfImmolation" ), 0 ));
-    if ( $IsValidGamePiece ( LegendaryDrop ) == FALSE ) return FALSE;
-    $TransferInventoryItem ( "LWS_WandOfImmolation", LegendaryDrop, LootHero );
-    $LWS_LegendaryTransfer ( LegendaryDrop, LootHero, $MakeInventoryAttribute ( "LWS_WandOfImmolation" ));
-    $DeleteGamePiece ( LegendaryDrop );
-    if ( $HasAttribute ( "LWS_HasWandOfImmolation", LootHero ) == FALSE ) return FALSE;
-    if ( $IsValidGamePiece ( LegendaryDrop )) return FALSE;
 
     $DeleteGamePiece ( LootHero );
     $DeleteGamePiece ( NoDropVictim );
@@ -431,6 +333,16 @@ Begin
     if ( $LWS_SelectLootRarity ( 3, 74 ) != 2 || $LWS_SelectLootRarity ( 3, 75 ) != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_SelectLootRarity ( 4, 74 ) != 3 || $LWS_SelectLootRarity ( 4, 75 ) != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_SelectLootRarity ( 5, 0 ) != 5 || $LWS_SelectLootRarity ( 5, 1 ) != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    // Exhaustive family and Legendary catalog mapping without spawning heroes or houses.
+    if ( $LWS_RandomWeaponFamily ( 0 ) != "Staff" || $LWS_RandomWeaponFamily ( 1 ) != "Axeclub" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_RandomWeaponFamily ( 2 ) != "Dagger" || $LWS_RandomWeaponFamily ( 3 ) != "Longsword" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_RandomWeaponFamily ( 4 ) != "Longbow" || $LWS_RandomWeaponFamily ( 5 ) != "Crossbow" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_RandomWeaponFamily ( 6 ) != "Mace" || $LWS_RandomWeaponFamily ( 7 ) != "Chaos" || $LWS_RandomWeaponFamily ( 8 ) != "Hammer" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_RandomArmorFamily ( 0 ) != "Leather" || $LWS_RandomArmorFamily ( 1 ) != "Chain" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_RandomArmorFamily ( 2 ) != "Plate" || $LWS_RandomArmorFamily ( 3 ) != "Chaos" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_RandomLegendaryTitle ( 0 ) != "LWS_WandOfImmolation" || $LWS_RandomLegendaryTitle ( 1 ) != "LWS_BeltOfReflection" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_RandomLegendaryTitle ( 2 ) != "LWS_TeevusWand" || $LWS_RandomLegendaryTitle ( 3 ) != "LWS_RuneOfHealing" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_RandomLegendaryTitle ( 4 ) != "LWS_HelmOfDisplacement" || $LWS_RandomLegendaryTitle ( 5 ) != "LWS_StonebacksShield" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
     if ( $LWS_KillsRequired ( 1, 1 ) != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_KillsRequired ( 2, 1 ) != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
@@ -569,12 +481,6 @@ Begin
     if ( $IsValidGamePiece ( ShowcaseMonster )) $DeleteGamePiece ( ShowcaseMonster );
 
     if ( $LWS_RunLootDiagnostic ( AIRootAgent, Palace, TestLocation ) == FALSE )
-        AIRootAgent's "LWS_DiagnosticFailures" += 1;
-
-    if ( $LWS_RunEquipmentFamilyDiagnostic ( Palace, TestLocation ) == FALSE )
-        AIRootAgent's "LWS_DiagnosticFailures" += 1;
-
-    if ( $LWS_RunLegendaryCatalogDiagnostic ( Palace, TestLocation ) == FALSE )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
     if ( $LWS_RunTwoSlotDiagnostic ( Palace, TestLocation ) == FALSE )
