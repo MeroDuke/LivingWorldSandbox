@@ -166,8 +166,9 @@ producing weapon value 17 while lowering the stored tier from T3 to T2. LVL 3
 Weapons can then upgrade it to `T3 +6` and weapon value 18. This temporary 100%
 rate is disabled in the production sandbox. The diagnostic PASS signal remains
 the 7777 treasury-gold increase.
-Four deliberately weak Giant Rats start near the Paladin so the 100% diagnostic
-drop can be exercised immediately without waiting for roaming ecosystem mobs.
+Four deliberately weak Giant Rats start 550-700 units away from the Paladin.
+They remain available for the 100% diagnostic drop test without overriding the
+nearby starting weapon pickup with an immediate combat decision.
 
 ## Direct spell kill attribution
 

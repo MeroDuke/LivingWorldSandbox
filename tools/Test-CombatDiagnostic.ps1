@@ -186,7 +186,7 @@ $requiredHookPatterns = @(
     '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_T3_Longsword_Plus1"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_T3_Longsword_Plus1"',
     'LWS_DiagnosticWeaponDropChance"\s*,\s*"integer"\s*,\s*100',
     'WeakMonsterCount\s*<\s*4',
-    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Giant_Rat"\s*,\s*\$RandomCoord\s*\(\s*Paladin',
+    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Giant_Rat"\s*,\s*\$RandomCoord\s*\(\s*Paladin\s*,\s*550\s*,\s*700',
     '#ATTRIB_MaxHP\s*,\s*10',
     '#ATTRIB_Strength\s*,\s*1',
     '\$IsValidGamePiece\s*\(\s*ShowcaseMonster\s*\)',

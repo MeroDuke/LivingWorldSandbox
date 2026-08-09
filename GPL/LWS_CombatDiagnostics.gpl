@@ -181,7 +181,9 @@ Begin
     WeakMonsterCount = 0;
     while ( WeakMonsterCount < 4 ) do
         begin
-            WeakMonster = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( Paladin, 90, 180 ), #Monster_Player );
+            // Keep combat outside the Paladin's initial awareness so the nearby
+            // T3 +1 pickup is resolved before any fight can take priority.
+            WeakMonster = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( Paladin, 550, 700 ), #Monster_Player );
             if ( $IsValidGamePiece ( WeakMonster ))
                 begin
                     $SetAttribute ( WeakMonster, #ATTRIB_MaxHP, 10 );
