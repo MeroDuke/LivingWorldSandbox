@@ -177,10 +177,6 @@ Begin
     WeaponDrop = $SpawnUnit ( Paladin, "LWS_T3_Longsword_Plus1", $RandomCoord ( Paladin, 30, 70 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_T3_Longsword_Plus1" ), 0 ));
     ArmorDrop = $SpawnUnit ( Paladin, "LWS_T3_Armor_Plus1", $RandomCoord ( Paladin, 30, 70 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_T3_Armor_Plus1" ), 0 ));
 
-    // Test-only: every defeated monster drops T2 +6 equipment for fast replacement testing.
-    $AddAttribute ( AIRootAgent, "LWS_DiagnosticWeaponDropChance", "integer", 100 );
-    $AddAttribute ( AIRootAgent, "LWS_DiagnosticArmorDropChance", "integer", 100 );
-
     WeakMonsterCount = 0;
     while ( WeakMonsterCount < 4 ) do
         begin
