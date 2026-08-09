@@ -24,6 +24,7 @@ Az eredmény:
 PASS/FAIL után megmarad:
 
 - egy 8-as szintű Paladin;
+- egy 8-as szintű Ranger és a saját Rangers Guildje a chestek közelében;
 - egy Warriors Guild;
 - egy fejlesztés nélküli, harmadik szintű Blacksmith;
 - négy gyenge Giant Rat biztonságosabb távolságban;

@@ -166,7 +166,7 @@ The combat diagnostic now performs an agent-free deterministic runtime sweep of
 all nine weapon-family mappings, all four armor-family mappings, all six
 Legendary catalog mappings, and the hard two-reward cap. It does not spawn a
 hidden hero roster or trigger automatic test housing. It then leaves a small visual smoke arena containing a
-Paladin, Warriors Guild, Blacksmith, four distant weak rats, and five locked
+Paladin, a level-8 Ranger with its Rangers Guild, Warriors Guild, Blacksmith, four distant weak rats, and five locked
 C1-C5 exploration chests placed visibly around the Palace. Production maps seed three randomly placed exploration
 chests. See
 `Docs/loot-diagnostic-guide.md`; normal 8% and 1% rolls do not need to be waited

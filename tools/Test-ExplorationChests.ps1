@@ -48,5 +48,13 @@ foreach ($chestClass in 1..5) {
 if (($diagnosticSource | Select-String -Pattern '\$RandomCoord\s*\(\s*Palace\s*,\s*180\s*,\s*320\s*\)' -AllMatches).Matches.Count -ne 5) {
     throw 'All five diagnostic chests must spawn visibly around the Palace.'
 }
+foreach ($pattern in @(
+    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Rangers_Guild"',
+    '\$SpawnUnit\s*\(\s*RangersGuild\s*,\s*"Ranger"',
+    '\$Adopt\s*\(\s*RangersGuild\s*,\s*Ranger\s*\)',
+    '\$Advance_To_Level\s*\(\s*Ranger\s*,\s*8\s*\)'
+)) {
+    if ($diagnosticSource -notmatch $pattern) { throw "Missing Ranger chest-test pattern: $pattern" }
+}
 
 Write-Host 'Exploration chest validation passed.'

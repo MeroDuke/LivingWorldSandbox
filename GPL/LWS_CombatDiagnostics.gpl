@@ -162,7 +162,7 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_SetupEquipmentArena ( agent AIRootAgent, agent Palace )
 Declare
-    agent WarriorsGuild, Blacksmith, Paladin, WeakMonster, Chest;
+    agent WarriorsGuild, Blacksmith, Paladin, RangersGuild, Ranger, WeakMonster, Chest;
     coordinate ArenaLocation;
     integer WeakMonsterCount;
 Begin
@@ -208,6 +208,25 @@ Begin
                     $SetAttribute ( WeakMonster, #ATTRIB_Strength, 1 );
                 end
             WeakMonsterCount += 1;
+        end
+
+    // A second opener exercises Longbow/Leather resolution independently of the Paladin.
+    RangersGuild = $SpawnUnit ( Palace, "Rangers_Guild", $RandomCoord ( Palace, 360, 480 ), "MaxHP", #Player_1 );
+    if ( $IsValidGamePiece ( RangersGuild ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    else
+        begin
+            Ranger = $SpawnUnit ( RangersGuild, "Ranger", $RandomCoord ( RangersGuild, 40, 80 ), #Player_1 );
+            if ( $IsValidGamePiece ( Ranger ) == FALSE )
+                AIRootAgent's "LWS_DiagnosticFailures" += 1;
+            else
+                begin
+                    if ( Ranger's "home" == $NullAgent ()) $Adopt ( RangersGuild, Ranger );
+                    $Advance_To_Level ( Ranger, 8 );
+                    $SetAttribute ( Ranger, #ATTRIB_HP, $GetAttribute ( Ranger, #ATTRIB_MaxHP ));
+                    $SetAttribute ( Ranger, #ATTRIB_Gold, 1000 );
+                    $SetAttribute ( Ranger, #ATTRIB_StoredGold, 1000 );
+                end
         end
 
     // Exploration-chest showcase: visible around the Palace and far from the arena Paladin.
