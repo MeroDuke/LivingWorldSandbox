@@ -224,8 +224,8 @@ Begin
                     if ( $LWS_IsEquipmentCompatible ( Ranger, RejectedWeaponDrop ) == FALSE )
                         AIRootAgent's "LWS_DiagnosticFailures" += 1;
                     Ranger's "Target" = RejectedWeaponDrop;
-                    Ranger's "ActiveScript" = $Grab_Item;
-                    Ranger's "BackScript" = $Grab_Item;
+                    Ranger's "ActiveScript" = $LWS_GrabEquipment;
+                    Ranger's "BackScript" = $LWS_GrabEquipment;
                     $SpecifyIntent ( Ranger, #intent_recovering_item );
                 end
         end

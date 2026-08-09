@@ -271,6 +271,52 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Dedicated pickup task for equipment carried by a native resource object. Travel_To cannot be used:
+// it calls the vanilla Special_Item evaluator while moving and can redirect the hero to incompatible
+// loot. Travel_To_Safe preserves the target until this task resumes at the destination.
+Function LWS_GrabEquipment ( agent ThisAgent )
+Declare
+    agent Target;
+    integer WhatItem;
+Begin
+    Target = ThisAgent's "Target";
+    if ( $IsValidGamePiece ( Target ) == FALSE )
+        begin
+            $Reset_Tasks ( ThisAgent );
+            return;
+        end
+    if ( $LWS_ShouldRetrieveEquipment ( ThisAgent, Target ) == FALSE )
+        begin
+            $Reset_Tasks ( ThisAgent );
+            return;
+        end
+
+    if ( $IsAdjacent ( ThisAgent, Target ) == FALSE )
+        begin
+            ThisAgent's "ActiveScript" = $Travel_To_Safe;
+            ThisAgent's "Destination" = $LocationOf ( Target );
+            ThisAgent's "BackScript" = $LWS_GrabEquipment;
+            $Move ( ThisAgent, Target );
+            return;
+        end
+
+    WhatItem = -1;
+    if ( $AgentHasInventoryItem ( WhatItem, Target ))
+        begin
+            $CreateEffector ( ThisAgent, "got_item", 0 );
+            $TransferInventoryItem ( WhatItem, Target, ThisAgent );
+            $QItem_Stat_Boost ( ThisAgent, WhatItem );
+            if ( $HasAttribute ( "TransferScript", Target ))
+                if ( $ValidFunction ( Target's "TransferScript" ))
+                    ( Target's "TransferScript" )( Target, ThisAgent, WhatItem );
+            $DeleteGamePiece ( Target );
+            $Say ( ThisAgent, "VFX_FIND_COOL" );
+        end
+    else
+        $Reset_Tasks ( ThisAgent );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_EquipArmorTransfer ( agent OldOwnerAgent, agent NewOwnerAgent, integer AttributeID )
 Declare
     integer ItemTier, ItemAffix, ItemEffective;
