@@ -130,13 +130,13 @@ Részletek: [exploration-chests.md](exploration-chests.md).
 ## Potion of Luck — későbbi custom item
 
 - [ ] **Potion of Luck alapdesign** — **Tervezésre vár.** Vásárolható buffital,
-  amely kizárólag annak esélyét növeli, hogy egy legyőzött monster loot chestet
-  hozzon létre. A már létrejött chest tartalmának rarity-, tier-, affix- és
-  jutalomtípus-esélyeit nem módosíthatja.
+  amely minden opcionális monster-loot csatorna saját drop chance-ét növeli. A
+  rarity-, tier- és affixeloszlásokat, valamint a monster class rarity-plafonját
+  nem módosíthatja.
 
 Rögzített kezdőszabályok:
 
-| Potion | Alap chest-drop esély | Buffolt chest-drop esély |
+| Potion | Csatornánkénti alap drop chance | Buffolt drop chance csatornánként |
 |---|---:|---:|
 | Level 1 | 8% | 16% |
 | Level 2 | 8% | 20% |
@@ -161,14 +161,11 @@ Rögzített kezdőszabályok:
 - [ ] **Marketplace és Trading Post UI-audit** — meg kell vizsgálni, hogy az új
   vásárlási elem adatból bővíthető-e, generált GPL/UI override szükséges-e, vagy
   a kezelőfelület engine/BCD korlátba ütközik.
-- [ ] **Loot pipeline bekötés** — a buff csak a chest létrejöttét eldöntő 8%-os
-  roll előtt érvényesülhet. A chestbe már bezárt reward-recepthez nem férhet
-  hozzá, és nem emelheti a monster progression class rarity-plafonját.
-- [ ] **Egységes chest-drop roll** — a jelenlegi resolver külön 8%-os potion,
-  weapon és armor csatornából képez chestet. A Potion of Luck előtt ezt szét kell
-  választani egyetlen, jól látható alap `chest drops: 8%` döntésre és egy ettől
-  független chest-content generátorra. Csak az első roll kapja a 16/20/24%-os
-  buffot; a content generátor százalékai változatlanok maradnak.
+- [ ] **Loot pipeline bekötés** — a buff a potion, weapon, armor és minden későbbi
+  opcionális droptípus külön chance-rolljára érvényesül. Egy Level 2 potion
+  például mindegyik 8%-os csatornát külön-külön 20%-ra emeli. A sikeres
+  jutalmakat továbbra is a közös maximum két slot korlátozza és egyetlen chest
+  csomagolja; a rarity/tier/affix rollok százalékai változatlanok maradnak.
 
 Az implementáció előtt külön designbeszélgetés és célzott tesztaréna szükséges.
 
