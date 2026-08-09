@@ -36,6 +36,13 @@ $lootSource = Get-Content -LiteralPath $lootPath -Raw
 $equipmentSource = Get-Content -LiteralPath $equipmentPath -Raw
 $lootPrototypeSource = Get-Content -LiteralPath $lootPrototypePath -Raw
 $descriptionSource = Get-Content -LiteralPath $descriptionPath -Raw
+[xml]$descriptionXml = $descriptionSource
+foreach ($itemId in @('LWS_Test_U_Long_T3P1', 'LWS_Test_R_Plate_T3P1')) {
+    $itemDescription = @($descriptionXml.Majesty.Description | Where-Object { $_.ID -eq $itemId })
+    if ($itemDescription.Count -ne 1 -or $itemDescription[0].Name -ne $itemId) {
+        throw "Custom item Description must repeat its prototype ID in Name: $itemId"
+    }
+}
 $stateSource = Get-Content -LiteralPath $statePath -Raw
 $requiredStatePatterns = @(
     'Function\s+LWS_EnsureMonsterState',

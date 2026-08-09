@@ -13,11 +13,11 @@
     <Engine version="1"><Info value="Static"/><Info value="Directionless"/><Info value="BlockGround"/><CanUse value="HumanPlayer"/><Menu value="8"/><ImageIDBase value="AVk4"/><DefaultSound value="0"/></Engine>
     <Game version="1"><DialogID value="APb1"/><MaxHP value="10"/><RecruitDelay value="10000"/><Flags value="NotFlaggable"/><Flags value="NotSpellTarget"/><Flags value="IsInventoryItem"/><HelpID value="IDTXT_LWS_RANDOM_ARMOR_HELP"/><Attributes><Attribute ID="CanDropItem" Value="0"/><Attribute ID="LWS_RandomArmorDrop" Value="0"/></Attributes></Game>
   </Description>
-  <Description type="Unit" subType="Character" ID="LWS_Test_U_Long_T3P1" Name="Uncommon Longsword T3+1" Description="IDTXT_LWS_TEST_U_LONG_T3P1_HELP">
+  <Description type="Unit" subType="Character" ID="LWS_Test_U_Long_T3P1" Name="LWS_Test_U_Long_T3P1" Description="IDTXT_LWS_TEST_U_LONG_T3P1_HELP">
     <Engine version="1"><Info value="Static"/><Info value="Directionless"/><Info value="BlockGround"/><CanUse value="HumanPlayer"/><Menu value="8"/><ImageIDBase value="AVk4"/><DefaultSound value="0"/></Engine>
     <Game version="1"><DialogID value="APb1"/><MaxHP value="10"/><RecruitDelay value="10000"/><Flags value="NotFlaggable"/><Flags value="NotSpellTarget"/><Flags value="IsInventoryItem"/><HelpID value="IDTXT_LWS_TEST_U_LONG_T3P1_HELP"/><Attributes><Attribute ID="CanDropItem" Value="0"/><Attribute ID="LWS_Test_U_Long_T3P1" Value="0"/></Attributes></Game>
   </Description>
-  <Description type="Unit" subType="Character" ID="LWS_Test_R_Plate_T3P1" Name="Rare Plate T3+1" Description="IDTXT_LWS_TEST_R_PLATE_T3P1_HELP">
+  <Description type="Unit" subType="Character" ID="LWS_Test_R_Plate_T3P1" Name="LWS_Test_R_Plate_T3P1" Description="IDTXT_LWS_TEST_R_PLATE_T3P1_HELP">
     <Engine version="1"><Info value="Static"/><Info value="Directionless"/><Info value="BlockGround"/><CanUse value="HumanPlayer"/><Menu value="8"/><ImageIDBase value="AVk4"/><DefaultSound value="0"/></Engine>
     <Game version="1"><DialogID value="APb1"/><MaxHP value="10"/><RecruitDelay value="10000"/><Flags value="NotFlaggable"/><Flags value="NotSpellTarget"/><Flags value="IsInventoryItem"/><HelpID value="IDTXT_LWS_TEST_R_PLATE_T3P1_HELP"/><Attributes><Attribute ID="CanDropItem" Value="0"/><Attribute ID="LWS_Test_R_Plate_T3P1" Value="0"/></Attributes></Game>
   </Description>
