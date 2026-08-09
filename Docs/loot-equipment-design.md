@@ -119,13 +119,14 @@ EquipmentAffixBonus
 EquipmentMagicBonus
 ```
 
-A vanilla harcrendszerrel használt attribútumokat ebből kell kiszámítani és szinkronizálni:
+A vanilla harcrendszerrel használt attribútumokat ebből kell kiszámítani és szinkronizálni. A tier kizárólag a structural mezőbe kerül, mert az eredeti Northern Expansion UI ebből képezi a fegyver minőségi nevét. Az affix a hős eredeti alap fegyversebzéséhez adódik:
 
 ```text
 Armor_Struct_Bonus
 Armor_Magic_Bonus
 Weapon_Struct_Bonus
 Weapon_Magic_Bonus
+WeaponBasicDamage = OriginalWeaponBasicDamage + EquipmentAffixBonus
 ```
 
 A hős kasztja továbbra is meghatározza a használható alap felszereléstípust, például a Paladin a saját engedélyezett fegyver- és páncéltípusát használja. A loot ennek egy tierrel és affixekkel ellátott változata lesz.

@@ -137,6 +137,10 @@ contribute `+1`, `+2`, and `+3` structural
 bonus respectively; the affix is preserved when the Blacksmith improves the
 tier. A Bronze `T2 Longsword +6` therefore has effective structural bonus 7 and
 becomes `T3 +6` (effective 8), then `T4 +6` (effective 9).
+The native `Weapon_Struct_Bonus` stores only the tier contribution so Majesty's
+equipment name remains Bronze/T2, T3, or T4 as appropriate. The affix is added
+to the hero's captured original `WeaponBasicDamage`; the native combat formula
+and displayed numeric weapon value therefore still include the complete bonus.
 
 After PASS the diagnostic creates a focused arena containing one level-8
 Paladin, its completed Warriors Guild, one level-3 Blacksmith with all equipment
@@ -162,6 +166,8 @@ producing weapon value 17 while lowering the stored tier from T3 to T2. LVL 3
 Weapons can then upgrade it to `T3 +6` and weapon value 18. This temporary 100%
 rate is disabled in the production sandbox. The diagnostic PASS signal remains
 the 7777 treasury-gold increase.
+Four deliberately weak Giant Rats start near the Paladin so the 100% diagnostic
+drop can be exercised immediately without waiting for roaming ecosystem mobs.
 
 ## Direct spell kill attribution
 

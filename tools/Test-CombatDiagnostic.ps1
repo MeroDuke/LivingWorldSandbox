@@ -113,11 +113,13 @@ $requiredEquipmentPatterns = @(
     'Function\s+LWS_EquipWeaponTransfer',
     'LWS_WeaponTier',
     'LWS_WeaponAffixBonus',
+    'LWS_WeaponBaseDamage',
     'Function\s+BlackSmith_Check',
     'Function\s+Obtain_Upgrade',
     'Tier\s*==\s*2[^}]+Tier\s*=\s*3',
     'Tier\s*==\s*3[^}]+Tier\s*=\s*4',
-    '#ATTRIB_Weapon_Struct_Bonus\s*,\s*\$LWS_WeaponEffectiveBonus\s*\(\s*Tier\s*,\s*AffixBonus'
+    '#ATTRIB_Weapon_Struct_Bonus\s*,\s*\$LWS_WeaponTierBaseBonus\s*\(\s*Tier',
+    '#ATTRIB_Weapon_Basic_Damage\s*,\s*ThisAgent''s\s+"LWS_WeaponBaseDamage"\s*\+\s*AffixBonus'
 )
 foreach ($pattern in $requiredEquipmentPatterns) {
     if ($equipmentSource -notmatch $pattern) {
@@ -183,6 +185,10 @@ $requiredHookPatterns = @(
     'Upgrade_Weapon_Chance"\s*=\s*100',
     '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_T3_Longsword_Plus1"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_T3_Longsword_Plus1"',
     'LWS_DiagnosticWeaponDropChance"\s*,\s*"integer"\s*,\s*100',
+    'WeakMonsterCount\s*<\s*4',
+    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Giant_Rat"\s*,\s*\$RandomCoord\s*\(\s*Paladin',
+    '#ATTRIB_MaxHP\s*,\s*10',
+    '#ATTRIB_Strength\s*,\s*1',
     '\$IsValidGamePiece\s*\(\s*ShowcaseMonster\s*\)',
     '#ATTRIB_NumHealingPotions\s*\)\s*!=\s*\(\s*PotionsBefore\s*\+\s*1',
     '\$SpawnUnit\s*\(\s*Palace\s*,\s*"GoblinOverlord"',

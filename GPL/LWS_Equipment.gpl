@@ -21,6 +21,8 @@ End
 Function LWS_EnsureWeaponEquipmentState ( agent Hero )
 Declare
 Begin
+    if ( $HasAttribute ( "LWS_WeaponBaseDamage", Hero ) == FALSE )
+        $AddAttribute ( Hero, "LWS_WeaponBaseDamage", "integer", $GetAttribute ( Hero, #ATTRIB_Weapon_Basic_Damage ));
     if ( $HasAttribute ( "LWS_WeaponTier", Hero ) == FALSE )
         $AddAttribute ( Hero, "LWS_WeaponTier", "integer", 2 );
     if ( $HasAttribute ( "LWS_WeaponAffixBonus", Hero ) == FALSE )
@@ -41,7 +43,10 @@ Begin
     ItemTier = Item's "LWS_EquipmentTier";
     ItemAffix = Item's "LWS_EquipmentAffixBonus";
     ItemEffective = $LWS_WeaponEffectiveBonus ( ItemTier, ItemAffix );
-    CurrentEffective = $GetAttribute ( Hero, #ATTRIB_Weapon_Struct_Bonus );
+    if ( $HasAttribute ( "LWS_WeaponTier", Hero ))
+        CurrentEffective = $LWS_WeaponEffectiveBonus ( Hero's "LWS_WeaponTier", Hero's "LWS_WeaponAffixBonus" );
+    else
+        CurrentEffective = $GetAttribute ( Hero, #ATTRIB_Weapon_Struct_Bonus );
     return ItemEffective > CurrentEffective;
 End
 
@@ -87,7 +92,10 @@ Begin
             $LWS_EnsureWeaponEquipmentState ( NewOwnerAgent );
             NewOwnerAgent's "LWS_WeaponTier" = ItemTier;
             NewOwnerAgent's "LWS_WeaponAffixBonus" = ItemAffix;
-            $SetAttribute ( NewOwnerAgent, #ATTRIB_Weapon_Struct_Bonus, ItemEffective );
+            // Keep the native quality field pure so the UI name reflects only the tier.
+            $SetAttribute ( NewOwnerAgent, #ATTRIB_Weapon_Struct_Bonus, $LWS_WeaponTierBaseBonus ( ItemTier ));
+            // The affix augments native base damage and is therefore visible and combat-effective.
+            $SetAttribute ( NewOwnerAgent, #ATTRIB_Weapon_Basic_Damage, NewOwnerAgent's "LWS_WeaponBaseDamage" + ItemAffix );
             $CreateEffector ( NewOwnerAgent, "got_weapon", 0 );
             $DebugOut ( 911, "LWS EQUIPPED WEAPON", NewOwnerAgent, "TIER", ItemTier, "AFFIX", ItemAffix, "EFFECTIVE", ItemEffective );
         end
@@ -227,7 +235,8 @@ Begin
                 begin
                     $Spend_Gold ( ThisAgent, ThisBuilding, Gold );
                     ThisAgent's "LWS_WeaponTier" = Tier;
-                    $SetAttribute ( ThisAgent, #ATTRIB_Weapon_Struct_Bonus, $LWS_WeaponEffectiveBonus ( Tier, AffixBonus ));
+                    $SetAttribute ( ThisAgent, #ATTRIB_Weapon_Struct_Bonus, $LWS_WeaponTierBaseBonus ( Tier ));
+                    $SetAttribute ( ThisAgent, #ATTRIB_Weapon_Basic_Damage, ThisAgent's "LWS_WeaponBaseDamage" + AffixBonus );
                     $DebugOut ( 911, "LWS BLACKSMITH WEAPON UPGRADE", ThisAgent, "TIER", Tier, "AFFIX", AffixBonus );
                 end
 

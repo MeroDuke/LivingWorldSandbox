@@ -140,8 +140,9 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_SetupEquipmentArena ( agent AIRootAgent, agent Palace )
 Declare
-    agent WarriorsGuild, Blacksmith, Paladin, WeaponDrop;
+    agent WarriorsGuild, Blacksmith, Paladin, WeaponDrop, WeakMonster;
     coordinate ArenaLocation;
+    integer WeakMonsterCount;
 Begin
     ArenaLocation = $RandomCoord ( Palace, 700, 900 );
     WarriorsGuild = $SpawnUnit ( Palace, "Warriors_Guild", ArenaLocation, "MaxHP", #Player_1 );
@@ -176,6 +177,19 @@ Begin
 
     // Test-only: every defeated monster drops a T2 +6 weapon for fast replacement testing.
     $AddAttribute ( AIRootAgent, "LWS_DiagnosticWeaponDropChance", "integer", 100 );
+
+    WeakMonsterCount = 0;
+    while ( WeakMonsterCount < 4 ) do
+        begin
+            WeakMonster = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( Paladin, 90, 180 ), #Monster_Player );
+            if ( $IsValidGamePiece ( WeakMonster ))
+                begin
+                    $SetAttribute ( WeakMonster, #ATTRIB_MaxHP, 10 );
+                    $SetAttribute ( WeakMonster, #ATTRIB_HP, 10 );
+                    $SetAttribute ( WeakMonster, #ATTRIB_Strength, 1 );
+                end
+            WeakMonsterCount += 1;
+        end
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
