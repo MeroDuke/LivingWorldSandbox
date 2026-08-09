@@ -157,6 +157,14 @@ Class 5 Witch King, Liche Queen, Black Phantom, Url Shekk, Dirgo, Rrongol, and
 Lorphus instances receive the Legendary source marker. Original quest-item IDs
 and their campaign flags remain untouched.
 
+The combat diagnostic now performs a deterministic runtime sweep of all nine
+weapon families, all four armor families, all six Legendary transfers, and the
+hard two-world-item cap. It then leaves a small visual smoke arena containing a
+Paladin, runtime-configured Longsword and Plate drops, a Wand of Immolation,
+Warriors Guild, Blacksmith, and four distant weak rats. See
+`Docs/loot-diagnostic-guide.md`; normal 8% and 1% rolls do not need to be waited
+out during this test.
+
 ## Tiered equipment diagnostic
 
 The first equipment implementation separates a weapon's quality tier from its

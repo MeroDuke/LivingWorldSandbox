@@ -178,6 +178,16 @@ foreach ($pattern in $requiredCombatPatterns) {
 }
 
 $requiredHookPatterns = @(
+    'Function\s+LWS_TestRuntimeEquipmentCarrier',
+    'Function\s+LWS_RunEquipmentFamilyDiagnostic',
+    'Function\s+LWS_RunLegendaryCatalogDiagnostic',
+    'Function\s+LWS_RunTwoSlotDiagnostic',
+    'LWS_TestRuntimeEquipmentCarrier\s*\(\s*Palace[^;]+"Hammer"',
+    'LWS_TestRuntimeEquipmentCarrier\s*\(\s*Palace[^;]+"Chaos"',
+    'LWS_LootSlotsUsed"\s*!=\s*2',
+    'LWS_RandomWeaponDrop',
+    'LWS_RandomArmorDrop',
+    'LWS_WandOfImmolation',
     'Function\s+LWS_EnsurePalacePeasantSpawner',
     'Palace''s\s+"num_peasants"\s*=\s*\$ListSize',
     '\$RunThread\s*\(\s*Palace''s\s+"peasant_spawn"',
@@ -209,8 +219,8 @@ $requiredHookPatterns = @(
     '#ATTRIB_StoredGold\s*,\s*1000',
     'Upgrade_Weapon_Chance"\s*=\s*100',
     'Upgrade_Armor_Chance"\s*=\s*100',
-    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_T3_Longsword_Plus1"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_T3_Longsword_Plus1"',
-    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_T3_Armor_Plus1"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_T3_Armor_Plus1"',
+    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_RandomWeaponDrop"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_RandomWeaponDrop"',
+    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_RandomArmorDrop"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_RandomArmorDrop"',
     'WeakMonsterCount\s*<\s*4',
     '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Giant_Rat"\s*,\s*\$RandomCoord\s*\(\s*Paladin\s*,\s*550\s*,\s*700',
     '#ATTRIB_MaxHP\s*,\s*10',
