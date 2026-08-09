@@ -14,9 +14,9 @@ Begin
         return;
 
     // Loot belongs to the defeated monster, independently of who dealt the fatal hit.
-    $LWS_TryHealingPotionDrop ( Defender, FinalDamage, $RandomNumber ( 100 ));
-    $LWS_TryDiagnosticWeaponDrop ( Defender, FinalDamage, $RandomNumber ( 100 ));
-    $LWS_TryDiagnosticArmorDrop ( Defender, FinalDamage, $RandomNumber ( 100 ));
+    // All item types share the same hard two-slot cap.
+    $LWS_ResolveMonsterLoot ( Defender, FinalDamage, $RandomNumber ( 100 ),
+                              $RandomNumber ( 100 ), $RandomNumber ( 100 ));
 
     if ( $HasAttribute ( "original_type", Attacker ) == FALSE )
         return;

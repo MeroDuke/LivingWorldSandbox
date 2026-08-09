@@ -53,7 +53,7 @@ Begin
     if ( $IsValidGamePiece ( NoDropVictim ) == FALSE )
         return FALSE;
     $SetAttribute ( NoDropVictim, #ATTRIB_HP, 1 );
-    $LWS_TryHealingPotionDrop ( NoDropVictim, 1, 99 );
+    $LWS_ResolveMonsterLoot ( NoDropVictim, 1, 99, 99, 99 );
     if ( $HasAttribute ( "LWS_LootResolved", NoDropVictim ) == FALSE )
         return FALSE;
     if ( AIRootAgent's "LWS_DiagnosticLootDrops" != 0 )
@@ -63,8 +63,10 @@ Begin
     if ( $IsValidGamePiece ( DropVictim ) == FALSE )
         return FALSE;
     $SetAttribute ( DropVictim, #ATTRIB_HP, 1 );
-    $LWS_TryHealingPotionDrop ( DropVictim, 1, 0 );
+    $LWS_ResolveMonsterLoot ( DropVictim, 1, 0, 99, 99 );
     if ( AIRootAgent's "LWS_DiagnosticLootDrops" != 1 )
+        return FALSE;
+    if ( DropVictim's "LWS_LootSlotsUsed" != 1 )
         return FALSE;
 
     $ListObjects ( DropVictim, "Special_Item", 100, LootDrops );
@@ -295,6 +297,12 @@ Begin
     if ( $LWS_ClassFromLevelXP ( 901 ) != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_ClassFromLevelXP ( 2000 ) != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_ClassFromLevelXP ( 2001 ) != 5 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_LootMinimumRarity ( 1 ) != 1 || $LWS_LootMaximumRarity ( 1 ) != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_LootMinimumRarity ( 2 ) != 1 || $LWS_LootMaximumRarity ( 2 ) != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_LootMinimumRarity ( 3 ) != 2 || $LWS_LootMaximumRarity ( 3 ) != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_LootMinimumRarity ( 4 ) != 3 || $LWS_LootMaximumRarity ( 4 ) != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_LootMinimumRarity ( 5 ) != 4 || $LWS_LootMaximumRarity ( 5 ) != 5 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_LootGuaranteesEpic ( 4 ) || $LWS_LootGuaranteesEpic ( 5 ) == FALSE ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
     if ( $LWS_KillsRequired ( 1, 1 ) != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_KillsRequired ( 2, 1 ) != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
