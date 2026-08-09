@@ -198,9 +198,9 @@ Begin
 
     // Keep inspection items outside the Paladin's initial awareness radius so
     // the player has time to select and read both UI cards before retrieval.
-    WeaponDrop = $SpawnUnit ( Paladin, "LWS_Test_U_Long_T3P1", $RandomCoord ( Paladin, 500, 600 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_Test_U_Long_T3P1" ), 0 ));
+    WeaponDrop = $SpawnUnit ( Paladin, "LWSDW_U_Longsword_3_1", $RandomCoord ( Paladin, 500, 600 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWSDW_U_Longsword_3_1" ), 0 ));
     if ( $IsValidGamePiece ( WeaponDrop )) $LWS_ConfigureEquipmentDrop ( WeaponDrop, "Weapon", "Longsword", 3, 1 );
-    ArmorDrop = $SpawnUnit ( WeaponDrop, "LWS_Test_R_Plate_T3P1", $RandomCoord ( WeaponDrop, 30, 60 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_Test_R_Plate_T3P1" ), 0 ));
+    ArmorDrop = $SpawnUnit ( WeaponDrop, "LWSDA_R_Plate_3_1", $RandomCoord ( WeaponDrop, 30, 60 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWSDA_R_Plate_3_1" ), 0 ));
     if ( $IsValidGamePiece ( ArmorDrop )) $LWS_ConfigureEquipmentDrop ( ArmorDrop, "Armor", "Plate", 3, 1 );
     LegendaryDrop = $SpawnUnit ( Paladin, "LWS_WandOfImmolation", $RandomCoord ( Paladin, 100, 140 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWS_WandOfImmolation" ), 0 ));
 
@@ -342,6 +342,21 @@ Begin
     if ( $LWS_RandomWeaponFamily ( 6 ) != "Mace" || $LWS_RandomWeaponFamily ( 7 ) != "Chaos" || $LWS_RandomWeaponFamily ( 8 ) != "Hammer" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_RandomArmorFamily ( 0 ) != "Leather" || $LWS_RandomArmorFamily ( 1 ) != "Chain" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_RandomArmorFamily ( 2 ) != "Plate" || $LWS_RandomArmorFamily ( 3 ) != "Chaos" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    // Execute every static catalog family resolver without spawning world items.
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "Staff", 1, 0 ) != "LWSDW_C_Staff_1_0" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "Axeclub", 1, 2 ) != "LWSDW_U_Axeclub_1_2" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "Dagger", 1, 4 ) != "LWSDW_R_Dagger_1_4" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "Longsword", 1, 7 ) != "LWSDW_E_Longsword_1_7" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "Longbow", 2, 0 ) != "LWSDW_C_Longbow_2_0" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "Crossbow", 2, 1 ) != "LWSDW_U_Crossbow_2_1" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "Mace", 2, 3 ) != "LWSDW_R_Mace_2_3" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "Chaos", 2, 6 ) != "LWSDW_E_Chaos_2_6" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "Hammer", 4, 7 ) != "LWSDW_E_Hammer_4_7" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Armor", "Leather", 1, 0 ) != "LWSDA_C_Leather_1_0" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Armor", "Chain", 1, 1 ) != "LWSDA_U_Chain_1_1" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Armor", "Plate", 3, 1 ) != "LWSDA_R_Plate_3_1" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Armor", "Chaos", 4, 3 ) != "LWSDA_E_Chaos_4_3" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "None", 1, 0 ) != "" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_RandomLegendaryTitle ( 0 ) != "LWS_WandOfImmolation" || $LWS_RandomLegendaryTitle ( 1 ) != "LWS_BeltOfReflection" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_RandomLegendaryTitle ( 2 ) != "LWS_TeevusWand" || $LWS_RandomLegendaryTitle ( 3 ) != "LWS_RuneOfHealing" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_RandomLegendaryTitle ( 4 ) != "LWS_HelmOfDisplacement" || $LWS_RandomLegendaryTitle ( 5 ) != "LWS_StonebacksShield" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;

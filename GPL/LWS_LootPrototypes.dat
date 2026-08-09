@@ -41,22 +41,6 @@
     }
 [end]
 
-[LWS_Test_U_Long_T3P1]
-    {Special_Item
-        (type Special_Item)
-        (Title LWS_Test_U_Long_T3P1)
-        (BirthScript LWS_RandomWeaponDrop_Birth)
-    }
-[end]
-
-[LWS_Test_R_Plate_T3P1]
-    {Special_Item
-        (type Special_Item)
-        (Title LWS_Test_R_Plate_T3P1)
-        (BirthScript LWS_RandomArmorDrop_Birth)
-    }
-[end]
-
 [LWS_T2_Armor_Plus6]
     {Special_Item
         (type Special_Item)

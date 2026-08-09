@@ -208,14 +208,17 @@ Begin
     AffixBonus = $LWS_GeneratedEquipmentAffix ( EquipmentType, Rarity, Tier, PowerRoll );
     if ( EquipmentType == "Armor" )
         begin
-            DropTitle = "LWS_RandomArmorDrop";
             EquipmentFamily = $LWS_RandomArmorFamily ( FamilyRoll );
         end
     else
         begin
-            DropTitle = "LWS_RandomWeaponDrop";
             EquipmentFamily = $LWS_RandomWeaponFamily ( FamilyRoll );
         end
+
+    // The resolver returns only compiler-visible prototype literals. Never
+    // construct a prototype ID dynamically: Majesty's runtime lookup is unsafe.
+    DropTitle = $LWS_StaticEquipmentDropTitle ( EquipmentType, EquipmentFamily, Tier, AffixBonus );
+    if ( DropTitle == "" ) return FALSE;
 
     Drop = $SpawnUnit ( Defender, DropTitle, "Override", $Concatenate ( $MakeInventoryAttribute ( DropTitle ), 0 ));
     if ( $IsValidGamePiece ( Drop ) == FALSE ) return FALSE;

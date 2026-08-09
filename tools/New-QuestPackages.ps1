@@ -23,7 +23,9 @@ $packages = @(
             'LivingWorldSandbox.mqxml'
             'Data\LivingWorldSandbox.bcd'
             'Data\LWS_Descriptions.xml'
+            'Data\LWS_EquipmentDropDescriptions.xml'
             'Data\LWS_Text.xml'
+            'Data\LWS_EquipmentDropText.xml'
             'Quests\LivingWorldSandbox.q'
         )
     },
@@ -33,7 +35,9 @@ $packages = @(
             'LWSCombatDiagnostic.mqxml'
             'Data\LWSCombatDiagnostic.bcd'
             'Data\LWS_Descriptions.xml'
+            'Data\LWS_EquipmentDropDescriptions.xml'
             'Data\LWS_Text.xml'
+            'Data\LWS_EquipmentDropText.xml'
             'Quests\LivingWorldSandbox.q'
         )
     }

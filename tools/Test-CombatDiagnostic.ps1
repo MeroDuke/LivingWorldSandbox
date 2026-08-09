@@ -11,6 +11,7 @@ $lootPath = Join-Path $repositoryRoot 'GPL\LWS_Loot.gpl'
 $equipmentPath = Join-Path $repositoryRoot 'GPL\LWS_Equipment.gpl'
 $lootPrototypePath = Join-Path $repositoryRoot 'GPL\LWS_LootPrototypes.dat'
 $descriptionPath = Join-Path $repositoryRoot 'Data\LWS_Descriptions.xml'
+$equipmentDescriptionPath = Join-Path $repositoryRoot 'Data\LWS_EquipmentDropDescriptions.xml'
 $statePath = Join-Path $repositoryRoot 'GPL\LWS_MonsterState.gpl'
 $generatorPath = Join-Path $repositoryRoot 'tools\New-CombatOverride.ps1'
 $itemGeneratorPath = Join-Path $repositoryRoot 'tools\New-ItemEvaluationOverride.ps1'
@@ -36,8 +37,8 @@ $lootSource = Get-Content -LiteralPath $lootPath -Raw
 $equipmentSource = Get-Content -LiteralPath $equipmentPath -Raw
 $lootPrototypeSource = Get-Content -LiteralPath $lootPrototypePath -Raw
 $descriptionSource = Get-Content -LiteralPath $descriptionPath -Raw
-[xml]$descriptionXml = $descriptionSource
-foreach ($itemId in @('LWS_Test_U_Long_T3P1', 'LWS_Test_R_Plate_T3P1')) {
+[xml]$descriptionXml = Get-Content -LiteralPath $equipmentDescriptionPath -Raw
+foreach ($itemId in @('LWSDW_U_Longsword_3_1', 'LWSDA_R_Plate_3_1')) {
     $itemDescription = @($descriptionXml.Majesty.Description | Where-Object { $_.ID -eq $itemId })
     if ($itemDescription.Count -ne 1 -or $itemDescription[0].Name -ne $itemId) {
         throw "Custom item Description must repeat its prototype ID in Name: $itemId"
@@ -188,10 +189,12 @@ $requiredHookPatterns = @(
     'Function\s+LWS_RunTwoSlotDiagnostic',
     'LWS_RandomWeaponFamily\s*\(\s*8\s*\)\s*!=\s*"Hammer"',
     'LWS_RandomArmorFamily\s*\(\s*3\s*\)\s*!=\s*"Chaos"',
+    'LWS_StaticEquipmentDropTitle\s*\(\s*"Weapon"\s*,\s*"Longsword"\s*,\s*1\s*,\s*7\s*\)\s*!=\s*"LWSDW_E_Longsword_1_7"',
+    'LWS_StaticEquipmentDropTitle\s*\(\s*"Armor"\s*,\s*"Plate"\s*,\s*3\s*,\s*1\s*\)\s*!=\s*"LWSDA_R_Plate_3_1"',
     'LWS_RandomLegendaryTitle\s*\(\s*5\s*\)\s*!=\s*"LWS_StonebacksShield"',
     'LWS_LootSlotsUsed"\s*!=\s*2',
-    'LWS_Test_U_Long_T3P1',
-    'LWS_Test_R_Plate_T3P1',
+    'LWSDW_U_Longsword_3_1',
+    'LWSDA_R_Plate_3_1',
     'LWS_WandOfImmolation',
     'Function\s+LWS_EnsurePalacePeasantSpawner',
     'Palace''s\s+"num_peasants"\s*=\s*\$ListSize',
@@ -224,8 +227,8 @@ $requiredHookPatterns = @(
     '#ATTRIB_StoredGold\s*,\s*1000',
     'Upgrade_Weapon_Chance"\s*=\s*100',
     'Upgrade_Armor_Chance"\s*=\s*100',
-    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_Test_U_Long_T3P1"\s*,\s*\$RandomCoord\s*\(\s*Paladin\s*,\s*500\s*,\s*600',
-    '\$SpawnUnit\s*\(\s*WeaponDrop\s*,\s*"LWS_Test_R_Plate_T3P1"\s*,\s*\$RandomCoord\s*\(\s*WeaponDrop\s*,\s*30\s*,\s*60',
+    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWSDW_U_Longsword_3_1"\s*,\s*\$RandomCoord\s*\(\s*Paladin\s*,\s*500\s*,\s*600',
+    '\$SpawnUnit\s*\(\s*WeaponDrop\s*,\s*"LWSDA_R_Plate_3_1"\s*,\s*\$RandomCoord\s*\(\s*WeaponDrop\s*,\s*30\s*,\s*60',
     'WeakMonsterCount\s*<\s*4',
     '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Giant_Rat"\s*,\s*\$RandomCoord\s*\(\s*Paladin\s*,\s*550\s*,\s*700',
     '#ATTRIB_MaxHP\s*,\s*10',
