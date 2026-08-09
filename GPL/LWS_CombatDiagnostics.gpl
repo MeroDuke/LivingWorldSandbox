@@ -162,7 +162,7 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_SetupEquipmentArena ( agent AIRootAgent, agent Palace )
 Declare
-    agent WarriorsGuild, RangersGuild, Blacksmith, Paladin, Ranger, WeaponDrop, RejectedWeaponDrop, ArmorDrop, LegendaryDrop, WeakMonster;
+    agent WarriorsGuild, Blacksmith, Paladin, WeaponDrop, RejectedWeaponDrop, ArmorDrop, LegendaryDrop, WeakMonster;
     coordinate ArenaLocation;
     integer WeakMonsterCount;
 Begin
@@ -210,24 +210,6 @@ Begin
             if ( $LWS_IsEquipmentCompatible ( Paladin, RejectedWeaponDrop ))
                 AIRootAgent's "LWS_DiagnosticFailures" += 1;
             $LWS_ConfigureEquipmentDrop ( RejectedWeaponDrop, "Weapon", "Longbow", 3, 1 );
-        end
-    // Second-stage probe: a compatible Ranger is explicitly routed to the native resource
-    // carrier. This proves Grab_Item + TransferScript can equip it without exposing it to
-    // the vanilla Special_Item evaluator used by incompatible heroes.
-    RangersGuild = $SpawnUnit ( Palace, "Rangers_Guild", $RandomCoord ( WeaponDrop, 180, 240 ), "MaxHP", #Player_1 );
-    if ( $IsValidGamePiece ( RangersGuild ))
-        begin
-            Ranger = $SpawnUnit ( RangersGuild, "Ranger", $RandomCoord ( RangersGuild, 40, 80 ), #Player_1 );
-            if ( $IsValidGamePiece ( Ranger ))
-                begin
-                    if ( Ranger's "home" == $NullAgent ()) $Adopt ( RangersGuild, Ranger );
-                    if ( $LWS_IsEquipmentCompatible ( Ranger, RejectedWeaponDrop ) == FALSE )
-                        AIRootAgent's "LWS_DiagnosticFailures" += 1;
-                    Ranger's "Target" = RejectedWeaponDrop;
-                    Ranger's "ActiveScript" = $Grab_Item;
-                    Ranger's "BackScript" = $Grab_Item;
-                    $SpecifyIntent ( Ranger, #intent_recovering_item );
-                end
         end
     ArmorDrop = $SpawnUnit ( WeaponDrop, "LWSDA_R_Plate_3_1", $RandomCoord ( WeaponDrop, 30, 60 ), "Override", $Concatenate ( $MakeInventoryAttribute ( "LWSDA_R_Plate_3_1" ), 0 ));
     if ( $IsValidGamePiece ( ArmorDrop )) $LWS_ConfigureEquipmentDrop ( ArmorDrop, "Armor", "Plate", 3, 1 );
