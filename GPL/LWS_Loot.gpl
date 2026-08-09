@@ -33,6 +33,51 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Potion and every optional production loot channel use the same base chance.
+Function LWS_OptionalLootDropSucceeds ( integer ChanceRoll ) is boolean
+Declare
+Begin
+    return ChanceRoll < 8;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Class 5 always supplies its one equipment candidate. Other classes use the 8% base chance.
+Function LWS_EquipmentDropSucceeds ( integer ProgressClass, integer ChanceRoll ) is boolean
+Declare
+Begin
+    if ( ProgressClass == 5 ) return TRUE;
+    return $LWS_OptionalLootDropSucceeds ( ChanceRoll );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Selects rarity only after an equipment drop succeeds.
+// Classes 2-4 yield the previous league 75% and their ceiling 25% of the time.
+Function LWS_SelectLootRarity ( integer ProgressClass, integer RarityRoll ) is integer
+Declare
+Begin
+    if ( ProgressClass <= 0 ) return 0;
+    if ( ProgressClass == 1 ) return 1;
+    if ( ProgressClass == 2 )
+        begin
+            if ( RarityRoll < 75 ) return 1;
+            return 2;
+        end
+    if ( ProgressClass == 3 )
+        begin
+            if ( RarityRoll < 75 ) return 2;
+            return 3;
+        end
+    if ( ProgressClass == 4 )
+        begin
+            if ( RarityRoll < 75 ) return 3;
+            return 4;
+        end
+    // Class 5 upgrades its guaranteed Epic candidate to Legendary on a 1% roll.
+    if ( RarityRoll < 1 ) return 5;
+    return 4;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Legendary requires both Class 5 and an explicit source whitelist marker.
 Function LWS_IsLegendaryLootSource ( agent Monster ) is boolean
 Declare
@@ -84,8 +129,7 @@ Function LWS_TryHealingPotionSlot ( agent Defender, integer ChanceRoll )
 Declare
     agent AIRootAgent;
 Begin
-    // Existing production chance is retained until the dedicated chance table is agreed.
-    if ( ChanceRoll >= 8 ) return;
+    if ( $LWS_OptionalLootDropSucceeds ( ChanceRoll ) == FALSE ) return;
     if ( $LWS_SpawnLootItem ( Defender, "LWS_HealingPotion" ) == FALSE ) return;
 
     AIRootAgent = $RetrieveAgent ( "GplAIRoot" );

@@ -11,8 +11,13 @@ if ([int]$policy.worldDropLimitPerMonster -ne 2) {
 if ($policy.monsterLevelCanChangeRarityCeiling -ne $false) {
     throw 'Monster level must not change its progression-class rarity ceiling.'
 }
-if ($policy.dropChancesDefined -ne $false) {
-    throw 'Drop chances must remain pending in this policy phase.'
+if ($policy.dropChancesDefined -ne $true) {
+    throw 'Drop chances must be defined.'
+}
+foreach ($channel in @('HealingPotion', 'Weapon', 'Armor')) {
+    if ([int]$policy.dropChances.$channel -ne 8) {
+        throw "$channel drop chance must be 8%."
+    }
 }
 
 $expected = @(
@@ -32,6 +37,24 @@ foreach ($row in $expected) {
 if ($policy.legendary.requiresProgressClass -ne 5 -or $policy.legendary.requiresExplicitSourceWhitelist -ne $true) {
     throw 'Legendary loot must require Class 5 and explicit source whitelisting.'
 }
+if ($policy.class5GuaranteedEquipmentCandidate -ne $true -or $policy.legendaryReplacesGuaranteedEpic -ne $true) {
+    throw 'Class 5 must guarantee one equipment candidate and replace it on Legendary success.'
+}
+$expectedDistribution = @{
+    class1 = @{ Common = 100 }
+    class2 = @{ Common = 75; Uncommon = 25 }
+    class3 = @{ Uncommon = 75; Rare = 25 }
+    class4 = @{ Rare = 75; Epic = 25 }
+    class5 = @{ Epic = 99; Legendary = 1 }
+}
+foreach ($className in $expectedDistribution.Keys) {
+    $actualDistribution = $policy.rarityDistributionOnSuccessfulEquipmentDrop.$className
+    foreach ($rarity in $expectedDistribution[$className].Keys) {
+        if ([int]$actualDistribution.$rarity -ne $expectedDistribution[$className][$rarity]) {
+            throw "Unexpected $className $rarity distribution."
+        }
+    }
+}
 foreach ($requiredType in @('HealingPotion', 'Weapon', 'Armor', 'FutureConsumable', 'FutureSpecialItem', 'LegendaryUnique')) {
     if ($requiredType -notin @($policy.slotItemTypes)) {
         throw "Missing extensible loot slot type: $requiredType"
@@ -46,6 +69,11 @@ $requiredPatterns = @(
     'Function\s+LWS_LootMinimumRarity',
     'Function\s+LWS_LootMaximumRarity',
     'Function\s+LWS_LootGuaranteesEpic',
+    'Function\s+LWS_OptionalLootDropSucceeds',
+    'Function\s+LWS_EquipmentDropSucceeds',
+    'Function\s+LWS_SelectLootRarity',
+    'RarityRoll\s*<\s*75',
+    'RarityRoll\s*<\s*1',
     'Function\s+LWS_IsLegendaryLootSource',
     'LWS_LegendaryLootSource'
 )

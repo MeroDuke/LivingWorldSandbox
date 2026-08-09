@@ -303,6 +303,13 @@ Begin
     if ( $LWS_LootMinimumRarity ( 4 ) != 3 || $LWS_LootMaximumRarity ( 4 ) != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_LootMinimumRarity ( 5 ) != 4 || $LWS_LootMaximumRarity ( 5 ) != 5 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_LootGuaranteesEpic ( 4 ) || $LWS_LootGuaranteesEpic ( 5 ) == FALSE ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_OptionalLootDropSucceeds ( 7 ) == FALSE || $LWS_OptionalLootDropSucceeds ( 8 )) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_EquipmentDropSucceeds ( 4, 8 ) || $LWS_EquipmentDropSucceeds ( 5, 99 ) == FALSE ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_SelectLootRarity ( 1, 99 ) != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_SelectLootRarity ( 2, 74 ) != 1 || $LWS_SelectLootRarity ( 2, 75 ) != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_SelectLootRarity ( 3, 74 ) != 2 || $LWS_SelectLootRarity ( 3, 75 ) != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_SelectLootRarity ( 4, 74 ) != 3 || $LWS_SelectLootRarity ( 4, 75 ) != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_SelectLootRarity ( 5, 0 ) != 5 || $LWS_SelectLootRarity ( 5, 1 ) != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
     if ( $LWS_KillsRequired ( 1, 1 ) != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $LWS_KillsRequired ( 2, 1 ) != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
