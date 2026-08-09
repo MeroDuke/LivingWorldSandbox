@@ -47,8 +47,6 @@ End
 Function LWS_EnsureArmorEquipmentState ( agent Hero )
 Declare
 Begin
-    if ( $HasAttribute ( "LWS_ArmorBaseDefense", Hero ) == FALSE )
-        $AddAttribute ( Hero, "LWS_ArmorBaseDefense", "integer", $GetAttribute ( Hero, #ATTRIB_Armor_Basic_Damage ));
     if ( $HasAttribute ( "LWS_ArmorTier", Hero ) == FALSE )
         $AddAttribute ( Hero, "LWS_ArmorTier", "integer", 2 );
     if ( $HasAttribute ( "LWS_ArmorAffixBonus", Hero ) == FALSE )
@@ -93,7 +91,7 @@ Begin
     if ( $HasAttribute ( "LWS_ArmorTier", Hero ))
         CurrentEffective = $LWS_ArmorEffectiveBonus ( Hero's "LWS_ArmorTier", Hero's "LWS_ArmorAffixBonus" );
     else
-        CurrentEffective = $GetAttribute ( Hero, #ATTRIB_Armor_Struct_Bonus );
+        CurrentEffective = $GetAttribute ( Hero, #ATTRIB_Armor_Struct_Bonus ) + $GetAttribute ( Hero, #ATTRIB_Armor_Magic_Bonus );
     return ItemEffective > CurrentEffective;
 End
 
@@ -149,7 +147,9 @@ Begin
             NewOwnerAgent's "LWS_ArmorTier" = ItemTier;
             NewOwnerAgent's "LWS_ArmorAffixBonus" = ItemAffix;
             $SetAttribute ( NewOwnerAgent, #ATTRIB_Armor_Struct_Bonus, $LWS_ArmorTierBaseBonus ( ItemTier ));
-            $SetAttribute ( NewOwnerAgent, #ATTRIB_Armor_Basic_Damage, NewOwnerAgent's "LWS_ArmorBaseDefense" + ItemAffix );
+            // Northern Expansion treasure armor stores its persistent enchantment here.
+            // Armor_Basic_Damage is engine-managed and can be recalculated after pickup.
+            $SetAttribute ( NewOwnerAgent, #ATTRIB_Armor_Magic_Bonus, ItemAffix );
             $CreateEffector ( NewOwnerAgent, "got_armor", 0 );
             $DebugOut ( 911, "LWS EQUIPPED ARMOR", NewOwnerAgent, "TIER", ItemTier, "AFFIX", ItemAffix, "EFFECTIVE", ItemEffective );
         end
@@ -393,7 +393,7 @@ Begin
                     $Spend_Gold ( ThisAgent, ThisBuilding, Gold );
                     ThisAgent's "LWS_ArmorTier" = Tier;
                     $SetAttribute ( ThisAgent, #ATTRIB_Armor_Struct_Bonus, $LWS_ArmorTierBaseBonus ( Tier ));
-                    $SetAttribute ( ThisAgent, #ATTRIB_Armor_Basic_Damage, ThisAgent's "LWS_ArmorBaseDefense" + AffixBonus );
+                    $SetAttribute ( ThisAgent, #ATTRIB_Armor_Magic_Bonus, AffixBonus );
                     $DebugOut ( 911, "LWS BLACKSMITH ARMOR UPGRADE", ThisAgent, "TIER", Tier, "AFFIX", AffixBonus );
                 end
 
