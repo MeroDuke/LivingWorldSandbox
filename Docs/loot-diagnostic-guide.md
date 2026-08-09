@@ -38,4 +38,6 @@ smoke tesztben nem kell kivárni.
 
 A felszerelési arénában egy Longbow is található a többi vizsgálati tárgy mellett.
 Ez szándékosan inkompatibilis a Paladinnal: a földön kell maradnia, és a Paladinnak
-nem szabad odamennie vagy eltüntetnie. Egy Ranger vagy Elf később felveheti.
+nem szabad odamennie vagy eltüntetnie. A teszt egy Rangers Guildöt és egy Rangert
+is létrehoz; a Ranger célzottan odamegy a `Compatibility Probe Longbow` tárgyhoz,
+felveszi, és Longbowként felszereli.
