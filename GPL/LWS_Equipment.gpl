@@ -34,6 +34,25 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_TierFromStructBonus ( integer StructBonus ) is integer
+Declare
+Begin
+    if ( StructBonus >= 3 ) return 4;
+    if ( StructBonus == 2 ) return 3;
+    if ( StructBonus == 1 ) return 2;
+    return 1;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_ClampWizardEnchantBonus ( integer EnchantBonus ) is integer
+Declare
+Begin
+    if ( EnchantBonus < 0 ) return 0;
+    if ( EnchantBonus > 3 ) return 3;
+    return EnchantBonus;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_EquipmentPower ( string EquipmentType, integer Tier, integer AffixBonus ) is integer
 Declare
 Begin
@@ -160,7 +179,8 @@ Begin
     if ( $HasAttribute ( "LWS_WeaponBaseDamage", Hero ) == FALSE )
         $AddAttribute ( Hero, "LWS_WeaponBaseDamage", "integer", $GetAttribute ( Hero, #ATTRIB_Weapon_Basic_Damage ));
     if ( $HasAttribute ( "LWS_WeaponTier", Hero ) == FALSE )
-        $AddAttribute ( Hero, "LWS_WeaponTier", "integer", 1 );
+        $AddAttribute ( Hero, "LWS_WeaponTier", "integer",
+                        $LWS_TierFromStructBonus ( $GetAttribute ( Hero, #ATTRIB_Weapon_Struct_Bonus )));
     if ( $HasAttribute ( "LWS_WeaponAffixBonus", Hero ) == FALSE )
         $AddAttribute ( Hero, "LWS_WeaponAffixBonus", "integer", 0 );
 End
@@ -168,17 +188,26 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_EnsureArmorEquipmentState ( agent Hero )
 Declare
+    boolean HadTier, HadAffix;
+    integer NativeMagicBonus, EnchantBonus;
 Begin
-    if ( $HasAttribute ( "LWS_ArmorTier", Hero ) == FALSE )
-        $AddAttribute ( Hero, "LWS_ArmorTier", "integer", 1 );
-    if ( $HasAttribute ( "LWS_ArmorAffixBonus", Hero ) == FALSE )
+    HadTier = $HasAttribute ( "LWS_ArmorTier", Hero );
+    HadAffix = $HasAttribute ( "LWS_ArmorAffixBonus", Hero );
+    NativeMagicBonus = $GetAttribute ( Hero, #ATTRIB_Armor_Magic_Bonus );
+
+    if ( HadTier == FALSE )
+        $AddAttribute ( Hero, "LWS_ArmorTier", "integer",
+                        $LWS_TierFromStructBonus ( $GetAttribute ( Hero, #ATTRIB_Armor_Struct_Bonus )));
+    if ( HadAffix == FALSE )
         $AddAttribute ( Hero, "LWS_ArmorAffixBonus", "integer", 0 );
     if ( $HasAttribute ( "LWS_ArmorEnchantBonus", Hero ) == FALSE )
         begin
-            // Before the first LWS armor pickup, the native magic field contains
-            // only the Wizard Guild enchantment and can be adopted safely.
-            $AddAttribute ( Hero, "LWS_ArmorEnchantBonus", "integer",
-                            $GetAttribute ( Hero, #ATTRIB_Armor_Magic_Bonus ));
+            EnchantBonus = NativeMagicBonus;
+            // A pre-existing LWS state stored the affix in the native aggregate.
+            // Subtract it during migration so Sync cannot count it twice.
+            if ( HadTier || HadAffix ) EnchantBonus -= Hero's "LWS_ArmorAffixBonus";
+            EnchantBonus = $LWS_ClampWizardEnchantBonus ( EnchantBonus );
+            $AddAttribute ( Hero, "LWS_ArmorEnchantBonus", "integer", EnchantBonus );
         end
 End
 
@@ -422,7 +451,6 @@ Begin
             Tier = ThisAgent's "LWS_ArmorTier";
             if ( Tier >= 4 ) return FALSE;
 
-            ThisAgent's "Task_Number" = #ATTRIB_Armor_Struct_Bonus;
             if ( Tier == 1 )
                 begin
                     Gold_Needed = #Cost_Per_Struct_Upgrade1 * #armor_multiplier;
@@ -441,6 +469,7 @@ Begin
 
             if ( $Total_Gold ( ThisAgent ) < Gold_Needed ) return FALSE;
             if ( $ListSize ( Potentials ) == 0 ) return FALSE;
+            ThisAgent's "Task_Number" = #ATTRIB_Armor_Struct_Bonus;
             ThisAgent's "Target" = $Loyalty_Mod_Pick_Closest ( ThisAgent, Potentials );
             ThisAgent's "TaskName" = "visiting";
             return TRUE;
@@ -451,7 +480,6 @@ Begin
             Tier = ThisAgent's "LWS_WeaponTier";
             if ( Tier >= 4 ) return FALSE;
 
-            ThisAgent's "Task_Number" = #ATTRIB_Weapon_Struct_Bonus;
             if ( Tier == 1 )
                 begin
                     Gold_Needed = #Cost_Per_Struct_Upgrade1;
@@ -471,6 +499,7 @@ Begin
             if ( $Total_Gold ( ThisAgent ) < Gold_Needed ) return FALSE;
             if ( $ListSize ( Potentials ) == 0 ) return FALSE;
 
+            ThisAgent's "Task_Number" = #ATTRIB_Weapon_Struct_Bonus;
             ThisAgent's "Target" = $Loyalty_Mod_Pick_Closest ( ThisAgent, Potentials );
             ThisAgent's "TaskName" = "visiting";
             return TRUE;
@@ -658,12 +687,31 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function Obtain_Enchantment ( agent ThisAgent )
 Declare
-    agent ThisBuilding;
+    agent ThisBuilding, BuildingContainer;
     integer What_To_Upgrade, CurrentBonus, Total_Gold, Gold, Upgrade, Bldg_Level;
 Begin
     ThisBuilding = ThisAgent's "Target";
-    Total_Gold = $Total_Gold ( ThisAgent );
     What_To_Upgrade = ThisAgent's "Task_Number";
+    if ( $IsValidGamePiece ( ThisBuilding ) == FALSE ||
+         ( What_To_Upgrade != #ATTRIB_Weapon_Magic_Bonus &&
+           What_To_Upgrade != #ATTRIB_Armor_Magic_Bonus ))
+        begin
+            ThisAgent's "Task_Number" = 0;
+            $DebugOut ( 911, "LWS WIZARD GUILD ENCHANT ABORTED: INVALID TARGET OR TASK", ThisAgent );
+            if ( $InsideBuilding ( ThisAgent ))
+                begin
+                    BuildingContainer = $GetBuildingContainer ( ThisAgent );
+                    if ( $IsValidGamePiece ( BuildingContainer ))
+                        $Exit_Building ( ThisAgent, BuildingContainer );
+                    else
+                        $Reset_Tasks ( ThisAgent );
+                end
+            else
+                $Reset_Tasks ( ThisAgent );
+            return;
+        end
+
+    Total_Gold = $Total_Gold ( ThisAgent );
     ThisAgent's "Task_Number" = 0;
     $SetThreadInterval ( ThisAgent's "ActiveScript", #Normal_Cycle );
     Bldg_Level = ThisBuilding's "Level";

@@ -27,9 +27,10 @@ Declare
 Begin
     if ( $IsValidGamePiece ( Palace ) == FALSE ) return;
     AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
-    if ( $IsValidGamePiece ( AIRootAgent ))
-        if ( $HasAttribute ( "LWS_SkipExplorationChests", AIRootAgent ))
-            if ( AIRootAgent's "LWS_SkipExplorationChests" ) return;
+    // GPLAIRoot owns quest state but deliberately has no unit/game piece.
+    // HasAttribute is therefore the correct guard for the diagnostic skip flag.
+    if ( $HasAttribute ( "LWS_SkipExplorationChests", AIRootAgent ))
+        if ( AIRootAgent's "LWS_SkipExplorationChests" ) return;
 
     BoardExtents = $GetBoardExtents ();
     PalaceLocation = $LocationOf ( Palace );

@@ -55,6 +55,9 @@ if ($bootstrapSource -notmatch 'ChestCount\s*<\s*12' -or
 if ($diagnosticSource -notmatch 'LWS_SkipExplorationChests[^}]+\$LivingWorldSandbox\s*\(\s*\)') {
     throw 'Combat diagnostic must disable production exploration chests before running the shared bootstrap.'
 }
+if ($bootstrapSource -match '\$IsValidGamePiece\s*\(\s*AIRootAgent\s*\)[\s\S]{0,160}LWS_SkipExplorationChests') {
+    throw 'GPLAIRoot has no game piece; the diagnostic exploration-chest guard must use its attribute directly.'
+}
 if ($chestSource -notmatch '#chest_starting_gold\s*\+\s*\$RandomNumber\s*\(\s*#chest_random_gold\s*\)') {
     throw 'Full-potion fallback does not use the native 50-149 chest gold formula.'
 }
