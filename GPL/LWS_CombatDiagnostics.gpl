@@ -8,12 +8,15 @@ Declare
     agent AIRootAgent, Palace;
     list Palaces;
 Begin
+    AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
+    $AddAttribute ( AIRootAgent, "LWS_SkipExplorationChests", "boolean", TRUE );
+
     // Keep the known-good production bootstrap in the diagnostic quest.
+    // The targeted arena supplies its own single deterministic chest.
     $LivingWorldSandbox ();
 
     Palaces = $ListPalaces ();
     Palace = $ListMember ( Palaces, 1 );
-    AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
 
     $AddAttribute ( AIRootAgent, "LWS_DiagnosticPassed", "boolean", FALSE );
     $AddAttribute ( AIRootAgent, "LWS_DiagnosticFailures", "integer", 0 );
