@@ -208,6 +208,14 @@ $requiredHookPatterns = @(
     'Function\s+LWS_PrepareClassShowcase',
     'Function\s+LWS_RunLootDiagnostic',
     'Function\s+LWS_RunSpellAttributionDiagnostic',
+    'Function\s+LWS_SetupWizardEnchantArena',
+    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Wizards_Guild3"',
+    '\$SpawnUnit\s*\(\s*WarriorsGuild\s*,\s*"Paladin"',
+    '#ATTRIB_StoredGold\s*,\s*1000',
+    '#ATTRIB_Weapon_Magic_Bonus\s*,\s*3',
+    '"LWS_T3_Armor_Plus1"',
+    '"LWS_ChestSlot1Tier"\s*,\s*"integer"\s*,\s*2',
+    '"LWS_ChestSlot1Affix"\s*,\s*"integer"\s*,\s*6',
     '\$spelldamage\s*\(\s*SpellMonster\s*,\s*EnemyTarget\s*,\s*1\s*,\s*1\s*\)',
     '\$spelldamage\s*\(\s*SpellMonster\s*,\s*FriendlyTarget\s*,\s*1\s*,\s*1\s*\)',
     'RequiredKills\s*=\s*\$LWS_KillsRequired',
@@ -230,7 +238,8 @@ $requiredHookPatterns = @(
     'LWS_DiagnosticBuildings',
     'LairTarget''s\s+"Has_Special_Spawn"\s*=\s*TRUE',
     'LairTarget''s\s+"Special_Spawn_Type"\s*=\s*"xx"',
-    '\$LWS_RunCombatDiagnostic\s*\(\s*AIRootAgent\s*,\s*Palace\s*\)'
+    '\$LWS_RunCombatDiagnostic\s*\(\s*AIRootAgent\s*,\s*Palace\s*\)',
+    '\$LWS_SetupWizardEnchantArena\s*\(\s*Palace\s*\)'
 )
 foreach ($pattern in $requiredHookPatterns) {
     if ($hookSource -notmatch $pattern) {

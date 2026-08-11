@@ -159,6 +159,57 @@ Begin
     return TRUE;
 End
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Visible, minimal arena for manually verifying Northern Expansion Wizard Guild
+// armor enchantments and their preservation across an LWS armor replacement.
+Function LWS_SetupWizardEnchantArena ( agent Palace ) is boolean
+Declare
+    agent WarriorsGuild, WizardsGuild, Paladin, ArmorDrop, ArmorChest;
+    coordinate ArenaLocation;
+Begin
+    ArenaLocation = $RandomCoord ( Palace, 350, 500 );
+    WarriorsGuild = $SpawnUnit ( Palace, "Warriors_Guild", ArenaLocation, "MaxHP", #Player_1 );
+    if ( $IsValidGamePiece ( WarriorsGuild ) == FALSE ) return FALSE;
+
+    WizardsGuild = $SpawnUnit ( Palace, "Wizards_Guild3",
+                                $RandomCoord ( WarriorsGuild, 180, 240 ), "MaxHP", #Player_1 );
+    if ( $IsValidGamePiece ( WizardsGuild ) == FALSE ) return FALSE;
+
+    Paladin = $SpawnUnit ( WarriorsGuild, "Paladin",
+                           $RandomCoord ( WarriorsGuild, 40, 80 ), #Player_1 );
+    if ( $IsValidGamePiece ( Paladin ) == FALSE ) return FALSE;
+    if ( Paladin's "home" == $NullAgent ()) $Adopt ( WarriorsGuild, Paladin );
+
+    $Advance_To_Level ( Paladin, 8 );
+    $SetAttribute ( Paladin, #ATTRIB_HP, $GetAttribute ( Paladin, #ATTRIB_MaxHP ));
+    $SetAttribute ( Paladin, #ATTRIB_Gold, 0 );
+    $SetAttribute ( Paladin, #ATTRIB_StoredGold, 1000 );
+    $SetAttribute ( Paladin, #ATTRIB_Weapon_Magic_Bonus, 3 );
+    Paladin's "Upgrade_Armor_Chance" = 100;
+    Paladin's "Upgrade_Weapon_Chance" = 100;
+
+    // Guaranteed special-item path: the Paladin can equip this T3 +1 armor first.
+    ArmorDrop = $SpawnUnit ( Paladin, "LWS_T3_Armor_Plus1",
+                             $RandomCoord ( Paladin, 70, 110 ), "Override",
+                             $Concatenate ( $MakeInventoryAttribute ( "LWS_T3_Armor_Plus1" ), 0 ));
+    if ( $IsValidGamePiece ( ArmorDrop ) == FALSE ) return FALSE;
+
+    // Chest path: an exact T2 +6 armor reward. It is stronger than T3 +1 and
+    // therefore also exercises enchant preservation when the armor is replaced.
+    ArmorChest = $SpawnUnit ( Palace, "Treasure_Chest1",
+                              $RandomCoord ( Paladin, 180, 240 ), "MaxHP", #Monster_Player );
+    if ( $IsValidGamePiece ( ArmorChest ) == FALSE ) return FALSE;
+    $AddAttribute ( ArmorChest, "LWS_ExplorationChest", "boolean", TRUE );
+    $AddAttribute ( ArmorChest, "LWS_ChestClass", "integer", 3 );
+    $AddAttribute ( ArmorChest, "LWS_ChestRewardCount", "integer", 1 );
+    $AddAttribute ( ArmorChest, "LWS_ChestSlot1Type", "string", "Armor" );
+    $AddAttribute ( ArmorChest, "LWS_ChestSlot1Rarity", "integer", 3 );
+    $AddAttribute ( ArmorChest, "LWS_ChestSlot1Tier", "integer", 2 );
+    $AddAttribute ( ArmorChest, "LWS_ChestSlot1Affix", "integer", 6 );
+    $SetAttribute ( ArmorChest, #ATTRIB_Gold, 0 );
+    return TRUE;
+End
+
 Function LWS_PrepareClassShowcase ( agent Monster, integer ExpectedClass, integer KillCredits ) is boolean
 Declare
     integer CreditCount, OldMaxHP, OldHP, HPBonus;
@@ -442,6 +493,9 @@ Begin
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
     if ( $LWS_RunSpellAttributionDiagnostic ( Palace, TestLocation ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    if ( $LWS_SetupWizardEnchantArena ( Palace ) == FALSE )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
     if ( AIRootAgent's "LWS_DiagnosticFailures" == 0 )
