@@ -41,9 +41,6 @@ megoldást, és hivatkozni kell az ellenőrzésre vagy a részletes designra.
   `damage()` override közvetlenül a végső HP-módosítás előtt ad kill creditet.
 - [x] **Közvetlen spell attribution** — a `spelldamage()` ugyanazt a fatal-hit
   csatornát használja; enemy kill számít, friendly Monster Player kill nem.
-- [ ] **Poison/DOT/effect attribution** — **Blokkolt.** A vanilla periodikus HP
-  drain nem tartja meg megbízhatóan a sebzés forrásagentjét. Új engine-hook vagy
-  biztonságos saját DOT-state szükséges.
 
 ## Building destruction és perkek
 
@@ -51,9 +48,9 @@ megoldást, és hivatkozni kell az ellenőrzésre vagy a részletes designra.
   monster lair és normál unit kill nem.
 - [x] **Permanent stat perkek** — 35% production esély; combat, defense és magic
   ág; monsterenként legfeljebb három perk, statcapekkel.
-- [ ] **Monster-safe ability perkek** — előbb SDK-audit és célzott aréna kell.
-  Csak olyan meglévő ability használható, amelyet a vanilla monster AI valóban
-  aktiválni és kezelni tud.
+- [ ] **Monster-safe ability perkek — külön feature** — előbb SDK-audit és célzott
+  aréna kell. Csak olyan meglévő ability használható, amelyet a Northern Expansion
+  monster AI valóban aktiválni és kezelni tud. Nem része a jelenlegi loot-ágnak.
 
 ## Equipment modell
 
@@ -68,12 +65,16 @@ megoldást, és hivatkozni kell az ellenőrzésre vagy a részletes designra.
   A hős vásárlási döntését nem blokkolja egy nagy affix.
 - [x] **Jobb equipment kiválasztása** — effektív power, majd döntetlennél affix
   és tier alapján történik.
-- [ ] **Mágikus equipment-dimenzió** — külön structural/magical súlyozás és
-  generálási szabály még nincs véglegesítve.
-- [ ] **Lecserélt vagy gyengébb equipment sorsa** — eladás, salvage, tárolás vagy
-  hősönkénti ignore-memory közül végleges megoldást kell választani.
-- [ ] **Végleges tiernevek és affixeloszlás** — a működő számítás balanszolása és
-  játékosnak szánt elnevezése hátravan.
+- [ ] **Mágikus equipment-dimenzió — külön feature** — azt jelentené, hogy egy
+  tárgy fizikai/structural és mágikus ereje két külön generált tulajdonságként
+  szerepelne az egyetlen összesített power helyett. A szükségességéről és pontos
+  designjáról külön feature-ben döntünk; nem része a jelenlegi loot-ágnak.
+- [ ] **Lecserélt vagy gyengébb equipment sorsa — külön feature** — eladás, salvage,
+  tárolás vagy hősönkénti ignore-memory. A Potion of Luck megvalósíthatósági
+  vizsgálata után térünk vissza rá; nem része a jelenlegi loot-ágnak.
+- [x] **Tiernevek és affixeloszlás jelenlegi balansza** — a mostani T1–T4 és `+N`
+  modell elfogadva. Későbbi nehézségkorrekciót elsődlegesen monster oldalon végzünk,
+  hogy a hősök törékenyebbek legyenek, nem az equipment újrabalanszolásával.
 
 ## Monster loot
 
@@ -94,12 +95,15 @@ megoldást, és hivatkozni kell az ellenőrzésre vagy a részletes designra.
   benne összesen legfeljebb két jutalommal. A rarity/tier/affix a monster
   halálakor zárolódik; csak a family igazodik a chestet nyitó hőshöz. Paladin és
   Ranger kézi teszttel igazolva.
-- [ ] **Monster level hatása a ligán belüli esélyre** — a rarity-plafon marad,
-  de egy veterán példány jobb eredményének valószínűsége még nincs bevezetve.
-- [ ] **További consumable és special item dropok** — a központi slotrendszer
-  támogatja őket, de konkrét lista és viselkedés még nincs.
-- [ ] **További Legendaryk** — csak előre gyártott, egyedi névvel és képességgel
-  rendelkező tárgy kerülhet a katalógusba.
+- [ ] **Monster level hatása a ligán belüli esélyre — külön feature** — a
+  rarity-plafon marad, de egy veterán példány jobb eredményének valószínűségét
+  külön ágon tervezzük és teszteljük. Nem része a jelenlegi loot-ágnak.
+- [ ] **További consumable és special item dropok — későbbi nice-to-have** — a
+  központi slotrendszer támogatja őket, de csak a fontosabb feature-ök után kapnak
+  külön ágat.
+- [ ] **További Legendaryk — későbbi nice-to-have** — csak előre gyártott, egyedi
+  névvel és képességgel rendelkező tárgy kerülhet a katalógusba; a fontosabb
+  feature-ök után bővítjük.
 
 Részletes szabályok:
 
@@ -191,6 +195,8 @@ Az implementáció előtt külön designbeszélgetés és célzott tesztaréna s
 
 ## Következő döntési pont
 
-A chest proof-of-concept lezárult. A következő feature megkezdése előtt ebből a
-roadmapből kell kiválasztani a scope-ot, majd ahhoz külön feature ágat és célzott
-tesztarénát létrehozni.
+A jelenlegi loot és exploration chest feature scope-ja lezárult. A Poison/DOT
+attribution kikerült a roadmapből. A feature ág release-integrációja után a
+következő fejlesztést külön ágon választjuk ki; a Potion of Luck megvalósíthatósági
+auditja előnyt élvez, mert annak eredménye az equipment-utóélet designját is
+befolyásolhatja.
