@@ -46,17 +46,16 @@ if ($bootstrapSource -notmatch 'LWS_SeedExplorationChests\s*\(\s*Palace\s*\)') {
 }
 if ($bootstrapSource -notmatch 'ChestCount\s*<\s*12' -or
     $bootstrapSource -notmatch 'ChestCount\s*<\s*8' -or
-    $bootstrapSource -notmatch 'FarthestDistance\s*\*\s*3') {
-    throw 'Production exploration chest count, 8/4 class split, or outer-quarter distance rule is missing.'
+    $bootstrapSource -notmatch 'MinimumDistance\s*=\s*FarthestDistance\s*/\s*4' -or
+    $bootstrapSource -notmatch 'MaximumDistance\s*=\s*FarthestDistance\s*/\s*3' -or
+    $bootstrapSource -notmatch 'RandomCoord\s*\(\s*Palace\s*,\s*MinimumDistance\s*,\s*MaximumDistance') {
+    throw 'Production exploration chest count, 8/4 class split, or 1/4-1/3 distance band is missing.'
 }
 if ($chestSource -notmatch '#chest_starting_gold\s*\+\s*\$RandomNumber\s*\(\s*#chest_random_gold\s*\)') {
     throw 'Full-potion fallback does not use the native 50-149 chest gold formula.'
 }
-if ($diagnosticSource -notmatch 'Function\s+LWS_SetupChestRewardArena' -or
-    $diagnosticSource -notmatch '"Potion"' -or
-    $diagnosticSource -notmatch '"Legendary"' -or
-    $diagnosticSource -notmatch '"Weapon"') {
-    throw 'Temporary focused chest reward arena is missing.'
+if ($diagnosticSource -match 'LWS_SetupChestRewardArena|LWS_SpawnDiagnosticChest|Temple_Dauros3') {
+    throw 'The completed temporary chest reward arena must be removed.'
 }
 
 Write-Host 'Exploration chest validation passed.'

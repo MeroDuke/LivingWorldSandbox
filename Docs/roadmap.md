@@ -117,7 +117,7 @@ Részletes szabályok:
 - [x] **Paladin/Ranger proof-of-concept** — ugyanaz a mechanika a Paladinnak
   Longsword/Plate, a Rangernek Longbow/Leather jutalmat adott.
 - [x] **Exploration chest pályagenerálás** — egyszeri 12 chest, `8× C1 + 4× C2`,
-  maximum Uncommon rarityvel, a Palace-tól számított külső távolsági zónában.
+  maximum Uncommon rarityvel, a Palace-tól számított 1/4–1/3 távolsági sávban.
 - [x] **Chest UI döntés** — egyedi UI nem készül; a natív `Treasure_Chest` cím és
   objektumtípus megmarad az AI-felismerés biztonsága érdekében.
 - [x] **Chest életciklus és takarítás** — a chest nyitásig megmarad, utána a natív

@@ -44,9 +44,10 @@ chest:
 - nincs utánpótlás vagy újragenerálás.
 
 A generátor futásidőben kiolvassa a pálya kiterjedését és a Palace helyét. A
-Palace-tól a legtávolabbi sarok távolságának 75%-át használja minimális
-spawn-távolságként, ezért a chestek a felfedezési terület külső részére kerülnek.
-Az érvénytelen vagy foglalt terepet legfeljebb 120 próbálkozással kerüli el.
+chesteket a Palace-tól a legtávolabbi sarok távolságának 1/4–1/3 része közötti
+sávban szórja szét. Így a kezdő jutalmakért kell felfedezni, de nem kerülnek a
+pálya legtávolabbi pontjaira. Az érvénytelen vagy foglalt terepet legfeljebb 120
+próbálkozással kerüli el.
 
 A chest nyitásig a pályán marad. Nyitás után a gyári `Open_Chest` kezeli az
 animációt, hangot, XP-t és törlést. Nincs külön aktív-chest limit: az egyszeri,
@@ -57,19 +58,8 @@ animációt, hangot, XP-t és törlést. Nincs külön aktív-chest limit: az eg
 Egyedi chest UI nem készül. A natív `Treasure_Chest` cím és objektumtípus
 változatlan marad, mert a hősök AI-ja ezt használja a chest felismerésére.
 
-## Ideiglenes kézi tesztaréna
+## Kézi teszt állapota
 
-A diagnosztikai quest ideiglenesen tartalmaz egy távoli level 8 Paladint és
-Warriors Guildet, valamint egy elkülönített Monkot és Temple to Daurost. A
-Palace körüli, illetve a Monkhoz tartozó célzott chestek lefedik:
-
-- Healing Potion;
-- gold;
-- Legendary;
-- kétjutalmas chest;
-- gyengébb equipment fallback;
-- maximális potionkészlet;
-- duplikált Legendary fallback.
-
-Az arénát a sikeres kézi teszt után vissza kell bontani; a production questben
-nem szerepel.
+A Healing Potion, gold, Legendary, kétjutalmas chest, gyengébb vagy használhatatlan
+equipment, maximális potionkészlet és duplikált Legendary eseteit lefedő ideiglenes
+aréna sikeresen teljesítette a kézi próbát, ezért vissza lett bontva.

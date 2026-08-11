@@ -159,86 +159,6 @@ Begin
     return TRUE;
 End
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function LWS_SpawnDiagnosticChest ( agent Palace, coordinate Location, string Slot1Type,
-                                    integer Slot1Value, string Slot2Type, integer Slot2Value ) is agent
-Declare
-    agent Chest;
-    integer RewardCount;
-Begin
-    Chest = $SpawnUnit ( Palace, "Treasure_Chest1", Location, "MaxHP", #Monster_Player );
-    if ( $IsValidGamePiece ( Chest ) == FALSE ) return $NullAgent ();
-    $AddAttribute ( Chest, "LWS_ExplorationChest", "boolean", TRUE );
-    $AddAttribute ( Chest, "LWS_ChestClass", "integer", 2 );
-    RewardCount = 1;
-    if ( Slot2Type != "" ) RewardCount = 2;
-    $AddAttribute ( Chest, "LWS_ChestRewardCount", "integer", RewardCount );
-    $SetAttribute ( Chest, #ATTRIB_Gold, 0 );
-
-    if ( Slot1Type == "Weapon" ) $LWS_AddLockedChestEquipment ( Chest, 1, "Weapon", 1, 0, 0 );
-    else $LWS_AddLockedChestSimpleReward ( Chest, 1, Slot1Type, Slot1Value );
-    if ( Slot2Type != "" ) $LWS_AddLockedChestSimpleReward ( Chest, 2, Slot2Type, Slot2Value );
-    return Chest;
-End
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Temporary manual arena for the final chest reward and fallback checks.
-Function LWS_SetupChestRewardArena ( agent AIRootAgent, agent Palace )
-Declare
-    agent WarriorsGuild, Paladin, Temple, Monk, Chest;
-    coordinate ArenaLocation;
-Begin
-    ArenaLocation = $RandomCoord ( Palace, 700, 900 );
-    WarriorsGuild = $SpawnUnit ( Palace, "Warriors_Guild", ArenaLocation, "MaxHP", #Player_1 );
-    if ( $IsValidGamePiece ( WarriorsGuild ) == FALSE )
-        begin AIRootAgent's "LWS_DiagnosticFailures" += 1; return; end
-
-    Paladin = $SpawnUnit ( WarriorsGuild, "Paladin", $RandomCoord ( WarriorsGuild, 40, 80 ), #Player_1 );
-    if ( $IsValidGamePiece ( Paladin ) == FALSE )
-        begin AIRootAgent's "LWS_DiagnosticFailures" += 1; return; end
-    if ( Paladin's "home" == $NullAgent ()) $Adopt ( WarriorsGuild, Paladin );
-    $Advance_To_Level ( Paladin, 8 );
-    $SetAttribute ( Paladin, #ATTRIB_HP, $GetAttribute ( Paladin, #ATTRIB_MaxHP ));
-    $SetAttribute ( Paladin, #ATTRIB_NumHealingPotions, 4 );
-    $SetAttribute ( Paladin, #ATTRIB_Gold, 1000 );
-    $SetAttribute ( Paladin, #ATTRIB_StoredGold, 1000 );
-
-    Chest = $LWS_SpawnDiagnosticChest ( Palace, $RandomCoord ( Palace, 180, 320 ), "Potion", 0, "", 0 );
-    if ( $IsValidGamePiece ( Chest ) == FALSE ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    Chest = $LWS_SpawnDiagnosticChest ( Palace, $RandomCoord ( Palace, 180, 320 ), "Gold", 100, "", 0 );
-    if ( $IsValidGamePiece ( Chest ) == FALSE ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    Chest = $LWS_SpawnDiagnosticChest ( Palace, $RandomCoord ( Palace, 180, 320 ), "Legendary", 0, "", 0 );
-    if ( $IsValidGamePiece ( Chest ) == FALSE ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    Chest = $LWS_SpawnDiagnosticChest ( Palace, $RandomCoord ( Palace, 180, 320 ), "Potion", 0, "Gold", 100 );
-    if ( $IsValidGamePiece ( Chest ) == FALSE ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    Chest = $LWS_SpawnDiagnosticChest ( Palace, $RandomCoord ( Palace, 180, 320 ), "Weapon", 0, "", 0 );
-    if ( $IsValidGamePiece ( Chest ) == FALSE ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    Chest = $LWS_SpawnDiagnosticChest ( Palace, $RandomCoord ( Palace, 180, 320 ), "Potion", 0, "", 0 );
-    if ( $IsValidGamePiece ( Chest ) == FALSE ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    // Same Legendary as the earlier chest: the second acquisition exercises duplicate fallback.
-    Chest = $LWS_SpawnDiagnosticChest ( Palace, $RandomCoord ( Palace, 180, 320 ), "Legendary", 0, "", 0 );
-    if ( $IsValidGamePiece ( Chest ) == FALSE ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-
-    // A Monk has neither an LWS weapon nor armor family, so this isolated chest
-    // exercises the equipment-less-class fallback without changing the Paladin cases.
-    Temple = $SpawnUnit ( Palace, "Temple_Dauros3", $RandomCoord ( Palace, 450, 600 ), "MaxHP", #Player_1 );
-    if ( $IsValidGamePiece ( Temple ) == FALSE )
-        AIRootAgent's "LWS_DiagnosticFailures" += 1;
-    else
-        begin
-            Monk = $SpawnUnit ( Temple, "Monk", $RandomCoord ( Temple, 40, 80 ), #Player_1 );
-            if ( $IsValidGamePiece ( Monk ) == FALSE )
-                AIRootAgent's "LWS_DiagnosticFailures" += 1;
-            else
-                begin
-                    if ( Monk's "home" == $NullAgent ()) $Adopt ( Temple, Monk );
-                    $SetAttribute ( Monk, #ATTRIB_NumHealingPotions, 0 );
-                    Chest = $LWS_SpawnDiagnosticChest ( Palace, $RandomCoord ( Monk, 100, 160 ), "Weapon", 0, "", 0 );
-                    if ( $IsValidGamePiece ( Chest ) == FALSE ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
-                end
-        end
-End
-
 Function LWS_PrepareClassShowcase ( agent Monster, integer ExpectedClass, integer KillCredits ) is boolean
 Declare
     integer CreditCount, OldMaxHP, OldHP, HPBonus;
@@ -523,8 +443,6 @@ Begin
 
     if ( $LWS_RunSpellAttributionDiagnostic ( Palace, TestLocation ) == FALSE )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
-
-    $LWS_SetupChestRewardArena ( AIRootAgent, Palace );
 
     if ( AIRootAgent's "LWS_DiagnosticFailures" == 0 )
         begin

@@ -167,10 +167,10 @@ and their campaign flags remain untouched.
 
 The combat diagnostic performs a deterministic runtime sweep of all nine
 weapon-family mappings, all four armor-family mappings, all six Legendary
-catalog mappings, and the hard two-reward cap. Its temporary visible chest arena
-contains only the focused Paladin and Monk opener scenarios documented below.
-Production maps now seed twelve one-time exploration chests in the outer quarter
-of the Palace-to-map reach: eight Class 1 and four Class 2, capped at Uncommon.
+catalog mappings, and the hard two-reward cap. The completed temporary chest
+arena has been removed. Production maps now seed twelve one-time exploration
+chests between one quarter and one third of the Palace-to-farthest-corner reach:
+eight Class 1 and four Class 2, capped at Uncommon.
 They remain until opened and never regenerate. Unusable, duplicate, or inferior
 equipment falls back to a Healing Potion; a hero already at the native potion cap
 receives the native 50-149 chest-gold roll instead. See
