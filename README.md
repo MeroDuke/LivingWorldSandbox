@@ -234,6 +234,12 @@ is never produced by the normal power budget. The machine-readable rules live
 in `Docs/equipment-rarity.json`, with rationale and examples in
 `Docs/equipment-rarity.md`.
 
+LWS armor keeps its generated affix separate from the Northern Expansion
+Wizard Guild enchantment. The native armor-magic field is synchronized to
+`affix + enchant`, while loot comparison ignores the purchased enchantment.
+Consequently, armor pickup and Blacksmith tier upgrades preserve the hero's
+existing Wizard Guild `+1..+3` investment instead of overwriting it.
+
 ## Direct spell kill attribution
 
 Monster-cast direct damage spells use the Northern Expansion
