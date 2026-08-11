@@ -163,45 +163,9 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Read-only observer for the focused arena. It creates the replacement chest only
-// after the native Wizard Guild transaction has completed, so item evaluation cannot
-// overwrite the guild route while the Paladin is travelling.
-Function LWS_WatchWizardEnchantArena ( agent Paladin )
-Declare
-    agent ArmorChest;
-Begin
-    if ( $IsValidGamePiece ( Paladin ) == FALSE ) return;
-
-    Paladin's "LWS_EnchantObserverTicks" += 1;
-    if ( Paladin's "LWS_EnchantObserverTicks" >= 120 )
-        begin
-            $DebugOut ( 911, "LWS WIZARD ARENA: ENCHANT OR CHEST TIMEOUT", Paladin );
-            $KillThread ( Paladin's "LWS_EnchantObserverScript" );
-            return;
-        end
-    if ( Paladin's "LWS_ArmorEnchantBonus" <= 0 ) return;
-
-    // Exact T2 +6 armor reward. Its generated affix must replace T3 +1 while
-    // retaining the separate Wizard Guild enchantment already owned by the hero.
-    ArmorChest = $SpawnUnit ( Paladin, "Treasure_Chest1",
-                              $RandomCoord ( Paladin, 180, 240 ), "MaxHP", #Monster_Player );
-    if ( $IsValidGamePiece ( ArmorChest ) == FALSE ) return;
-    $AddAttribute ( ArmorChest, "LWS_ExplorationChest", "boolean", TRUE );
-    $AddAttribute ( ArmorChest, "LWS_ChestClass", "integer", 3 );
-    $AddAttribute ( ArmorChest, "LWS_ChestRewardCount", "integer", 1 );
-    $AddAttribute ( ArmorChest, "LWS_ChestSlot1Type", "string", "Armor" );
-    $AddAttribute ( ArmorChest, "LWS_ChestSlot1Rarity", "integer", 3 );
-    $AddAttribute ( ArmorChest, "LWS_ChestSlot1Tier", "integer", 2 );
-    $AddAttribute ( ArmorChest, "LWS_ChestSlot1Affix", "integer", 6 );
-    $SetAttribute ( ArmorChest, #ATTRIB_Gold, 0 );
-
-    $DebugOut ( 911, "LWS WIZARD ARENA: ENCHANT COMPLETE, REPLACEMENT CHEST SPAWNED", Paladin );
-    $KillThread ( Paladin's "LWS_EnchantObserverScript" );
-End
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Visible, minimal arena for manually verifying Northern Expansion Wizard Guild
-// armor enchantments and their preservation across an LWS armor replacement.
+// armor enchantments. Replacement/preservation testing stays disabled until the
+// completely native purchase and building-visit path is proven in game.
 Function LWS_SetupWizardEnchantArena ( agent Palace ) is boolean
 Declare
     agent WarriorsGuild, WizardsGuild, Paladin;
@@ -239,14 +203,10 @@ Begin
     $SetAttribute ( Paladin, #ATTRIB_Armor_Struct_Bonus, $LWS_ArmorTierBaseBonus ( 3 ));
     $LWS_SyncArmorMagicBonus ( Paladin );
 
-    // hero_birth is synchronous in Northern Expansion. Reset its current decision,
-    // then let the original purchase module select Target, intent and Use_Building.
-    $Reset_Tasks ( Paladin );
-    if ( $Purchase_Equipment ( Paladin ) == FALSE ) return FALSE;
-
-    $AddAttribute ( Paladin, "LWS_EnchantObserverTicks", "integer", 0 );
-    $AddAttribute ( Paladin, "LWS_EnchantObserverScript", "function", $LWS_WatchWizardEnchantArena );
-    $NewThread ( Paladin's "LWS_EnchantObserverScript", 500, Paladin );
+    // Do not call a decision-tree module from the quest bootstrap. The SDK only
+    // invokes Purchase_Equipment from the hero's own recurring Paladin_tree.
+    // The deterministic chance, intelligence and money values make that native
+    // decision select the Wizard Guild without a competing controller.
     return TRUE;
 End
 

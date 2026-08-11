@@ -209,7 +209,6 @@ $requiredHookPatterns = @(
     'Function\s+LWS_RunLootDiagnostic',
     'Function\s+LWS_RunSpellAttributionDiagnostic',
     'Function\s+LWS_SetupWizardEnchantArena',
-    'Function\s+LWS_WatchWizardEnchantArena',
     '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Wizards_Guild3"',
     '\$SpawnUnit\s*\(\s*WarriorsGuild\s*,\s*"Paladin"',
     '#ATTRIB_StoredGold\s*,\s*1000',
@@ -220,12 +219,6 @@ $requiredHookPatterns = @(
     'Paladin''s\s+"LWS_ArmorEnchantBonus"\s*=\s*0',
     'Paladin''s\s+"Upgrade_Armor_Chance"\s*=\s*101',
     'Paladin''s\s+"Upgrade_Weapon_Chance"\s*=\s*101',
-    '\$Reset_Tasks\s*\(\s*Paladin\s*\)',
-    '\$Purchase_Equipment\s*\(\s*Paladin\s*\)',
-    '\$NewThread\s*\(\s*Paladin''s\s+"LWS_EnchantObserverScript"\s*,\s*500\s*,\s*Paladin\s*\)',
-    '\$KillThread\s*\(\s*Paladin''s\s+"LWS_EnchantObserverScript"\s*\)',
-    '"LWS_ChestSlot1Tier"\s*,\s*"integer"\s*,\s*2',
-    '"LWS_ChestSlot1Affix"\s*,\s*"integer"\s*,\s*6',
     '\$spelldamage\s*\(\s*SpellMonster\s*,\s*EnemyTarget\s*,\s*1\s*,\s*1\s*\)',
     '\$spelldamage\s*\(\s*SpellMonster\s*,\s*FriendlyTarget\s*,\s*1\s*,\s*1\s*\)',
     'RequiredKills\s*=\s*\$LWS_KillsRequired',
@@ -261,8 +254,10 @@ if ($hookSource -match '\$NewThread\s*\(\s*\$LWS_RunCombatDiagnostic') {
 }
 if ($hookSource -match 'Function\s+LWS_ForceWizardEnchantVisit' -or
     $hookSource -match '\$Use_Building\s*\(\s*Paladin\s*\)' -or
-    $hookSource -match 'LWS_ForceEnchantScript') {
-    throw 'Wizard arena must not control the Paladin from a competing forced Use_Building thread.'
+    $hookSource -match '\$Purchase_Equipment\s*\(\s*Paladin\s*\)' -or
+    $hookSource -match 'LWS_ForceEnchantScript' -or
+    $hookSource -match 'LWS_EnchantObserverScript') {
+    throw 'Wizard arena must not invoke hero decision modules outside the Paladin AI thread.'
 }
 if ($hookSource -match '\$SpawnUnit\s*\([^;]+"LWS_T3_Armor_Plus1"') {
     throw 'Wizard arena must remain item-free until the native enchant transaction completes.'
