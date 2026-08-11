@@ -7,39 +7,37 @@ $ErrorActionPreference = 'Stop'
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $gplDirectory = Join-Path $repositoryRoot 'GPL'
 $dataDirectory = Join-Path $repositoryRoot 'Data'
-$projectFile = Join-Path $gplDirectory 'LivingWorldSandbox.gplproj'
-$temporaryBytecode = Join-Path $gplDirectory 'LivingWorldSandbox.bcd'
-$targetBytecode = Join-Path $dataDirectory 'LivingWorldSandbox.bcd'
+$temporaryBytecode = Join-Path $gplDirectory 'LWSCombatDiagnostic.bcd'
+$targetBytecode = Join-Path $dataDirectory 'LWSCombatDiagnostic.bcd'
 
 & (Join-Path $PSScriptRoot 'New-CombatOverride.ps1') -SdkPath $SdkPath
 & (Join-Path $PSScriptRoot 'New-ItemEvaluationOverride.ps1') -SdkPath $SdkPath
 & (Join-Path $PSScriptRoot 'New-TreasureOverride.ps1') -SdkPath $SdkPath
 
-$compilerCandidates = @()
+$sdkCandidates = @()
 if ($SdkPath) {
-    $compilerCandidates += Join-Path $SdkPath 'Gplbcc.exe'
+    $sdkCandidates += $SdkPath
 }
 if ($env:MAJESTYSDK) {
-    $compilerCandidates += Join-Path $env:MAJESTYSDK 'Gplbcc.exe'
+    $sdkCandidates += $env:MAJESTYSDK
 }
-$compilerCandidates += Join-Path $repositoryRoot 'SDK\Gplbcc.exe'
+$sdkCandidates += Join-Path $repositoryRoot 'SDK'
 
-$compiler = $compilerCandidates |
+$compiler = $sdkCandidates |
+    ForEach-Object { Join-Path $_ 'Gplbcc.exe' } |
     Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } |
     Select-Object -First 1
-
 if (-not $compiler) {
     throw 'Gplbcc.exe was not found. Pass -SdkPath or set MAJESTYSDK.'
 }
 $compiler = (Resolve-Path -LiteralPath $compiler).Path
 
 New-Item -ItemType Directory -Force -Path $dataDirectory | Out-Null
-
 Push-Location $gplDirectory
 try {
-    & $compiler -in (Split-Path -Leaf $projectFile) -out (Split-Path -Leaf $temporaryBytecode) -stdout
+    & $compiler -in 'LWS_CombatDiagnostic.gplproj' -out (Split-Path -Leaf $temporaryBytecode) -stdout
     if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $temporaryBytecode -PathType Leaf)) {
-        throw "GPL compilation failed with exit code $LASTEXITCODE."
+        throw "Diagnostic GPL compilation failed with exit code $LASTEXITCODE."
     }
 }
 finally {

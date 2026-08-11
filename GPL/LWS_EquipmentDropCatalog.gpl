@@ -1,0 +1,536 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Generated static equipment drop resolver. Every return value is a compiler-visible literal.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Function LWS_StaticWeaponStaffDropTitle ( integer Tier, integer AffixBonus ) is string
+Declare
+Begin
+    if ( Tier == 1 && AffixBonus == 0 ) return "LWSDW_C_Staff_1_0";
+    if ( Tier == 1 && AffixBonus == 1 ) return "LWSDW_C_Staff_1_1";
+    if ( Tier == 1 && AffixBonus == 2 ) return "LWSDW_U_Staff_1_2";
+    if ( Tier == 1 && AffixBonus == 3 ) return "LWSDW_U_Staff_1_3";
+    if ( Tier == 1 && AffixBonus == 4 ) return "LWSDW_R_Staff_1_4";
+    if ( Tier == 1 && AffixBonus == 5 ) return "LWSDW_R_Staff_1_5";
+    if ( Tier == 1 && AffixBonus == 6 ) return "LWSDW_R_Staff_1_6";
+    if ( Tier == 1 && AffixBonus == 7 ) return "LWSDW_E_Staff_1_7";
+    if ( Tier == 1 && AffixBonus == 8 ) return "LWSDW_E_Staff_1_8";
+    if ( Tier == 1 && AffixBonus == 9 ) return "LWSDW_E_Staff_1_9";
+    if ( Tier == 1 && AffixBonus == 10 ) return "LWSDW_E_Staff_1_10";
+    if ( Tier == 2 && AffixBonus == 0 ) return "LWSDW_C_Staff_2_0";
+    if ( Tier == 2 && AffixBonus == 1 ) return "LWSDW_U_Staff_2_1";
+    if ( Tier == 2 && AffixBonus == 2 ) return "LWSDW_U_Staff_2_2";
+    if ( Tier == 2 && AffixBonus == 3 ) return "LWSDW_R_Staff_2_3";
+    if ( Tier == 2 && AffixBonus == 4 ) return "LWSDW_R_Staff_2_4";
+    if ( Tier == 2 && AffixBonus == 5 ) return "LWSDW_R_Staff_2_5";
+    if ( Tier == 2 && AffixBonus == 6 ) return "LWSDW_E_Staff_2_6";
+    if ( Tier == 2 && AffixBonus == 7 ) return "LWSDW_E_Staff_2_7";
+    if ( Tier == 2 && AffixBonus == 8 ) return "LWSDW_E_Staff_2_8";
+    if ( Tier == 2 && AffixBonus == 9 ) return "LWSDW_E_Staff_2_9";
+    if ( Tier == 3 && AffixBonus == 0 ) return "LWSDW_U_Staff_3_0";
+    if ( Tier == 3 && AffixBonus == 1 ) return "LWSDW_U_Staff_3_1";
+    if ( Tier == 3 && AffixBonus == 2 ) return "LWSDW_R_Staff_3_2";
+    if ( Tier == 3 && AffixBonus == 3 ) return "LWSDW_R_Staff_3_3";
+    if ( Tier == 3 && AffixBonus == 4 ) return "LWSDW_R_Staff_3_4";
+    if ( Tier == 3 && AffixBonus == 5 ) return "LWSDW_E_Staff_3_5";
+    if ( Tier == 3 && AffixBonus == 6 ) return "LWSDW_E_Staff_3_6";
+    if ( Tier == 3 && AffixBonus == 7 ) return "LWSDW_E_Staff_3_7";
+    if ( Tier == 3 && AffixBonus == 8 ) return "LWSDW_E_Staff_3_8";
+    if ( Tier == 4 && AffixBonus == 0 ) return "LWSDW_U_Staff_4_0";
+    if ( Tier == 4 && AffixBonus == 1 ) return "LWSDW_R_Staff_4_1";
+    if ( Tier == 4 && AffixBonus == 2 ) return "LWSDW_R_Staff_4_2";
+    if ( Tier == 4 && AffixBonus == 3 ) return "LWSDW_R_Staff_4_3";
+    if ( Tier == 4 && AffixBonus == 4 ) return "LWSDW_E_Staff_4_4";
+    if ( Tier == 4 && AffixBonus == 5 ) return "LWSDW_E_Staff_4_5";
+    if ( Tier == 4 && AffixBonus == 6 ) return "LWSDW_E_Staff_4_6";
+    if ( Tier == 4 && AffixBonus == 7 ) return "LWSDW_E_Staff_4_7";
+    return "";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_StaticWeaponAxeclubDropTitle ( integer Tier, integer AffixBonus ) is string
+Declare
+Begin
+    if ( Tier == 1 && AffixBonus == 0 ) return "LWSDW_C_Axeclub_1_0";
+    if ( Tier == 1 && AffixBonus == 1 ) return "LWSDW_C_Axeclub_1_1";
+    if ( Tier == 1 && AffixBonus == 2 ) return "LWSDW_U_Axeclub_1_2";
+    if ( Tier == 1 && AffixBonus == 3 ) return "LWSDW_U_Axeclub_1_3";
+    if ( Tier == 1 && AffixBonus == 4 ) return "LWSDW_R_Axeclub_1_4";
+    if ( Tier == 1 && AffixBonus == 5 ) return "LWSDW_R_Axeclub_1_5";
+    if ( Tier == 1 && AffixBonus == 6 ) return "LWSDW_R_Axeclub_1_6";
+    if ( Tier == 1 && AffixBonus == 7 ) return "LWSDW_E_Axeclub_1_7";
+    if ( Tier == 1 && AffixBonus == 8 ) return "LWSDW_E_Axeclub_1_8";
+    if ( Tier == 1 && AffixBonus == 9 ) return "LWSDW_E_Axeclub_1_9";
+    if ( Tier == 1 && AffixBonus == 10 ) return "LWSDW_E_Axeclub_1_10";
+    if ( Tier == 2 && AffixBonus == 0 ) return "LWSDW_C_Axeclub_2_0";
+    if ( Tier == 2 && AffixBonus == 1 ) return "LWSDW_U_Axeclub_2_1";
+    if ( Tier == 2 && AffixBonus == 2 ) return "LWSDW_U_Axeclub_2_2";
+    if ( Tier == 2 && AffixBonus == 3 ) return "LWSDW_R_Axeclub_2_3";
+    if ( Tier == 2 && AffixBonus == 4 ) return "LWSDW_R_Axeclub_2_4";
+    if ( Tier == 2 && AffixBonus == 5 ) return "LWSDW_R_Axeclub_2_5";
+    if ( Tier == 2 && AffixBonus == 6 ) return "LWSDW_E_Axeclub_2_6";
+    if ( Tier == 2 && AffixBonus == 7 ) return "LWSDW_E_Axeclub_2_7";
+    if ( Tier == 2 && AffixBonus == 8 ) return "LWSDW_E_Axeclub_2_8";
+    if ( Tier == 2 && AffixBonus == 9 ) return "LWSDW_E_Axeclub_2_9";
+    if ( Tier == 3 && AffixBonus == 0 ) return "LWSDW_U_Axeclub_3_0";
+    if ( Tier == 3 && AffixBonus == 1 ) return "LWSDW_U_Axeclub_3_1";
+    if ( Tier == 3 && AffixBonus == 2 ) return "LWSDW_R_Axeclub_3_2";
+    if ( Tier == 3 && AffixBonus == 3 ) return "LWSDW_R_Axeclub_3_3";
+    if ( Tier == 3 && AffixBonus == 4 ) return "LWSDW_R_Axeclub_3_4";
+    if ( Tier == 3 && AffixBonus == 5 ) return "LWSDW_E_Axeclub_3_5";
+    if ( Tier == 3 && AffixBonus == 6 ) return "LWSDW_E_Axeclub_3_6";
+    if ( Tier == 3 && AffixBonus == 7 ) return "LWSDW_E_Axeclub_3_7";
+    if ( Tier == 3 && AffixBonus == 8 ) return "LWSDW_E_Axeclub_3_8";
+    if ( Tier == 4 && AffixBonus == 0 ) return "LWSDW_U_Axeclub_4_0";
+    if ( Tier == 4 && AffixBonus == 1 ) return "LWSDW_R_Axeclub_4_1";
+    if ( Tier == 4 && AffixBonus == 2 ) return "LWSDW_R_Axeclub_4_2";
+    if ( Tier == 4 && AffixBonus == 3 ) return "LWSDW_R_Axeclub_4_3";
+    if ( Tier == 4 && AffixBonus == 4 ) return "LWSDW_E_Axeclub_4_4";
+    if ( Tier == 4 && AffixBonus == 5 ) return "LWSDW_E_Axeclub_4_5";
+    if ( Tier == 4 && AffixBonus == 6 ) return "LWSDW_E_Axeclub_4_6";
+    if ( Tier == 4 && AffixBonus == 7 ) return "LWSDW_E_Axeclub_4_7";
+    return "";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_StaticWeaponDaggerDropTitle ( integer Tier, integer AffixBonus ) is string
+Declare
+Begin
+    if ( Tier == 1 && AffixBonus == 0 ) return "LWSDW_C_Dagger_1_0";
+    if ( Tier == 1 && AffixBonus == 1 ) return "LWSDW_C_Dagger_1_1";
+    if ( Tier == 1 && AffixBonus == 2 ) return "LWSDW_U_Dagger_1_2";
+    if ( Tier == 1 && AffixBonus == 3 ) return "LWSDW_U_Dagger_1_3";
+    if ( Tier == 1 && AffixBonus == 4 ) return "LWSDW_R_Dagger_1_4";
+    if ( Tier == 1 && AffixBonus == 5 ) return "LWSDW_R_Dagger_1_5";
+    if ( Tier == 1 && AffixBonus == 6 ) return "LWSDW_R_Dagger_1_6";
+    if ( Tier == 1 && AffixBonus == 7 ) return "LWSDW_E_Dagger_1_7";
+    if ( Tier == 1 && AffixBonus == 8 ) return "LWSDW_E_Dagger_1_8";
+    if ( Tier == 1 && AffixBonus == 9 ) return "LWSDW_E_Dagger_1_9";
+    if ( Tier == 1 && AffixBonus == 10 ) return "LWSDW_E_Dagger_1_10";
+    if ( Tier == 2 && AffixBonus == 0 ) return "LWSDW_C_Dagger_2_0";
+    if ( Tier == 2 && AffixBonus == 1 ) return "LWSDW_U_Dagger_2_1";
+    if ( Tier == 2 && AffixBonus == 2 ) return "LWSDW_U_Dagger_2_2";
+    if ( Tier == 2 && AffixBonus == 3 ) return "LWSDW_R_Dagger_2_3";
+    if ( Tier == 2 && AffixBonus == 4 ) return "LWSDW_R_Dagger_2_4";
+    if ( Tier == 2 && AffixBonus == 5 ) return "LWSDW_R_Dagger_2_5";
+    if ( Tier == 2 && AffixBonus == 6 ) return "LWSDW_E_Dagger_2_6";
+    if ( Tier == 2 && AffixBonus == 7 ) return "LWSDW_E_Dagger_2_7";
+    if ( Tier == 2 && AffixBonus == 8 ) return "LWSDW_E_Dagger_2_8";
+    if ( Tier == 2 && AffixBonus == 9 ) return "LWSDW_E_Dagger_2_9";
+    if ( Tier == 3 && AffixBonus == 0 ) return "LWSDW_U_Dagger_3_0";
+    if ( Tier == 3 && AffixBonus == 1 ) return "LWSDW_U_Dagger_3_1";
+    if ( Tier == 3 && AffixBonus == 2 ) return "LWSDW_R_Dagger_3_2";
+    if ( Tier == 3 && AffixBonus == 3 ) return "LWSDW_R_Dagger_3_3";
+    if ( Tier == 3 && AffixBonus == 4 ) return "LWSDW_R_Dagger_3_4";
+    if ( Tier == 3 && AffixBonus == 5 ) return "LWSDW_E_Dagger_3_5";
+    if ( Tier == 3 && AffixBonus == 6 ) return "LWSDW_E_Dagger_3_6";
+    if ( Tier == 3 && AffixBonus == 7 ) return "LWSDW_E_Dagger_3_7";
+    if ( Tier == 3 && AffixBonus == 8 ) return "LWSDW_E_Dagger_3_8";
+    if ( Tier == 4 && AffixBonus == 0 ) return "LWSDW_U_Dagger_4_0";
+    if ( Tier == 4 && AffixBonus == 1 ) return "LWSDW_R_Dagger_4_1";
+    if ( Tier == 4 && AffixBonus == 2 ) return "LWSDW_R_Dagger_4_2";
+    if ( Tier == 4 && AffixBonus == 3 ) return "LWSDW_R_Dagger_4_3";
+    if ( Tier == 4 && AffixBonus == 4 ) return "LWSDW_E_Dagger_4_4";
+    if ( Tier == 4 && AffixBonus == 5 ) return "LWSDW_E_Dagger_4_5";
+    if ( Tier == 4 && AffixBonus == 6 ) return "LWSDW_E_Dagger_4_6";
+    if ( Tier == 4 && AffixBonus == 7 ) return "LWSDW_E_Dagger_4_7";
+    return "";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_StaticWeaponLongswordDropTitle ( integer Tier, integer AffixBonus ) is string
+Declare
+Begin
+    if ( Tier == 1 && AffixBonus == 0 ) return "LWSDW_C_Longsword_1_0";
+    if ( Tier == 1 && AffixBonus == 1 ) return "LWSDW_C_Longsword_1_1";
+    if ( Tier == 1 && AffixBonus == 2 ) return "LWSDW_U_Longsword_1_2";
+    if ( Tier == 1 && AffixBonus == 3 ) return "LWSDW_U_Longsword_1_3";
+    if ( Tier == 1 && AffixBonus == 4 ) return "LWSDW_R_Longsword_1_4";
+    if ( Tier == 1 && AffixBonus == 5 ) return "LWSDW_R_Longsword_1_5";
+    if ( Tier == 1 && AffixBonus == 6 ) return "LWSDW_R_Longsword_1_6";
+    if ( Tier == 1 && AffixBonus == 7 ) return "LWSDW_E_Longsword_1_7";
+    if ( Tier == 1 && AffixBonus == 8 ) return "LWSDW_E_Longsword_1_8";
+    if ( Tier == 1 && AffixBonus == 9 ) return "LWSDW_E_Longsword_1_9";
+    if ( Tier == 1 && AffixBonus == 10 ) return "LWSDW_E_Longsword_1_10";
+    if ( Tier == 2 && AffixBonus == 0 ) return "LWSDW_C_Longsword_2_0";
+    if ( Tier == 2 && AffixBonus == 1 ) return "LWSDW_U_Longsword_2_1";
+    if ( Tier == 2 && AffixBonus == 2 ) return "LWSDW_U_Longsword_2_2";
+    if ( Tier == 2 && AffixBonus == 3 ) return "LWSDW_R_Longsword_2_3";
+    if ( Tier == 2 && AffixBonus == 4 ) return "LWSDW_R_Longsword_2_4";
+    if ( Tier == 2 && AffixBonus == 5 ) return "LWSDW_R_Longsword_2_5";
+    if ( Tier == 2 && AffixBonus == 6 ) return "LWSDW_E_Longsword_2_6";
+    if ( Tier == 2 && AffixBonus == 7 ) return "LWSDW_E_Longsword_2_7";
+    if ( Tier == 2 && AffixBonus == 8 ) return "LWSDW_E_Longsword_2_8";
+    if ( Tier == 2 && AffixBonus == 9 ) return "LWSDW_E_Longsword_2_9";
+    if ( Tier == 3 && AffixBonus == 0 ) return "LWSDW_U_Longsword_3_0";
+    if ( Tier == 3 && AffixBonus == 1 ) return "LWSDW_U_Longsword_3_1";
+    if ( Tier == 3 && AffixBonus == 2 ) return "LWSDW_R_Longsword_3_2";
+    if ( Tier == 3 && AffixBonus == 3 ) return "LWSDW_R_Longsword_3_3";
+    if ( Tier == 3 && AffixBonus == 4 ) return "LWSDW_R_Longsword_3_4";
+    if ( Tier == 3 && AffixBonus == 5 ) return "LWSDW_E_Longsword_3_5";
+    if ( Tier == 3 && AffixBonus == 6 ) return "LWSDW_E_Longsword_3_6";
+    if ( Tier == 3 && AffixBonus == 7 ) return "LWSDW_E_Longsword_3_7";
+    if ( Tier == 3 && AffixBonus == 8 ) return "LWSDW_E_Longsword_3_8";
+    if ( Tier == 4 && AffixBonus == 0 ) return "LWSDW_U_Longsword_4_0";
+    if ( Tier == 4 && AffixBonus == 1 ) return "LWSDW_R_Longsword_4_1";
+    if ( Tier == 4 && AffixBonus == 2 ) return "LWSDW_R_Longsword_4_2";
+    if ( Tier == 4 && AffixBonus == 3 ) return "LWSDW_R_Longsword_4_3";
+    if ( Tier == 4 && AffixBonus == 4 ) return "LWSDW_E_Longsword_4_4";
+    if ( Tier == 4 && AffixBonus == 5 ) return "LWSDW_E_Longsword_4_5";
+    if ( Tier == 4 && AffixBonus == 6 ) return "LWSDW_E_Longsword_4_6";
+    if ( Tier == 4 && AffixBonus == 7 ) return "LWSDW_E_Longsword_4_7";
+    return "";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_StaticWeaponLongbowDropTitle ( integer Tier, integer AffixBonus ) is string
+Declare
+Begin
+    if ( Tier == 1 && AffixBonus == 0 ) return "LWSDW_C_Longbow_1_0";
+    if ( Tier == 1 && AffixBonus == 1 ) return "LWSDW_C_Longbow_1_1";
+    if ( Tier == 1 && AffixBonus == 2 ) return "LWSDW_U_Longbow_1_2";
+    if ( Tier == 1 && AffixBonus == 3 ) return "LWSDW_U_Longbow_1_3";
+    if ( Tier == 1 && AffixBonus == 4 ) return "LWSDW_R_Longbow_1_4";
+    if ( Tier == 1 && AffixBonus == 5 ) return "LWSDW_R_Longbow_1_5";
+    if ( Tier == 1 && AffixBonus == 6 ) return "LWSDW_R_Longbow_1_6";
+    if ( Tier == 1 && AffixBonus == 7 ) return "LWSDW_E_Longbow_1_7";
+    if ( Tier == 1 && AffixBonus == 8 ) return "LWSDW_E_Longbow_1_8";
+    if ( Tier == 1 && AffixBonus == 9 ) return "LWSDW_E_Longbow_1_9";
+    if ( Tier == 1 && AffixBonus == 10 ) return "LWSDW_E_Longbow_1_10";
+    if ( Tier == 2 && AffixBonus == 0 ) return "LWSDW_C_Longbow_2_0";
+    if ( Tier == 2 && AffixBonus == 1 ) return "LWSDW_U_Longbow_2_1";
+    if ( Tier == 2 && AffixBonus == 2 ) return "LWSDW_U_Longbow_2_2";
+    if ( Tier == 2 && AffixBonus == 3 ) return "LWSDW_R_Longbow_2_3";
+    if ( Tier == 2 && AffixBonus == 4 ) return "LWSDW_R_Longbow_2_4";
+    if ( Tier == 2 && AffixBonus == 5 ) return "LWSDW_R_Longbow_2_5";
+    if ( Tier == 2 && AffixBonus == 6 ) return "LWSDW_E_Longbow_2_6";
+    if ( Tier == 2 && AffixBonus == 7 ) return "LWSDW_E_Longbow_2_7";
+    if ( Tier == 2 && AffixBonus == 8 ) return "LWSDW_E_Longbow_2_8";
+    if ( Tier == 2 && AffixBonus == 9 ) return "LWSDW_E_Longbow_2_9";
+    if ( Tier == 3 && AffixBonus == 0 ) return "LWSDW_U_Longbow_3_0";
+    if ( Tier == 3 && AffixBonus == 1 ) return "LWSDW_U_Longbow_3_1";
+    if ( Tier == 3 && AffixBonus == 2 ) return "LWSDW_R_Longbow_3_2";
+    if ( Tier == 3 && AffixBonus == 3 ) return "LWSDW_R_Longbow_3_3";
+    if ( Tier == 3 && AffixBonus == 4 ) return "LWSDW_R_Longbow_3_4";
+    if ( Tier == 3 && AffixBonus == 5 ) return "LWSDW_E_Longbow_3_5";
+    if ( Tier == 3 && AffixBonus == 6 ) return "LWSDW_E_Longbow_3_6";
+    if ( Tier == 3 && AffixBonus == 7 ) return "LWSDW_E_Longbow_3_7";
+    if ( Tier == 3 && AffixBonus == 8 ) return "LWSDW_E_Longbow_3_8";
+    if ( Tier == 4 && AffixBonus == 0 ) return "LWSDW_U_Longbow_4_0";
+    if ( Tier == 4 && AffixBonus == 1 ) return "LWSDW_R_Longbow_4_1";
+    if ( Tier == 4 && AffixBonus == 2 ) return "LWSDW_R_Longbow_4_2";
+    if ( Tier == 4 && AffixBonus == 3 ) return "LWSDW_R_Longbow_4_3";
+    if ( Tier == 4 && AffixBonus == 4 ) return "LWSDW_E_Longbow_4_4";
+    if ( Tier == 4 && AffixBonus == 5 ) return "LWSDW_E_Longbow_4_5";
+    if ( Tier == 4 && AffixBonus == 6 ) return "LWSDW_E_Longbow_4_6";
+    if ( Tier == 4 && AffixBonus == 7 ) return "LWSDW_E_Longbow_4_7";
+    return "";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_StaticWeaponCrossbowDropTitle ( integer Tier, integer AffixBonus ) is string
+Declare
+Begin
+    if ( Tier == 1 && AffixBonus == 0 ) return "LWSDW_C_Crossbow_1_0";
+    if ( Tier == 1 && AffixBonus == 1 ) return "LWSDW_C_Crossbow_1_1";
+    if ( Tier == 1 && AffixBonus == 2 ) return "LWSDW_U_Crossbow_1_2";
+    if ( Tier == 1 && AffixBonus == 3 ) return "LWSDW_U_Crossbow_1_3";
+    if ( Tier == 1 && AffixBonus == 4 ) return "LWSDW_R_Crossbow_1_4";
+    if ( Tier == 1 && AffixBonus == 5 ) return "LWSDW_R_Crossbow_1_5";
+    if ( Tier == 1 && AffixBonus == 6 ) return "LWSDW_R_Crossbow_1_6";
+    if ( Tier == 1 && AffixBonus == 7 ) return "LWSDW_E_Crossbow_1_7";
+    if ( Tier == 1 && AffixBonus == 8 ) return "LWSDW_E_Crossbow_1_8";
+    if ( Tier == 1 && AffixBonus == 9 ) return "LWSDW_E_Crossbow_1_9";
+    if ( Tier == 1 && AffixBonus == 10 ) return "LWSDW_E_Crossbow_1_10";
+    if ( Tier == 2 && AffixBonus == 0 ) return "LWSDW_C_Crossbow_2_0";
+    if ( Tier == 2 && AffixBonus == 1 ) return "LWSDW_U_Crossbow_2_1";
+    if ( Tier == 2 && AffixBonus == 2 ) return "LWSDW_U_Crossbow_2_2";
+    if ( Tier == 2 && AffixBonus == 3 ) return "LWSDW_R_Crossbow_2_3";
+    if ( Tier == 2 && AffixBonus == 4 ) return "LWSDW_R_Crossbow_2_4";
+    if ( Tier == 2 && AffixBonus == 5 ) return "LWSDW_R_Crossbow_2_5";
+    if ( Tier == 2 && AffixBonus == 6 ) return "LWSDW_E_Crossbow_2_6";
+    if ( Tier == 2 && AffixBonus == 7 ) return "LWSDW_E_Crossbow_2_7";
+    if ( Tier == 2 && AffixBonus == 8 ) return "LWSDW_E_Crossbow_2_8";
+    if ( Tier == 2 && AffixBonus == 9 ) return "LWSDW_E_Crossbow_2_9";
+    if ( Tier == 3 && AffixBonus == 0 ) return "LWSDW_U_Crossbow_3_0";
+    if ( Tier == 3 && AffixBonus == 1 ) return "LWSDW_U_Crossbow_3_1";
+    if ( Tier == 3 && AffixBonus == 2 ) return "LWSDW_R_Crossbow_3_2";
+    if ( Tier == 3 && AffixBonus == 3 ) return "LWSDW_R_Crossbow_3_3";
+    if ( Tier == 3 && AffixBonus == 4 ) return "LWSDW_R_Crossbow_3_4";
+    if ( Tier == 3 && AffixBonus == 5 ) return "LWSDW_E_Crossbow_3_5";
+    if ( Tier == 3 && AffixBonus == 6 ) return "LWSDW_E_Crossbow_3_6";
+    if ( Tier == 3 && AffixBonus == 7 ) return "LWSDW_E_Crossbow_3_7";
+    if ( Tier == 3 && AffixBonus == 8 ) return "LWSDW_E_Crossbow_3_8";
+    if ( Tier == 4 && AffixBonus == 0 ) return "LWSDW_U_Crossbow_4_0";
+    if ( Tier == 4 && AffixBonus == 1 ) return "LWSDW_R_Crossbow_4_1";
+    if ( Tier == 4 && AffixBonus == 2 ) return "LWSDW_R_Crossbow_4_2";
+    if ( Tier == 4 && AffixBonus == 3 ) return "LWSDW_R_Crossbow_4_3";
+    if ( Tier == 4 && AffixBonus == 4 ) return "LWSDW_E_Crossbow_4_4";
+    if ( Tier == 4 && AffixBonus == 5 ) return "LWSDW_E_Crossbow_4_5";
+    if ( Tier == 4 && AffixBonus == 6 ) return "LWSDW_E_Crossbow_4_6";
+    if ( Tier == 4 && AffixBonus == 7 ) return "LWSDW_E_Crossbow_4_7";
+    return "";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_StaticWeaponMaceDropTitle ( integer Tier, integer AffixBonus ) is string
+Declare
+Begin
+    if ( Tier == 1 && AffixBonus == 0 ) return "LWSDW_C_Mace_1_0";
+    if ( Tier == 1 && AffixBonus == 1 ) return "LWSDW_C_Mace_1_1";
+    if ( Tier == 1 && AffixBonus == 2 ) return "LWSDW_U_Mace_1_2";
+    if ( Tier == 1 && AffixBonus == 3 ) return "LWSDW_U_Mace_1_3";
+    if ( Tier == 1 && AffixBonus == 4 ) return "LWSDW_R_Mace_1_4";
+    if ( Tier == 1 && AffixBonus == 5 ) return "LWSDW_R_Mace_1_5";
+    if ( Tier == 1 && AffixBonus == 6 ) return "LWSDW_R_Mace_1_6";
+    if ( Tier == 1 && AffixBonus == 7 ) return "LWSDW_E_Mace_1_7";
+    if ( Tier == 1 && AffixBonus == 8 ) return "LWSDW_E_Mace_1_8";
+    if ( Tier == 1 && AffixBonus == 9 ) return "LWSDW_E_Mace_1_9";
+    if ( Tier == 1 && AffixBonus == 10 ) return "LWSDW_E_Mace_1_10";
+    if ( Tier == 2 && AffixBonus == 0 ) return "LWSDW_C_Mace_2_0";
+    if ( Tier == 2 && AffixBonus == 1 ) return "LWSDW_U_Mace_2_1";
+    if ( Tier == 2 && AffixBonus == 2 ) return "LWSDW_U_Mace_2_2";
+    if ( Tier == 2 && AffixBonus == 3 ) return "LWSDW_R_Mace_2_3";
+    if ( Tier == 2 && AffixBonus == 4 ) return "LWSDW_R_Mace_2_4";
+    if ( Tier == 2 && AffixBonus == 5 ) return "LWSDW_R_Mace_2_5";
+    if ( Tier == 2 && AffixBonus == 6 ) return "LWSDW_E_Mace_2_6";
+    if ( Tier == 2 && AffixBonus == 7 ) return "LWSDW_E_Mace_2_7";
+    if ( Tier == 2 && AffixBonus == 8 ) return "LWSDW_E_Mace_2_8";
+    if ( Tier == 2 && AffixBonus == 9 ) return "LWSDW_E_Mace_2_9";
+    if ( Tier == 3 && AffixBonus == 0 ) return "LWSDW_U_Mace_3_0";
+    if ( Tier == 3 && AffixBonus == 1 ) return "LWSDW_U_Mace_3_1";
+    if ( Tier == 3 && AffixBonus == 2 ) return "LWSDW_R_Mace_3_2";
+    if ( Tier == 3 && AffixBonus == 3 ) return "LWSDW_R_Mace_3_3";
+    if ( Tier == 3 && AffixBonus == 4 ) return "LWSDW_R_Mace_3_4";
+    if ( Tier == 3 && AffixBonus == 5 ) return "LWSDW_E_Mace_3_5";
+    if ( Tier == 3 && AffixBonus == 6 ) return "LWSDW_E_Mace_3_6";
+    if ( Tier == 3 && AffixBonus == 7 ) return "LWSDW_E_Mace_3_7";
+    if ( Tier == 3 && AffixBonus == 8 ) return "LWSDW_E_Mace_3_8";
+    if ( Tier == 4 && AffixBonus == 0 ) return "LWSDW_U_Mace_4_0";
+    if ( Tier == 4 && AffixBonus == 1 ) return "LWSDW_R_Mace_4_1";
+    if ( Tier == 4 && AffixBonus == 2 ) return "LWSDW_R_Mace_4_2";
+    if ( Tier == 4 && AffixBonus == 3 ) return "LWSDW_R_Mace_4_3";
+    if ( Tier == 4 && AffixBonus == 4 ) return "LWSDW_E_Mace_4_4";
+    if ( Tier == 4 && AffixBonus == 5 ) return "LWSDW_E_Mace_4_5";
+    if ( Tier == 4 && AffixBonus == 6 ) return "LWSDW_E_Mace_4_6";
+    if ( Tier == 4 && AffixBonus == 7 ) return "LWSDW_E_Mace_4_7";
+    return "";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_StaticWeaponChaosDropTitle ( integer Tier, integer AffixBonus ) is string
+Declare
+Begin
+    if ( Tier == 1 && AffixBonus == 0 ) return "LWSDW_C_Chaos_1_0";
+    if ( Tier == 1 && AffixBonus == 1 ) return "LWSDW_C_Chaos_1_1";
+    if ( Tier == 1 && AffixBonus == 2 ) return "LWSDW_U_Chaos_1_2";
+    if ( Tier == 1 && AffixBonus == 3 ) return "LWSDW_U_Chaos_1_3";
+    if ( Tier == 1 && AffixBonus == 4 ) return "LWSDW_R_Chaos_1_4";
+    if ( Tier == 1 && AffixBonus == 5 ) return "LWSDW_R_Chaos_1_5";
+    if ( Tier == 1 && AffixBonus == 6 ) return "LWSDW_R_Chaos_1_6";
+    if ( Tier == 1 && AffixBonus == 7 ) return "LWSDW_E_Chaos_1_7";
+    if ( Tier == 1 && AffixBonus == 8 ) return "LWSDW_E_Chaos_1_8";
+    if ( Tier == 1 && AffixBonus == 9 ) return "LWSDW_E_Chaos_1_9";
+    if ( Tier == 1 && AffixBonus == 10 ) return "LWSDW_E_Chaos_1_10";
+    if ( Tier == 2 && AffixBonus == 0 ) return "LWSDW_C_Chaos_2_0";
+    if ( Tier == 2 && AffixBonus == 1 ) return "LWSDW_U_Chaos_2_1";
+    if ( Tier == 2 && AffixBonus == 2 ) return "LWSDW_U_Chaos_2_2";
+    if ( Tier == 2 && AffixBonus == 3 ) return "LWSDW_R_Chaos_2_3";
+    if ( Tier == 2 && AffixBonus == 4 ) return "LWSDW_R_Chaos_2_4";
+    if ( Tier == 2 && AffixBonus == 5 ) return "LWSDW_R_Chaos_2_5";
+    if ( Tier == 2 && AffixBonus == 6 ) return "LWSDW_E_Chaos_2_6";
+    if ( Tier == 2 && AffixBonus == 7 ) return "LWSDW_E_Chaos_2_7";
+    if ( Tier == 2 && AffixBonus == 8 ) return "LWSDW_E_Chaos_2_8";
+    if ( Tier == 2 && AffixBonus == 9 ) return "LWSDW_E_Chaos_2_9";
+    if ( Tier == 3 && AffixBonus == 0 ) return "LWSDW_U_Chaos_3_0";
+    if ( Tier == 3 && AffixBonus == 1 ) return "LWSDW_U_Chaos_3_1";
+    if ( Tier == 3 && AffixBonus == 2 ) return "LWSDW_R_Chaos_3_2";
+    if ( Tier == 3 && AffixBonus == 3 ) return "LWSDW_R_Chaos_3_3";
+    if ( Tier == 3 && AffixBonus == 4 ) return "LWSDW_R_Chaos_3_4";
+    if ( Tier == 3 && AffixBonus == 5 ) return "LWSDW_E_Chaos_3_5";
+    if ( Tier == 3 && AffixBonus == 6 ) return "LWSDW_E_Chaos_3_6";
+    if ( Tier == 3 && AffixBonus == 7 ) return "LWSDW_E_Chaos_3_7";
+    if ( Tier == 3 && AffixBonus == 8 ) return "LWSDW_E_Chaos_3_8";
+    if ( Tier == 4 && AffixBonus == 0 ) return "LWSDW_U_Chaos_4_0";
+    if ( Tier == 4 && AffixBonus == 1 ) return "LWSDW_R_Chaos_4_1";
+    if ( Tier == 4 && AffixBonus == 2 ) return "LWSDW_R_Chaos_4_2";
+    if ( Tier == 4 && AffixBonus == 3 ) return "LWSDW_R_Chaos_4_3";
+    if ( Tier == 4 && AffixBonus == 4 ) return "LWSDW_E_Chaos_4_4";
+    if ( Tier == 4 && AffixBonus == 5 ) return "LWSDW_E_Chaos_4_5";
+    if ( Tier == 4 && AffixBonus == 6 ) return "LWSDW_E_Chaos_4_6";
+    if ( Tier == 4 && AffixBonus == 7 ) return "LWSDW_E_Chaos_4_7";
+    return "";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_StaticWeaponHammerDropTitle ( integer Tier, integer AffixBonus ) is string
+Declare
+Begin
+    if ( Tier == 1 && AffixBonus == 0 ) return "LWSDW_C_Hammer_1_0";
+    if ( Tier == 1 && AffixBonus == 1 ) return "LWSDW_C_Hammer_1_1";
+    if ( Tier == 1 && AffixBonus == 2 ) return "LWSDW_U_Hammer_1_2";
+    if ( Tier == 1 && AffixBonus == 3 ) return "LWSDW_U_Hammer_1_3";
+    if ( Tier == 1 && AffixBonus == 4 ) return "LWSDW_R_Hammer_1_4";
+    if ( Tier == 1 && AffixBonus == 5 ) return "LWSDW_R_Hammer_1_5";
+    if ( Tier == 1 && AffixBonus == 6 ) return "LWSDW_R_Hammer_1_6";
+    if ( Tier == 1 && AffixBonus == 7 ) return "LWSDW_E_Hammer_1_7";
+    if ( Tier == 1 && AffixBonus == 8 ) return "LWSDW_E_Hammer_1_8";
+    if ( Tier == 1 && AffixBonus == 9 ) return "LWSDW_E_Hammer_1_9";
+    if ( Tier == 1 && AffixBonus == 10 ) return "LWSDW_E_Hammer_1_10";
+    if ( Tier == 2 && AffixBonus == 0 ) return "LWSDW_C_Hammer_2_0";
+    if ( Tier == 2 && AffixBonus == 1 ) return "LWSDW_U_Hammer_2_1";
+    if ( Tier == 2 && AffixBonus == 2 ) return "LWSDW_U_Hammer_2_2";
+    if ( Tier == 2 && AffixBonus == 3 ) return "LWSDW_R_Hammer_2_3";
+    if ( Tier == 2 && AffixBonus == 4 ) return "LWSDW_R_Hammer_2_4";
+    if ( Tier == 2 && AffixBonus == 5 ) return "LWSDW_R_Hammer_2_5";
+    if ( Tier == 2 && AffixBonus == 6 ) return "LWSDW_E_Hammer_2_6";
+    if ( Tier == 2 && AffixBonus == 7 ) return "LWSDW_E_Hammer_2_7";
+    if ( Tier == 2 && AffixBonus == 8 ) return "LWSDW_E_Hammer_2_8";
+    if ( Tier == 2 && AffixBonus == 9 ) return "LWSDW_E_Hammer_2_9";
+    if ( Tier == 3 && AffixBonus == 0 ) return "LWSDW_U_Hammer_3_0";
+    if ( Tier == 3 && AffixBonus == 1 ) return "LWSDW_U_Hammer_3_1";
+    if ( Tier == 3 && AffixBonus == 2 ) return "LWSDW_R_Hammer_3_2";
+    if ( Tier == 3 && AffixBonus == 3 ) return "LWSDW_R_Hammer_3_3";
+    if ( Tier == 3 && AffixBonus == 4 ) return "LWSDW_R_Hammer_3_4";
+    if ( Tier == 3 && AffixBonus == 5 ) return "LWSDW_E_Hammer_3_5";
+    if ( Tier == 3 && AffixBonus == 6 ) return "LWSDW_E_Hammer_3_6";
+    if ( Tier == 3 && AffixBonus == 7 ) return "LWSDW_E_Hammer_3_7";
+    if ( Tier == 3 && AffixBonus == 8 ) return "LWSDW_E_Hammer_3_8";
+    if ( Tier == 4 && AffixBonus == 0 ) return "LWSDW_U_Hammer_4_0";
+    if ( Tier == 4 && AffixBonus == 1 ) return "LWSDW_R_Hammer_4_1";
+    if ( Tier == 4 && AffixBonus == 2 ) return "LWSDW_R_Hammer_4_2";
+    if ( Tier == 4 && AffixBonus == 3 ) return "LWSDW_R_Hammer_4_3";
+    if ( Tier == 4 && AffixBonus == 4 ) return "LWSDW_E_Hammer_4_4";
+    if ( Tier == 4 && AffixBonus == 5 ) return "LWSDW_E_Hammer_4_5";
+    if ( Tier == 4 && AffixBonus == 6 ) return "LWSDW_E_Hammer_4_6";
+    if ( Tier == 4 && AffixBonus == 7 ) return "LWSDW_E_Hammer_4_7";
+    return "";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_StaticArmorLeatherDropTitle ( integer Tier, integer AffixBonus ) is string
+Declare
+Begin
+    if ( Tier == 1 && AffixBonus == 0 ) return "LWSDA_C_Leather_1_0";
+    if ( Tier == 1 && AffixBonus == 1 ) return "LWSDA_U_Leather_1_1";
+    if ( Tier == 1 && AffixBonus == 2 ) return "LWSDA_R_Leather_1_2";
+    if ( Tier == 1 && AffixBonus == 3 ) return "LWSDA_R_Leather_1_3";
+    if ( Tier == 1 && AffixBonus == 4 ) return "LWSDA_E_Leather_1_4";
+    if ( Tier == 1 && AffixBonus == 5 ) return "LWSDA_E_Leather_1_5";
+    if ( Tier == 2 && AffixBonus == 0 ) return "LWSDA_C_Leather_2_0";
+    if ( Tier == 2 && AffixBonus == 1 ) return "LWSDA_U_Leather_2_1";
+    if ( Tier == 2 && AffixBonus == 2 ) return "LWSDA_R_Leather_2_2";
+    if ( Tier == 2 && AffixBonus == 3 ) return "LWSDA_E_Leather_2_3";
+    if ( Tier == 2 && AffixBonus == 4 ) return "LWSDA_E_Leather_2_4";
+    if ( Tier == 3 && AffixBonus == 0 ) return "LWSDA_U_Leather_3_0";
+    if ( Tier == 3 && AffixBonus == 1 ) return "LWSDA_R_Leather_3_1";
+    if ( Tier == 3 && AffixBonus == 2 ) return "LWSDA_R_Leather_3_2";
+    if ( Tier == 3 && AffixBonus == 3 ) return "LWSDA_E_Leather_3_3";
+    if ( Tier == 3 && AffixBonus == 4 ) return "LWSDA_E_Leather_3_4";
+    if ( Tier == 4 && AffixBonus == 0 ) return "LWSDA_U_Leather_4_0";
+    if ( Tier == 4 && AffixBonus == 1 ) return "LWSDA_R_Leather_4_1";
+    if ( Tier == 4 && AffixBonus == 2 ) return "LWSDA_E_Leather_4_2";
+    if ( Tier == 4 && AffixBonus == 3 ) return "LWSDA_E_Leather_4_3";
+    return "";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_StaticArmorChainDropTitle ( integer Tier, integer AffixBonus ) is string
+Declare
+Begin
+    if ( Tier == 1 && AffixBonus == 0 ) return "LWSDA_C_Chain_1_0";
+    if ( Tier == 1 && AffixBonus == 1 ) return "LWSDA_U_Chain_1_1";
+    if ( Tier == 1 && AffixBonus == 2 ) return "LWSDA_R_Chain_1_2";
+    if ( Tier == 1 && AffixBonus == 3 ) return "LWSDA_R_Chain_1_3";
+    if ( Tier == 1 && AffixBonus == 4 ) return "LWSDA_E_Chain_1_4";
+    if ( Tier == 1 && AffixBonus == 5 ) return "LWSDA_E_Chain_1_5";
+    if ( Tier == 2 && AffixBonus == 0 ) return "LWSDA_C_Chain_2_0";
+    if ( Tier == 2 && AffixBonus == 1 ) return "LWSDA_U_Chain_2_1";
+    if ( Tier == 2 && AffixBonus == 2 ) return "LWSDA_R_Chain_2_2";
+    if ( Tier == 2 && AffixBonus == 3 ) return "LWSDA_E_Chain_2_3";
+    if ( Tier == 2 && AffixBonus == 4 ) return "LWSDA_E_Chain_2_4";
+    if ( Tier == 3 && AffixBonus == 0 ) return "LWSDA_U_Chain_3_0";
+    if ( Tier == 3 && AffixBonus == 1 ) return "LWSDA_R_Chain_3_1";
+    if ( Tier == 3 && AffixBonus == 2 ) return "LWSDA_R_Chain_3_2";
+    if ( Tier == 3 && AffixBonus == 3 ) return "LWSDA_E_Chain_3_3";
+    if ( Tier == 3 && AffixBonus == 4 ) return "LWSDA_E_Chain_3_4";
+    if ( Tier == 4 && AffixBonus == 0 ) return "LWSDA_U_Chain_4_0";
+    if ( Tier == 4 && AffixBonus == 1 ) return "LWSDA_R_Chain_4_1";
+    if ( Tier == 4 && AffixBonus == 2 ) return "LWSDA_E_Chain_4_2";
+    if ( Tier == 4 && AffixBonus == 3 ) return "LWSDA_E_Chain_4_3";
+    return "";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_StaticArmorPlateDropTitle ( integer Tier, integer AffixBonus ) is string
+Declare
+Begin
+    if ( Tier == 1 && AffixBonus == 0 ) return "LWSDA_C_Plate_1_0";
+    if ( Tier == 1 && AffixBonus == 1 ) return "LWSDA_U_Plate_1_1";
+    if ( Tier == 1 && AffixBonus == 2 ) return "LWSDA_R_Plate_1_2";
+    if ( Tier == 1 && AffixBonus == 3 ) return "LWSDA_R_Plate_1_3";
+    if ( Tier == 1 && AffixBonus == 4 ) return "LWSDA_E_Plate_1_4";
+    if ( Tier == 1 && AffixBonus == 5 ) return "LWSDA_E_Plate_1_5";
+    if ( Tier == 2 && AffixBonus == 0 ) return "LWSDA_C_Plate_2_0";
+    if ( Tier == 2 && AffixBonus == 1 ) return "LWSDA_U_Plate_2_1";
+    if ( Tier == 2 && AffixBonus == 2 ) return "LWSDA_R_Plate_2_2";
+    if ( Tier == 2 && AffixBonus == 3 ) return "LWSDA_E_Plate_2_3";
+    if ( Tier == 2 && AffixBonus == 4 ) return "LWSDA_E_Plate_2_4";
+    if ( Tier == 3 && AffixBonus == 0 ) return "LWSDA_U_Plate_3_0";
+    if ( Tier == 3 && AffixBonus == 1 ) return "LWSDA_R_Plate_3_1";
+    if ( Tier == 3 && AffixBonus == 2 ) return "LWSDA_R_Plate_3_2";
+    if ( Tier == 3 && AffixBonus == 3 ) return "LWSDA_E_Plate_3_3";
+    if ( Tier == 3 && AffixBonus == 4 ) return "LWSDA_E_Plate_3_4";
+    if ( Tier == 4 && AffixBonus == 0 ) return "LWSDA_U_Plate_4_0";
+    if ( Tier == 4 && AffixBonus == 1 ) return "LWSDA_R_Plate_4_1";
+    if ( Tier == 4 && AffixBonus == 2 ) return "LWSDA_E_Plate_4_2";
+    if ( Tier == 4 && AffixBonus == 3 ) return "LWSDA_E_Plate_4_3";
+    return "";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_StaticArmorChaosDropTitle ( integer Tier, integer AffixBonus ) is string
+Declare
+Begin
+    if ( Tier == 1 && AffixBonus == 0 ) return "LWSDA_C_Chaos_1_0";
+    if ( Tier == 1 && AffixBonus == 1 ) return "LWSDA_U_Chaos_1_1";
+    if ( Tier == 1 && AffixBonus == 2 ) return "LWSDA_R_Chaos_1_2";
+    if ( Tier == 1 && AffixBonus == 3 ) return "LWSDA_R_Chaos_1_3";
+    if ( Tier == 1 && AffixBonus == 4 ) return "LWSDA_E_Chaos_1_4";
+    if ( Tier == 1 && AffixBonus == 5 ) return "LWSDA_E_Chaos_1_5";
+    if ( Tier == 2 && AffixBonus == 0 ) return "LWSDA_C_Chaos_2_0";
+    if ( Tier == 2 && AffixBonus == 1 ) return "LWSDA_U_Chaos_2_1";
+    if ( Tier == 2 && AffixBonus == 2 ) return "LWSDA_R_Chaos_2_2";
+    if ( Tier == 2 && AffixBonus == 3 ) return "LWSDA_E_Chaos_2_3";
+    if ( Tier == 2 && AffixBonus == 4 ) return "LWSDA_E_Chaos_2_4";
+    if ( Tier == 3 && AffixBonus == 0 ) return "LWSDA_U_Chaos_3_0";
+    if ( Tier == 3 && AffixBonus == 1 ) return "LWSDA_R_Chaos_3_1";
+    if ( Tier == 3 && AffixBonus == 2 ) return "LWSDA_R_Chaos_3_2";
+    if ( Tier == 3 && AffixBonus == 3 ) return "LWSDA_E_Chaos_3_3";
+    if ( Tier == 3 && AffixBonus == 4 ) return "LWSDA_E_Chaos_3_4";
+    if ( Tier == 4 && AffixBonus == 0 ) return "LWSDA_U_Chaos_4_0";
+    if ( Tier == 4 && AffixBonus == 1 ) return "LWSDA_R_Chaos_4_1";
+    if ( Tier == 4 && AffixBonus == 2 ) return "LWSDA_E_Chaos_4_2";
+    if ( Tier == 4 && AffixBonus == 3 ) return "LWSDA_E_Chaos_4_3";
+    return "";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_StaticEquipmentDropTitle ( string EquipmentType, string EquipmentFamily,
+                                        integer Tier, integer AffixBonus ) is string
+Declare
+Begin
+    if ( EquipmentType == "Weapon" && EquipmentFamily == "Staff" ) return $LWS_StaticWeaponStaffDropTitle ( Tier, AffixBonus );
+    if ( EquipmentType == "Weapon" && EquipmentFamily == "Axeclub" ) return $LWS_StaticWeaponAxeclubDropTitle ( Tier, AffixBonus );
+    if ( EquipmentType == "Weapon" && EquipmentFamily == "Dagger" ) return $LWS_StaticWeaponDaggerDropTitle ( Tier, AffixBonus );
+    if ( EquipmentType == "Weapon" && EquipmentFamily == "Longsword" ) return $LWS_StaticWeaponLongswordDropTitle ( Tier, AffixBonus );
+    if ( EquipmentType == "Weapon" && EquipmentFamily == "Longbow" ) return $LWS_StaticWeaponLongbowDropTitle ( Tier, AffixBonus );
+    if ( EquipmentType == "Weapon" && EquipmentFamily == "Crossbow" ) return $LWS_StaticWeaponCrossbowDropTitle ( Tier, AffixBonus );
+    if ( EquipmentType == "Weapon" && EquipmentFamily == "Mace" ) return $LWS_StaticWeaponMaceDropTitle ( Tier, AffixBonus );
+    if ( EquipmentType == "Weapon" && EquipmentFamily == "Chaos" ) return $LWS_StaticWeaponChaosDropTitle ( Tier, AffixBonus );
+    if ( EquipmentType == "Weapon" && EquipmentFamily == "Hammer" ) return $LWS_StaticWeaponHammerDropTitle ( Tier, AffixBonus );
+    if ( EquipmentType == "Armor" && EquipmentFamily == "Leather" ) return $LWS_StaticArmorLeatherDropTitle ( Tier, AffixBonus );
+    if ( EquipmentType == "Armor" && EquipmentFamily == "Chain" ) return $LWS_StaticArmorChainDropTitle ( Tier, AffixBonus );
+    if ( EquipmentType == "Armor" && EquipmentFamily == "Plate" ) return $LWS_StaticArmorPlateDropTitle ( Tier, AffixBonus );
+    if ( EquipmentType == "Armor" && EquipmentFamily == "Chaos" ) return $LWS_StaticArmorChaosDropTitle ( Tier, AffixBonus );
+    return "";
+End

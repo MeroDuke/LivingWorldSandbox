@@ -1,0 +1,156 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LivingWorldSandbox - per-agent monster progression state.
+// Phase 1 stores state only. Classification, leveling, stat growth, perks, and loot are implemented later.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Function LWS_ClassFromLevelXP ( integer LevelXP ) is integer
+Declare
+Begin
+    if ( LevelXP <= 0 )
+        return 0;
+    if ( LevelXP <= 250 )
+        return 1;
+    if ( LevelXP <= 550 )
+        return 2;
+    if ( LevelXP <= 900 )
+        return 3;
+    if ( LevelXP <= 2000 )
+        return 4;
+    return 5;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_EnsureMonsterState ( agent Monster )
+Declare
+Begin
+    if ( $IsValidGamePiece ( Monster ) == FALSE )
+        return;
+    if ( $HasAttribute ( "original_type", Monster ) == FALSE )
+        return;
+    if ( Monster's "original_type" != "Monster" )
+        return;
+
+    // Add fields independently so this function can repair partial state without resetting progress.
+    if ( $HasAttribute ( "LWS_StateVersion", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_StateVersion", "integer", 1 );
+    if ( $HasAttribute ( "LWS_BaseMaxHP", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_BaseMaxHP", "integer", $GetAttribute ( Monster, #ATTRIB_MaxHP ));
+    if ( $HasAttribute ( "LWS_Level", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_Level", "integer", 1 );
+    if ( $HasAttribute ( "LWS_KillsThisLevel", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_KillsThisLevel", "integer", 0 );
+    if ( $HasAttribute ( "LWS_TotalKills", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_TotalKills", "integer", 0 );
+    if ( $HasAttribute ( "LWS_BuildingsDestroyed", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_BuildingsDestroyed", "integer", 0 );
+    if ( $HasAttribute ( "LWS_ProgressClass", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_ProgressClass", "integer",
+                        $LWS_ClassFromLevelXP ( $GetAttribute ( Monster, #ATTRIB_LevelXP )));
+    if ( $HasAttribute ( "LWS_Perks", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_Perks", "integer", 0 );
+    // Only named Northern Expansion Unique Class 5 monsters enter the Legendary source whitelist.
+    if ( Monster's "LWS_ProgressClass" == 5 && $HasAttribute ( "LWS_LegendaryLootSource", Monster ) == FALSE )
+        if ( Monster's "Title" == "Witch_King" || Monster's "Title" == "Liche_Queen" ||
+             Monster's "Title" == "Black_Phantom" || Monster's "Title" == "Url_Shekk" ||
+             Monster's "Title" == "Dirgo" || Monster's "Title" == "Rrongol" ||
+             Monster's "Title" == "Lorphus" )
+            $AddAttribute ( Monster, "LWS_LegendaryLootSource", "boolean", TRUE );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_ApplyLevelGrowth ( agent Monster, integer NewLevel )
+Declare
+    integer HPBonus;
+Begin
+    HPBonus = ( Monster's "LWS_BaseMaxHP" * 5 ) / 100;
+    if ( HPBonus < 1 )
+        HPBonus = 1;
+
+    // Preserve missing HP: increase current HP only by the new MaxHP increment.
+    $AdjustAttribute ( Monster, #ATTRIB_MaxHP, HPBonus );
+    $AdjustAttribute ( Monster, #ATTRIB_HP, HPBonus );
+
+    if ( Monster's "attacktype" == 1 )
+        if ( $GetAttribute ( Monster, #ATTRIB_HtoH ) < 98 )
+            $AdjustAttribute ( Monster, #ATTRIB_HtoH, 1 );
+    if ( Monster's "attacktype" == 2 )
+        if ( $GetAttribute ( Monster, #ATTRIB_Ranged ) < 98 )
+            $AdjustAttribute ( Monster, #ATTRIB_Ranged, 1 );
+    if ( $GetAttribute ( Monster, #ATTRIB_Dodge ) < 98 )
+        $AdjustAttribute ( Monster, #ATTRIB_Dodge, 1 );
+    if ( $GetAttribute ( Monster, #ATTRIB_Parry ) < 98 )
+        $AdjustAttribute ( Monster, #ATTRIB_Parry, 1 );
+
+    if (( NewLevel % 3 ) == 0 )
+        $AdjustAttribute ( Monster, #ATTRIB_Strength, 1 );
+    if (( NewLevel % 5 ) == 0 )
+        $AdjustAttribute ( Monster, #ATTRIB_MagicResistance, 1 );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_KillsRequired ( integer ProgressClass, integer Level ) is integer
+Declare
+Begin
+    if ( ProgressClass == 1 )
+        begin
+            if ( Level <= 1 ) return 1;
+            if ( Level == 2 ) return 2;
+            if ( Level == 3 ) return 3;
+            return 4;
+        end
+    if ( ProgressClass == 2 )
+        begin
+            if ( Level <= 1 ) return 2;
+            if ( Level == 2 ) return 3;
+            if ( Level == 3 ) return 4;
+            return 5;
+        end
+    if ( ProgressClass == 3 )
+        begin
+            if ( Level <= 1 ) return 4;
+            if ( Level == 2 ) return 6;
+            if ( Level == 3 ) return 8;
+            return 10;
+        end
+    if ( ProgressClass == 4 )
+        begin
+            if ( Level <= 1 ) return 12;
+            if ( Level == 2 ) return 16;
+            if ( Level == 3 ) return 20;
+            return 24;
+        end
+    if ( ProgressClass == 5 )
+        begin
+            if ( Level <= 1 ) return 20;
+            if ( Level == 2 ) return 30;
+            if ( Level == 3 ) return 40;
+            return 50;
+        end
+    return 0;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_RecordUnitKill ( agent Monster )
+Declare
+    integer KillsRequired;
+Begin
+    $LWS_EnsureMonsterState ( Monster );
+
+    // XP=0 special units remain unclassified and keep state without progressing.
+    if ( Monster's "LWS_ProgressClass" == 0 )
+        return;
+
+    Monster's "LWS_TotalKills" += 1;
+    Monster's "LWS_KillsThisLevel" += 1;
+    KillsRequired = $LWS_KillsRequired ( Monster's "LWS_ProgressClass", Monster's "LWS_Level" );
+
+    if ( Monster's "LWS_KillsThisLevel" >= KillsRequired )
+        begin
+            Monster's "LWS_KillsThisLevel" -= KillsRequired;
+            Monster's "LWS_Level" += 1;
+            $SetAttribute ( Monster, #ATTRIB_ExperienceLevel, Monster's "LWS_Level" );
+            $LWS_ApplyLevelGrowth ( Monster, Monster's "LWS_Level" );
+            $CreateEffector ( Monster, "level_up", 0 );
+            $DebugOut ( 911, "LWS monster reached level", Monster's "LWS_Level" );
+        end
+End

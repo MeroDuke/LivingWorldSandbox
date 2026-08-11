@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "dropChancePercent": 1,
+  "requiresProgressClass": 5,
+  "whitelistedSources": ["Witch_King", "Liche_Queen", "Black_Phantom", "Url_Shekk", "Dirgo", "Rrongol", "Lorphus"],
+  "items": [
+    { "id": "LWS_WandOfImmolation", "name": "Wand of Immolation", "spell": "Item_Damage_Shield", "marker": "LWS_HasWandOfImmolation" },
+    { "id": "LWS_BeltOfReflection", "name": "Belt of Reflection", "spell": "magic_mirror", "marker": "LWS_HasBeltOfReflection" },
+    { "id": "LWS_TeevusWand", "name": "Teevus' Wand", "spell": "Vortex", "marker": "LWS_HasTeevusWand" },
+    { "id": "LWS_RuneOfHealing", "name": "Rune of Healing", "spell": "Item_Healing", "marker": "LWS_HasRuneOfHealing" },
+    { "id": "LWS_HelmOfDisplacement", "name": "Helm of Displacement", "spell": "Force", "marker": "LWS_HasHelmOfDisplacement" },
+    { "id": "LWS_StonebacksShield", "name": "Stoneback's Shield", "spell": "Stonebacks_Shield", "marker": "LWS_HasStonebacksShield" }
+  ],
+  "universalHeroPickup": true,
+  "duplicatePerHero": false,
+  "usesOriginalQuestItemIds": false
+}

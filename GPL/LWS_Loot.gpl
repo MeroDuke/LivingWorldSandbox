@@ -1,0 +1,346 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LivingWorldSandbox - central, extensible monster loot policy and two-slot resolver.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Rarity codes: 0=None, 1=Common, 2=Uncommon, 3=Rare, 4=Epic, 5=Legendary.
+Function LWS_LootMinimumRarity ( integer ProgressClass ) is integer
+Declare
+Begin
+    if ( ProgressClass <= 0 ) return 0;
+    if ( ProgressClass <= 2 ) return 1;
+    if ( ProgressClass == 3 ) return 2;
+    if ( ProgressClass == 4 ) return 3;
+    return 4;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_LootMaximumRarity ( integer ProgressClass ) is integer
+Declare
+Begin
+    if ( ProgressClass <= 0 ) return 0;
+    if ( ProgressClass == 1 ) return 1;
+    if ( ProgressClass == 2 ) return 2;
+    if ( ProgressClass == 3 ) return 3;
+    if ( ProgressClass == 4 ) return 4;
+    return 5;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_LootGuaranteesEpic ( integer ProgressClass ) is boolean
+Declare
+Begin
+    return ProgressClass == 5;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Potion and every optional production loot channel use the same base chance.
+Function LWS_OptionalLootDropSucceeds ( integer ChanceRoll ) is boolean
+Declare
+Begin
+    return ChanceRoll < 8;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Class 5 always supplies its one equipment candidate. Other classes use the 8% base chance.
+Function LWS_EquipmentDropSucceeds ( integer ProgressClass, integer ChanceRoll ) is boolean
+Declare
+Begin
+    if ( ProgressClass == 5 ) return TRUE;
+    return $LWS_OptionalLootDropSucceeds ( ChanceRoll );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Selects rarity only after an equipment drop succeeds.
+// Classes 2-4 yield the previous league 75% and their ceiling 25% of the time.
+Function LWS_SelectLootRarity ( integer ProgressClass, integer RarityRoll ) is integer
+Declare
+Begin
+    if ( ProgressClass <= 0 ) return 0;
+    if ( ProgressClass == 1 ) return 1;
+    if ( ProgressClass == 2 )
+        begin
+            if ( RarityRoll < 75 ) return 1;
+            return 2;
+        end
+    if ( ProgressClass == 3 )
+        begin
+            if ( RarityRoll < 75 ) return 2;
+            return 3;
+        end
+    if ( ProgressClass == 4 )
+        begin
+            if ( RarityRoll < 75 ) return 3;
+            return 4;
+        end
+    // Class 5 upgrades its guaranteed Epic candidate to Legendary on a 1% roll.
+    if ( RarityRoll < 1 ) return 5;
+    return 4;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Legendary requires both Class 5 and an explicit source whitelist marker.
+Function LWS_IsLegendaryLootSource ( agent Monster ) is boolean
+Declare
+Begin
+    if ( $IsValidGamePiece ( Monster ) == FALSE ) return FALSE;
+    $LWS_EnsureMonsterState ( Monster );
+    if ( Monster's "LWS_ProgressClass" != 5 ) return FALSE;
+    if ( $HasAttribute ( "LWS_LegendaryLootSource", Monster ) == FALSE ) return FALSE;
+    return Monster's "LWS_LegendaryLootSource";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_HealingPotion_Birth ( agent ThisAgent )
+Declare
+Begin
+    $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_HealingPotion_Transfer );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_HealingPotion_Transfer ( agent OldOwnerAgent, agent NewOwnerAgent, integer AttributeID )
+Declare
+Begin
+    if ( $IsValidGamePiece ( NewOwnerAgent ) == FALSE ) return;
+
+    // Marketplace purchases and Ranger brewing use this same native counter.
+    if ( $GetAttribute ( NewOwnerAgent, #ATTRIB_NumHealingPotions ) < #Max_Heal_Potions )
+        $AdjustAttribute ( NewOwnerAgent, #ATTRIB_NumHealingPotions, 1 );
+
+    // The world pickup is a consumable carrier, not a persistent custom inventory item.
+    $DeleteInventoryItem ( AttributeID, NewOwnerAgent );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_RandomWeaponFamily ( integer FamilyRoll ) is string
+Declare
+    integer Pick;
+Begin
+    Pick = FamilyRoll % 9;
+    if ( Pick == 0 ) return "Staff";
+    if ( Pick == 1 ) return "Axeclub";
+    if ( Pick == 2 ) return "Dagger";
+    if ( Pick == 3 ) return "Longsword";
+    if ( Pick == 4 ) return "Longbow";
+    if ( Pick == 5 ) return "Crossbow";
+    if ( Pick == 6 ) return "Mace";
+    if ( Pick == 7 ) return "Chaos";
+    return "Hammer";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_RandomArmorFamily ( integer FamilyRoll ) is string
+Declare
+    integer Pick;
+Begin
+    Pick = FamilyRoll % 4;
+    if ( Pick == 0 ) return "Leather";
+    if ( Pick == 1 ) return "Chain";
+    if ( Pick == 2 ) return "Plate";
+    return "Chaos";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_RarityMinimumPower ( integer Rarity ) is integer
+Declare
+Begin
+    if ( Rarity <= 1 ) return 0;
+    if ( Rarity == 2 ) return 2;
+    if ( Rarity == 3 ) return 4;
+    return 7;
+End
+
+Function LWS_RarityMaximumPower ( integer Rarity ) is integer
+Declare
+Begin
+    if ( Rarity <= 1 ) return 1;
+    if ( Rarity == 2 ) return 3;
+    if ( Rarity == 3 ) return 6;
+    return 10;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_GeneratedEquipmentTier ( integer Rarity, integer TierRoll ) is integer
+Declare
+Begin
+    // T3/T4 already exceed Common's power ceiling without an affix.
+    if ( Rarity <= 1 ) return 1 + ( TierRoll % 2 );
+    return 1 + ( TierRoll % 4 );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_GeneratedEquipmentAffix ( string EquipmentType, integer Rarity,
+                                       integer Tier, integer PowerRoll ) is integer
+Declare
+    integer MinimumPower, MaximumPower, Power, TierPower;
+Begin
+    MinimumPower = $LWS_RarityMinimumPower ( Rarity );
+    MaximumPower = $LWS_RarityMaximumPower ( Rarity );
+    Power = MinimumPower + ( PowerRoll % ( MaximumPower - MinimumPower + 1 ));
+    TierPower = $LWS_WeaponTierBaseBonus ( Tier );
+    if ( Power < TierPower ) Power = TierPower;
+
+    if ( EquipmentType == "Armor" )
+        begin
+            // Armor affixes contribute two power, so generated power must match tier parity.
+            if ((( Power - TierPower ) % 2 ) != 0 )
+                begin
+                    if ( Power < MaximumPower ) Power += 1;
+                    else Power -= 1;
+                end
+            return ( Power - TierPower ) / 2;
+        end
+    return Power - TierPower;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_SpawnRandomEquipment ( agent Defender, string EquipmentType, integer Rarity,
+                                    integer FamilyRoll, integer TierRoll, integer PowerRoll ) is boolean
+Declare
+    agent Drop;
+    string DropTitle, EquipmentFamily;
+    integer Tier, AffixBonus;
+Begin
+    if ( Defender's "LWS_LootSlotsUsed" >= 2 ) return FALSE;
+    // Named Legendary Unique prototypes are supplied by the later Legendary catalog.
+    if ( Rarity >= 5 ) Rarity = 4;
+
+    Tier = $LWS_GeneratedEquipmentTier ( Rarity, TierRoll );
+    AffixBonus = $LWS_GeneratedEquipmentAffix ( EquipmentType, Rarity, Tier, PowerRoll );
+    if ( EquipmentType == "Armor" )
+        begin
+            EquipmentFamily = $LWS_RandomArmorFamily ( FamilyRoll );
+        end
+    else
+        begin
+            EquipmentFamily = $LWS_RandomWeaponFamily ( FamilyRoll );
+        end
+
+    // The resolver returns only compiler-visible prototype literals. Never
+    // construct a prototype ID dynamically: Majesty's runtime lookup is unsafe.
+    DropTitle = $LWS_StaticEquipmentDropTitle ( EquipmentType, EquipmentFamily, Tier, AffixBonus );
+    if ( DropTitle == "" ) return FALSE;
+
+    Drop = $SpawnUnit ( Defender, DropTitle, "Override", $Concatenate ( $MakeInventoryAttribute ( DropTitle ), 0 ));
+    if ( $IsValidGamePiece ( Drop ) == FALSE ) return FALSE;
+    $LWS_ConfigureEquipmentDrop ( Drop, EquipmentType, EquipmentFamily, Tier, AffixBonus );
+    Defender's "LWS_LootSlotsUsed" += 1;
+    $DebugOut ( 911, "LWS EQUIPMENT DROP", EquipmentType, EquipmentFamily, "TIER", Tier,
+                "AFFIX", AffixBonus, "RARITY", $LWS_EquipmentRarity ( EquipmentType, Tier, AffixBonus ));
+    return TRUE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_SpawnLootItem ( agent Defender, string DropTitle ) is boolean
+Declare
+    agent Drop;
+Begin
+    if ( Defender's "LWS_LootSlotsUsed" >= 2 ) return FALSE;
+
+    Drop = $SpawnUnit ( Defender, DropTitle, "Override", $Concatenate ( $MakeInventoryAttribute ( DropTitle ), 0 ));
+    if ( $IsValidGamePiece ( Drop ) == FALSE ) return FALSE;
+
+    Defender's "LWS_LootSlotsUsed" += 1;
+    return TRUE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_SpawnLegendaryUnique ( agent Defender, integer ItemRoll ) is boolean
+Declare
+    string DropTitle;
+Begin
+    DropTitle = $LWS_RandomLegendaryTitle ( ItemRoll );
+    if ( $LWS_SpawnLootItem ( Defender, DropTitle ) == FALSE ) return FALSE;
+    $DebugOut ( 911, "LWS LEGENDARY DROP", DropTitle );
+    return TRUE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_TryHealingPotionSlot ( agent Defender, integer ChanceRoll )
+Declare
+    agent AIRootAgent;
+Begin
+    if ( $LWS_OptionalLootDropSucceeds ( ChanceRoll ) == FALSE ) return;
+    if ( $LWS_SpawnLootItem ( Defender, "LWS_HealingPotion" ) == FALSE ) return;
+
+    AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
+    if ( $HasAttribute ( "LWS_DiagnosticLootDrops", AIRootAgent ))
+        AIRootAgent's "LWS_DiagnosticLootDrops" += 1;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_TryDiagnosticWeaponSlot ( agent Defender, integer ChanceRoll )
+Declare
+    agent AIRootAgent;
+Begin
+    AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
+    if ( $HasAttribute ( "LWS_DiagnosticWeaponDropChance", AIRootAgent ) == FALSE ) return;
+    if ( ChanceRoll >= AIRootAgent's "LWS_DiagnosticWeaponDropChance" ) return;
+    if ( $LWS_SpawnLootItem ( Defender, "LWS_T2_Longsword_Plus6" ))
+        $DebugOut ( 911, "LWS DIAGNOSTIC WEAPON DROP", "LWS_T2_Longsword_Plus6" );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_TryDiagnosticArmorSlot ( agent Defender, integer ChanceRoll )
+Declare
+    agent AIRootAgent;
+Begin
+    AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
+    if ( $HasAttribute ( "LWS_DiagnosticArmorDropChance", AIRootAgent ) == FALSE ) return;
+    if ( ChanceRoll >= AIRootAgent's "LWS_DiagnosticArmorDropChance" ) return;
+    if ( $LWS_SpawnLootItem ( Defender, "LWS_T2_Armor_Plus6" ))
+        $DebugOut ( 911, "LWS DIAGNOSTIC ARMOR DROP", "LWS_T2_Armor_Plus6" );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// The only fatal-hit entry point. Every current and future item type must consume one of these slots.
+Function LWS_ResolveMonsterLoot ( agent Defender, integer FinalDamage,
+                                  integer PotionRoll, integer WeaponRoll, integer ArmorRoll )
+Declare
+    integer DefenderHP, ProgressClass, OmitCandidate, Rarity;
+    boolean PotionCandidate, WeaponCandidate, ArmorCandidate;
+Begin
+    if ( $IsValidGamePiece ( Defender ) == FALSE ) return;
+    if ( $HasAttribute ( "original_type", Defender ) == FALSE ) return;
+    if ( Defender's "original_type" != "Monster" ) return;
+
+    DefenderHP = $GetAttribute ( Defender, #ATTRIB_HP );
+    if (( DefenderHP <= 0 ) || ( DefenderHP > FinalDamage )) return;
+    if ( $HasAttribute ( "LWS_LootResolved", Defender )) return;
+
+    $AddAttribute ( Defender, "LWS_LootResolved", "boolean", TRUE );
+    $AddAttribute ( Defender, "LWS_LootSlotsUsed", "integer", 0 );
+    $LWS_EnsureMonsterState ( Defender );
+    ProgressClass = Defender's "LWS_ProgressClass";
+
+    PotionCandidate = FALSE;
+    WeaponCandidate = FALSE;
+    ArmorCandidate = FALSE;
+    if ( ProgressClass > 0 )
+        PotionCandidate = $LWS_OptionalLootDropSucceeds ( PotionRoll );
+    if ( ProgressClass == 5 )
+        begin
+            // Brutal monsters guarantee exactly one equipment candidate.
+            if ( $RandomNumber ( 2 ) == 0 ) WeaponCandidate = TRUE;
+            else ArmorCandidate = TRUE;
+        end
+    else if ( ProgressClass > 0 )
+        begin
+            WeaponCandidate = $LWS_EquipmentDropSucceeds ( ProgressClass, WeaponRoll );
+            ArmorCandidate = $LWS_EquipmentDropSucceeds ( ProgressClass, ArmorRoll );
+        end
+
+    // If all three optional candidates succeed, omit one uniformly instead of privileging call order.
+    OmitCandidate = -1;
+    if ( PotionCandidate && WeaponCandidate && ArmorCandidate )
+        OmitCandidate = $RandomNumber ( 3 );
+
+    // Package every successful monster reward into one chest. The recipe is locked
+    // at death; only the compatible family is resolved from the opener later.
+    if ( PotionCandidate || WeaponCandidate || ArmorCandidate )
+        $LWS_CreateLockedMonsterChest ( Defender, ProgressClass, PotionCandidate,
+                                        WeaponCandidate, ArmorCandidate, OmitCandidate );
+
+    // Diagnostic-only carriers share any slots still available after production candidates.
+    $LWS_TryDiagnosticWeaponSlot ( Defender, WeaponRoll );
+    $LWS_TryDiagnosticArmorSlot ( Defender, ArmorRoll );
+End

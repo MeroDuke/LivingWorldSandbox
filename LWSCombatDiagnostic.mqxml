@@ -1,18 +1,19 @@
 <Majesty>
-  <Quest id="{4348A40A-C97D-4B51-A2A0-20150CD562CD}">
-    <Name>LivingWorldSandbox</Name>
-    <DisplayName lang="en_US">Living World Sandbox</DisplayName>
+  <Quest id="{7D22386D-14E6-4B2F-A09C-8F1B7A63AFA1}">
+    <Name>LWSCombatDiagnostic</Name>
+    <DisplayName lang="en_US">LWS Combat Diagnostic</DisplayName>
     <Description lang="en_US">
-      <Short>Build a kingdom in a living wilderness.</Short>
-      <Long>A minimal sandbox baseline with six monster lairs and twenty-four roaming monsters.</Long>
+      <Short>Phase 0 Northern Expansion combat-hook diagnostic.</Short>
+      <Long>Developer-only diagnostic quest. PASS adds 7777 treasury gold; FAIL adds 111. Not a production sandbox build.</Long>
     </Description>
     <Difficulty>Easy</Difficulty>
     <DataConfiguration>
       <Dataset base="MajestyExpansion">
         <Load>
           <GPL>
-            <Target>Data/LivingWorldSandbox.bcd</Target>
+            <Target>Data/LWSCombatDiagnostic.bcd</Target>
             <Source>GPL/LivingWorldSandbox.gpl</Source>
+            <Source>GPL/LWS_CombatDiagnostics.gpl</Source>
           </GPL>
           <GPLSource>GPL</GPLSource>
           <Descriptions>Data/LWS_Descriptions.xml</Descriptions>

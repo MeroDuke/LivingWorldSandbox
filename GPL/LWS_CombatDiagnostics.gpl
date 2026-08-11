@@ -1,0 +1,464 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Phase 0 diagnostic hook for the Northern Expansion combat pipeline.
+// No production progression, stat growth, perk, or loot behavior belongs in this file.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Function LWSCombatDiagnostic ()
+Declare
+    agent AIRootAgent, Palace;
+    list Palaces;
+Begin
+    // Keep the known-good production bootstrap in the diagnostic quest.
+    $LivingWorldSandbox ();
+
+    Palaces = $ListPalaces ();
+    Palace = $ListMember ( Palaces, 1 );
+    AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
+
+    $AddAttribute ( AIRootAgent, "LWS_DiagnosticPassed", "boolean", FALSE );
+    $AddAttribute ( AIRootAgent, "LWS_DiagnosticFailures", "integer", 0 );
+    $AddAttribute ( AIRootAgent, "LWS_DiagnosticLootDrops", "integer", 0 );
+
+    // This is a short deterministic integration check, so run it synchronously.
+    // Majesty threads must be started through an agent function attribute; passing
+    // a bare function to NewThread compiles but does not execute reliably at runtime.
+    $LWS_RunCombatDiagnostic ( AIRootAgent, Palace );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_RunTwoSlotDiagnostic ( agent Palace, coordinate TestLocation ) is boolean
+Declare
+    agent Source, Drop;
+    list Drops;
+Begin
+    Source = $SpawnUnit ( Palace, "Giant_Rat", TestLocation, #Monster_Player );
+    if ( $IsValidGamePiece ( Source ) == FALSE ) return FALSE;
+    $AddAttribute ( Source, "LWS_LootSlotsUsed", "integer", 0 );
+    if ( $LWS_SpawnLootItem ( Source, "LWS_HealingPotion" ) == FALSE ) return FALSE;
+    if ( $LWS_SpawnLootItem ( Source, "LWS_HealingPotion" ) == FALSE ) return FALSE;
+    if ( $LWS_SpawnLootItem ( Source, "LWS_HealingPotion" )) return FALSE;
+    if ( Source's "LWS_LootSlotsUsed" != 2 ) return FALSE;
+    $ListObjects ( Source, "Special_Item", 80, Drops );
+    foreach Drop in Drops do $DeleteGamePiece ( Drop );
+    $DeleteGamePiece ( Source );
+    return TRUE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Reconcile the Palace's cached worker count and restart its autonomous spawner if necessary.
+Function LWS_EnsurePalacePeasantSpawner ( agent Palace )
+Declare
+    list PlayerHeroes, Peasants;
+Begin
+    if ( $IsValidGamePiece ( Palace ) == FALSE ) return;
+
+    $ListObjects ( Palace, "Hero", -1, PlayerHeroes, #MyPlayer );
+    Peasants = $ListTitles ( PlayerHeroes, "Peasant" );
+    Palace's "num_peasants" = $ListSize ( Peasants );
+
+    if ( Palace's "num_peasants" < Palace's "max_peasants" )
+        if ( $IsRunning ( Palace's "peasant_spawn" ) == FALSE )
+            $RunThread ( Palace's "peasant_spawn", #Normal_Cycle, Palace );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_RunLootDiagnostic ( agent AIRootAgent, agent Palace, coordinate TestLocation ) is boolean
+Declare
+    agent NoDropVictim, DropVictim, LootDrop, LootHero;
+    list LootDrops;
+    integer PotionsBefore;
+Begin
+    NoDropVictim = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( TestLocation, 80, 160 ), #Monster_Player );
+    if ( $IsValidGamePiece ( NoDropVictim ) == FALSE )
+        return FALSE;
+    $SetAttribute ( NoDropVictim, #ATTRIB_HP, 1 );
+    $LWS_ResolveMonsterLoot ( NoDropVictim, 1, 99, 99, 99 );
+    if ( $HasAttribute ( "LWS_LootResolved", NoDropVictim ) == FALSE )
+        return FALSE;
+    if ( AIRootAgent's "LWS_DiagnosticLootDrops" != 0 )
+        return FALSE;
+
+    DropVictim = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( TestLocation, 80, 160 ), #Monster_Player );
+    if ( $IsValidGamePiece ( DropVictim ) == FALSE )
+        return FALSE;
+    $SetAttribute ( DropVictim, #ATTRIB_HP, 1 );
+    $LWS_ResolveMonsterLoot ( DropVictim, 1, 0, 99, 99 );
+    if ( AIRootAgent's "LWS_DiagnosticLootDrops" != 1 )
+        return FALSE;
+    if ( DropVictim's "LWS_LootSlotsUsed" != 1 )
+        return FALSE;
+
+    $ListObjects ( DropVictim, "Special_Item", 100, LootDrops );
+    LootDrop = $ListMember ( LootDrops, 1 );
+    if ( $IsValidGamePiece ( LootDrop ) == FALSE )
+        return FALSE;
+
+    LootHero = $SpawnUnit ( Palace, "Rogue", $RandomCoord ( TestLocation, 80, 160 ), #Player_1 );
+    if ( $IsValidGamePiece ( LootHero ) == FALSE )
+        return FALSE;
+    $SetAttribute ( LootHero, #ATTRIB_NumHealingPotions, 0 );
+    PotionsBefore = $GetAttribute ( LootHero, #ATTRIB_NumHealingPotions );
+    if ( LootDrop's "LWS_ChestSlot1Type" != "Potion" ) return FALSE;
+    $LWS_OpenExplorationChest ( LootHero, LootDrop );
+    $DeleteGamePiece ( LootDrop );
+
+    if ( $GetAttribute ( LootHero, #ATTRIB_NumHealingPotions ) != ( PotionsBefore + 1 ))
+        return FALSE;
+    if ( $IsValidGamePiece ( LootDrop ))
+        return FALSE;
+
+    $DeleteGamePiece ( LootHero );
+    $DeleteGamePiece ( NoDropVictim );
+    $DeleteGamePiece ( DropVictim );
+    return TRUE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_RunSpellAttributionDiagnostic ( agent Palace, coordinate TestLocation ) is boolean
+Declare
+    agent SpellMonster, EnemyTarget, FriendlyTarget;
+    integer RequiredKills;
+Begin
+    SpellMonster = $SpawnUnit ( Palace, "Goblin_Priest", $RandomCoord ( Palace, 250, 400 ), #Monster_Player );
+    if ( $IsValidGamePiece ( SpellMonster ) == FALSE )
+        return FALSE;
+    $LWS_EnsureMonsterState ( SpellMonster );
+
+    EnemyTarget = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( TestLocation, 80, 160 ), #Player_1 );
+    if ( $IsValidGamePiece ( EnemyTarget ) == FALSE )
+        return FALSE;
+    $SetAttribute ( EnemyTarget, #ATTRIB_HP, 1 );
+    $spelldamage ( SpellMonster, EnemyTarget, 1, 1 );
+    if ( SpellMonster's "LWS_TotalKills" != 1 )
+        return FALSE;
+
+    // Reach level 2 using only direct spell kills, then leave the priest alive
+    // near the Palace as a visible runtime result.
+    RequiredKills = $LWS_KillsRequired ( SpellMonster's "LWS_ProgressClass", 1 );
+    while ( SpellMonster's "LWS_TotalKills" < RequiredKills ) do
+        begin
+            EnemyTarget = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( SpellMonster, 80, 160 ), #Player_1 );
+            if ( $IsValidGamePiece ( EnemyTarget ) == FALSE )
+                return FALSE;
+            $SetAttribute ( EnemyTarget, #ATTRIB_HP, 1 );
+            $spelldamage ( SpellMonster, EnemyTarget, 1, 1 );
+        end
+    if ( SpellMonster's "LWS_Level" != 2 )
+        return FALSE;
+
+    FriendlyTarget = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( TestLocation, 80, 160 ), #Monster_Player );
+    if ( $IsValidGamePiece ( FriendlyTarget ) == FALSE )
+        return FALSE;
+    $SetAttribute ( FriendlyTarget, #ATTRIB_HP, 1 );
+    $spelldamage ( SpellMonster, FriendlyTarget, 1, 1 );
+    if ( SpellMonster's "LWS_TotalKills" != 1 )
+        return FALSE;
+
+    $DeleteGamePiece ( FriendlyTarget );
+    $DeleteGamePiece ( SpellMonster );
+    return TRUE;
+End
+
+Function LWS_PrepareClassShowcase ( agent Monster, integer ExpectedClass, integer KillCredits ) is boolean
+Declare
+    integer CreditCount, OldMaxHP, OldHP, HPBonus;
+    integer OldHtoH, OldRanged, OldDodge, OldParry, OldStrength, OldMagicResistance;
+Begin
+    if ( $IsValidGamePiece ( Monster ) == FALSE )
+        return FALSE;
+
+    $LWS_EnsureMonsterState ( Monster );
+    if ( Monster's "LWS_ProgressClass" != ExpectedClass )
+        return FALSE;
+
+    OldMaxHP = $GetAttribute ( Monster, #ATTRIB_MaxHP );
+    OldHP = OldMaxHP / 2;
+    $SetAttribute ( Monster, #ATTRIB_HP, OldHP );
+    HPBonus = ( OldMaxHP * 5 ) / 100;
+    if ( HPBonus < 1 ) HPBonus = 1;
+    OldHtoH = $GetAttribute ( Monster, #ATTRIB_HtoH );
+    OldRanged = $GetAttribute ( Monster, #ATTRIB_Ranged );
+    OldDodge = $GetAttribute ( Monster, #ATTRIB_Dodge );
+    OldParry = $GetAttribute ( Monster, #ATTRIB_Parry );
+    OldStrength = $GetAttribute ( Monster, #ATTRIB_Strength );
+    OldMagicResistance = $GetAttribute ( Monster, #ATTRIB_MagicResistance );
+
+    CreditCount = 0;
+    while ( CreditCount < KillCredits ) do
+        begin
+            $LWS_RecordUnitKill ( Monster );
+            CreditCount += 1;
+        end
+
+    if ( Monster's "LWS_Level" != 2 )
+        return FALSE;
+    if ( $GetAttribute ( Monster, #ATTRIB_ExperienceLevel ) != 2 )
+        return FALSE;
+    if ( $GetAttribute ( Monster, #ATTRIB_MaxHP ) != ( OldMaxHP + HPBonus ))
+        return FALSE;
+    if ( $GetAttribute ( Monster, #ATTRIB_HP ) != ( OldHP + HPBonus ))
+        return FALSE;
+    if ( $GetAttribute ( Monster, #ATTRIB_HP ) == $GetAttribute ( Monster, #ATTRIB_MaxHP ))
+        return FALSE;
+    if ( $GetAttribute ( Monster, #ATTRIB_Dodge ) != ( OldDodge + 1 ))
+        return FALSE;
+    if ( $GetAttribute ( Monster, #ATTRIB_Parry ) != ( OldParry + 1 ))
+        return FALSE;
+    if (( Monster's "attacktype" == 1 ) &&
+        ( $GetAttribute ( Monster, #ATTRIB_HtoH ) != ( OldHtoH + 1 )))
+        return FALSE;
+    if (( Monster's "attacktype" == 2 ) &&
+        ( $GetAttribute ( Monster, #ATTRIB_Ranged ) != ( OldRanged + 1 )))
+        return FALSE;
+    if ( $GetAttribute ( Monster, #ATTRIB_Strength ) != OldStrength )
+        return FALSE;
+    if ( $GetAttribute ( Monster, #ATTRIB_MagicResistance ) != OldMagicResistance )
+        return FALSE;
+    return TRUE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_RunCombatDiagnostic ( agent AIRootAgent, agent Palace )
+Declare
+    agent Attacker, EnemyTarget, FriendlyTarget, LairTarget, BuildingTarget, ShowcaseMonster, PerkTester;
+    coordinate TestLocation;
+    integer OriginalStrength;
+    integer OldHtoH, OldStrength, OldArmor, OldParry, OldDodge, OldMagicResistance;
+Begin
+    TestLocation = $RandomCoord ( Palace, 300, 500 );
+    Attacker = $SpawnUnit ( Palace, "Giant_Rat", TestLocation, #Monster_Player );
+    $LWS_EnsureMonsterState ( Attacker );
+    $AddAttribute ( Attacker, "LWS_DiagnosticKills", "integer", 0 );
+    $AddAttribute ( Attacker, "LWS_DiagnosticBuildings", "integer", 0 );
+    $AddAttribute ( Attacker, "LWS_DiagnosticLairsIgnored", "integer", 0 );
+    OriginalStrength = $GetAttribute ( Attacker, #ATTRIB_Strength );
+    $SetAttribute ( Attacker, #ATTRIB_Strength, 1000 );
+
+    // Phase 1: every field exists on this individual monster and initialization is idempotent.
+    if ( Attacker's "LWS_StateVersion" != 1 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( Attacker's "LWS_Level" != 1 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( Attacker's "LWS_KillsThisLevel" != 0 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( Attacker's "LWS_TotalKills" != 0 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( Attacker's "LWS_BuildingsDestroyed" != 0 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( Attacker's "LWS_ProgressClass" != 1 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( Attacker's "LWS_Perks" != 0 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    // Expansion LevelXP classification boundaries.
+    if ( $LWS_ClassFromLevelXP ( 0 ) != 0 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_ClassFromLevelXP ( 250 ) != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_ClassFromLevelXP ( 251 ) != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_ClassFromLevelXP ( 550 ) != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_ClassFromLevelXP ( 551 ) != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_ClassFromLevelXP ( 900 ) != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_ClassFromLevelXP ( 901 ) != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_ClassFromLevelXP ( 2000 ) != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_ClassFromLevelXP ( 2001 ) != 5 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_LootMinimumRarity ( 1 ) != 1 || $LWS_LootMaximumRarity ( 1 ) != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_LootMinimumRarity ( 2 ) != 1 || $LWS_LootMaximumRarity ( 2 ) != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_LootMinimumRarity ( 3 ) != 2 || $LWS_LootMaximumRarity ( 3 ) != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_LootMinimumRarity ( 4 ) != 3 || $LWS_LootMaximumRarity ( 4 ) != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_LootMinimumRarity ( 5 ) != 4 || $LWS_LootMaximumRarity ( 5 ) != 5 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_LootGuaranteesEpic ( 4 ) || $LWS_LootGuaranteesEpic ( 5 ) == FALSE ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_OptionalLootDropSucceeds ( 7 ) == FALSE || $LWS_OptionalLootDropSucceeds ( 8 )) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_EquipmentDropSucceeds ( 4, 8 ) || $LWS_EquipmentDropSucceeds ( 5, 99 ) == FALSE ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_SelectLootRarity ( 1, 99 ) != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_SelectLootRarity ( 2, 74 ) != 1 || $LWS_SelectLootRarity ( 2, 75 ) != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_SelectLootRarity ( 3, 74 ) != 2 || $LWS_SelectLootRarity ( 3, 75 ) != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_SelectLootRarity ( 4, 74 ) != 3 || $LWS_SelectLootRarity ( 4, 75 ) != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_SelectLootRarity ( 5, 0 ) != 5 || $LWS_SelectLootRarity ( 5, 1 ) != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    // Exhaustive family and Legendary catalog mapping without spawning heroes or houses.
+    if ( $LWS_RandomWeaponFamily ( 0 ) != "Staff" || $LWS_RandomWeaponFamily ( 1 ) != "Axeclub" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_RandomWeaponFamily ( 2 ) != "Dagger" || $LWS_RandomWeaponFamily ( 3 ) != "Longsword" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_RandomWeaponFamily ( 4 ) != "Longbow" || $LWS_RandomWeaponFamily ( 5 ) != "Crossbow" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_RandomWeaponFamily ( 6 ) != "Mace" || $LWS_RandomWeaponFamily ( 7 ) != "Chaos" || $LWS_RandomWeaponFamily ( 8 ) != "Hammer" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_RandomArmorFamily ( 0 ) != "Leather" || $LWS_RandomArmorFamily ( 1 ) != "Chain" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_RandomArmorFamily ( 2 ) != "Plate" || $LWS_RandomArmorFamily ( 3 ) != "Chaos" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    // Execute every static catalog family resolver without spawning world items.
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "Staff", 1, 0 ) != "LWSDW_C_Staff_1_0" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "Axeclub", 1, 2 ) != "LWSDW_U_Axeclub_1_2" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "Dagger", 1, 4 ) != "LWSDW_R_Dagger_1_4" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "Longsword", 1, 7 ) != "LWSDW_E_Longsword_1_7" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "Longbow", 2, 0 ) != "LWSDW_C_Longbow_2_0" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "Crossbow", 2, 1 ) != "LWSDW_U_Crossbow_2_1" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "Mace", 2, 3 ) != "LWSDW_R_Mace_2_3" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "Chaos", 2, 6 ) != "LWSDW_E_Chaos_2_6" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "Hammer", 4, 7 ) != "LWSDW_E_Hammer_4_7" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Armor", "Leather", 1, 0 ) != "LWSDA_C_Leather_1_0" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Armor", "Chain", 1, 1 ) != "LWSDA_U_Chain_1_1" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Armor", "Plate", 3, 1 ) != "LWSDA_R_Plate_3_1" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Armor", "Chaos", 4, 3 ) != "LWSDA_E_Chaos_4_3" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_StaticEquipmentDropTitle ( "Weapon", "None", 1, 0 ) != "" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_RandomLegendaryTitle ( 0 ) != "LWS_WandOfImmolation" || $LWS_RandomLegendaryTitle ( 1 ) != "LWS_BeltOfReflection" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_RandomLegendaryTitle ( 2 ) != "LWS_TeevusWand" || $LWS_RandomLegendaryTitle ( 3 ) != "LWS_RuneOfHealing" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_RandomLegendaryTitle ( 4 ) != "LWS_HelmOfDisplacement" || $LWS_RandomLegendaryTitle ( 5 ) != "LWS_StonebacksShield" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    if ( $LWS_KillsRequired ( 1, 1 ) != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_KillsRequired ( 2, 1 ) != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_KillsRequired ( 3, 1 ) != 4 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_KillsRequired ( 4, 1 ) != 12 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_KillsRequired ( 5, 1 ) != 20 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    // Tier/affix arithmetic is deterministic and independent of Blacksmith AI timing.
+    if ( $LWS_WeaponTierBaseBonus ( 1 ) != 0 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_WeaponTierBaseBonus ( 2 ) != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_WeaponTierBaseBonus ( 3 ) != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_WeaponTierBaseBonus ( 4 ) != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_EquipmentRarity ( "Weapon", 1, 0 ) != "Common" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_EquipmentRarity ( "Weapon", 1, 3 ) != "Uncommon" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_EquipmentRarity ( "Armor", 2, 2 ) != "Rare" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_EquipmentRarity ( "Weapon", 4, 4 ) != "Epic" ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_WeaponEffectiveBonus ( 2, 6 ) != 7 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_WeaponEffectiveBonus ( 3, 6 ) != 8 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $LWS_WeaponEffectiveBonus ( 4, 6 ) != 9 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    Attacker's "LWS_TotalKills" = 7;
+    $LWS_EnsureMonsterState ( Attacker );
+    if ( Attacker's "LWS_TotalKills" != 7 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    Attacker's "LWS_TotalKills" = 0;
+
+    EnemyTarget = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( TestLocation, 50 ), #Player_1 );
+    $SetAttribute ( EnemyTarget, #ATTRIB_HP, 1 );
+    $SetAttribute ( EnemyTarget, #ATTRIB_armor_basic_damage, 0 );
+    $damage ( Attacker, EnemyTarget );
+
+    if ( Attacker's "LWS_DiagnosticKills" != 1 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( Attacker's "LWS_TotalKills" != 1 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( Attacker's "LWS_Level" != 2 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $GetAttribute ( Attacker, #ATTRIB_ExperienceLevel ) != 2 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    FriendlyTarget = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( TestLocation, 50 ), #Monster_Player );
+    $SetAttribute ( FriendlyTarget, #ATTRIB_HP, 1 );
+    $SetAttribute ( FriendlyTarget, #ATTRIB_armor_basic_damage, 0 );
+    $damage ( Attacker, FriendlyTarget );
+
+    if ( Attacker's "LWS_DiagnosticKills" != 1 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    LairTarget = $SpawnUnit ( Palace, "Goblin_Hovel", $RandomCoord ( TestLocation, 100 ), "MaxHP", #Player_1 );
+    // Suppress the lair death payload so the controlled attribution check leaves no arena monsters.
+    LairTarget's "Has_Special_Spawn" = TRUE;
+    LairTarget's "Special_Spawn_Type" = "xx";
+    $SetAttribute ( LairTarget, #ATTRIB_HP, 1 );
+    $damage ( Attacker, LairTarget );
+
+    if ( Attacker's "LWS_DiagnosticLairsIgnored" != 1 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    BuildingTarget = $SpawnUnit ( Palace, "Blacksmith1", $RandomCoord ( TestLocation, 100 ), "MaxHP", #Player_1 );
+    $SetAttribute ( BuildingTarget, #ATTRIB_HP, 1 );
+    $damage ( Attacker, BuildingTarget );
+
+    if ( Attacker's "LWS_DiagnosticBuildings" != 1 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( Attacker's "LWS_BuildingsDestroyed" != 1 )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    // Deterministic building reward and cap checks, isolated from the random production roll above.
+    // A unique expansion unit makes the three-perk result easy to inspect in the UI.
+    PerkTester = $SpawnUnit ( Palace, "GoblinOverlord", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
+    if ( $IsValidGamePiece ( PerkTester ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    else
+        begin
+    $LWS_EnsureMonsterState ( PerkTester );
+    OldHtoH = $GetAttribute ( PerkTester, #ATTRIB_HtoH );
+    OldStrength = $GetAttribute ( PerkTester, #ATTRIB_Strength );
+    OldArmor = $GetAttribute ( PerkTester, #ATTRIB_armor_basic_damage );
+    OldParry = $GetAttribute ( PerkTester, #ATTRIB_Parry );
+    OldDodge = $GetAttribute ( PerkTester, #ATTRIB_Dodge );
+    OldMagicResistance = $GetAttribute ( PerkTester, #ATTRIB_MagicResistance );
+
+    $LWS_ProcessBuildingDestroyed ( PerkTester, 99, 0 );
+    if ( PerkTester's "LWS_BuildingsDestroyed" != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( PerkTester's "LWS_Perks" != 0 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    $LWS_ProcessBuildingDestroyed ( PerkTester, 0, 0 );
+    if ( PerkTester's "LWS_Perks" != 1 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $GetAttribute ( PerkTester, #ATTRIB_HtoH ) != ( OldHtoH + 2 )) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $GetAttribute ( PerkTester, #ATTRIB_Strength ) != ( OldStrength + 1 )) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    $LWS_ProcessBuildingDestroyed ( PerkTester, 0, 1 );
+    if ( PerkTester's "LWS_Perks" != 2 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $GetAttribute ( PerkTester, #ATTRIB_armor_basic_damage ) != ( OldArmor + 1 )) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $GetAttribute ( PerkTester, #ATTRIB_Parry ) != ( OldParry + 1 )) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $GetAttribute ( PerkTester, #ATTRIB_Dodge ) != ( OldDodge + 1 )) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    $LWS_ProcessBuildingDestroyed ( PerkTester, 0, 2 );
+    if ( PerkTester's "LWS_Perks" != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $GetAttribute ( PerkTester, #ATTRIB_MagicResistance ) != ( OldMagicResistance + 3 )) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    $LWS_ProcessBuildingDestroyed ( PerkTester, 0, 0 );
+    if ( PerkTester's "LWS_BuildingsDestroyed" != 5 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( PerkTester's "LWS_Perks" != 3 ) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $GetAttribute ( PerkTester, #ATTRIB_HtoH ) != ( OldHtoH + 2 )) AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    $DeleteGamePiece ( PerkTester );
+        end
+
+    // The old peasant/monster showcase is intentionally removed from the visible arena.
+    $SetAttribute ( Attacker, #ATTRIB_Strength, OriginalStrength );
+
+    // Visible progression-class showcase. Each survivor is prepared exactly to level 2.
+    ShowcaseMonster = $SpawnUnit ( Palace, "Giant_Rat", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
+    if ( $LWS_PrepareClassShowcase ( ShowcaseMonster, 1, 1 ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $IsValidGamePiece ( ShowcaseMonster )) $DeleteGamePiece ( ShowcaseMonster );
+
+    ShowcaseMonster = $SpawnUnit ( Palace, "Ratman", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
+    if ( $LWS_PrepareClassShowcase ( ShowcaseMonster, 2, 2 ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $IsValidGamePiece ( ShowcaseMonster )) $DeleteGamePiece ( ShowcaseMonster );
+
+    ShowcaseMonster = $SpawnUnit ( Palace, "Troll", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
+    if ( $LWS_PrepareClassShowcase ( ShowcaseMonster, 3, 4 ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $IsValidGamePiece ( ShowcaseMonster )) $DeleteGamePiece ( ShowcaseMonster );
+
+    ShowcaseMonster = $SpawnUnit ( Palace, "Minotaur", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
+    if ( $LWS_PrepareClassShowcase ( ShowcaseMonster, 4, 12 ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $IsValidGamePiece ( ShowcaseMonster )) $DeleteGamePiece ( ShowcaseMonster );
+
+    ShowcaseMonster = $SpawnUnit ( Palace, "Dragon", $RandomCoord ( Palace, 350, 550 ), #Monster_Player );
+    if ( $LWS_PrepareClassShowcase ( ShowcaseMonster, 5, 20 ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+    if ( $IsValidGamePiece ( ShowcaseMonster )) $DeleteGamePiece ( ShowcaseMonster );
+
+    if ( $LWS_RunLootDiagnostic ( AIRootAgent, Palace, TestLocation ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    if ( $LWS_RunTwoSlotDiagnostic ( Palace, TestLocation ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    if ( $LWS_RunSpellAttributionDiagnostic ( Palace, TestLocation ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    if ( AIRootAgent's "LWS_DiagnosticFailures" == 0 )
+        begin
+            AIRootAgent's "LWS_DiagnosticPassed" = TRUE;
+            // Visible result that does not depend on autonomous hero or monster behavior.
+            $AdjustPlayerData ( Palace, "gold", 7777 );
+            $DebugOut ( 911, "LWS PROGRESSION CLASS DIAGNOSTIC: PASS" );
+        end
+    else
+        begin
+            $AdjustPlayerData ( Palace, "gold", 111 );
+            $DebugOut ( 911, "LWS PROGRESSION CLASS DIAGNOSTIC: FAIL", AIRootAgent's "LWS_DiagnosticFailures" );
+        end
+
+    // Remove only the explicitly tracked diagnostic attacker.
+    if ( $IsValidGamePiece ( Attacker )) $DeleteGamePiece ( Attacker );
+
+    $LWS_EnsurePalacePeasantSpawner ( Palace );
+End

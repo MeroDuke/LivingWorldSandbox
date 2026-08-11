@@ -1,0 +1,602 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LivingWorldSandbox - tiered hero equipment and Blacksmith integration.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Function LWS_WeaponTierBaseBonus ( integer Tier ) is integer
+Declare
+Begin
+    if ( Tier == 4 ) return 3;
+    if ( Tier == 3 ) return 2;
+    if ( Tier == 2 ) return 1;
+    return 0;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_WeaponEffectiveBonus ( integer Tier, integer AffixBonus ) is integer
+Declare
+Begin
+    return $LWS_WeaponTierBaseBonus ( Tier ) + AffixBonus;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_ArmorTierBaseBonus ( integer Tier ) is integer
+Declare
+Begin
+    return $LWS_WeaponTierBaseBonus ( Tier );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_ArmorEffectiveBonus ( integer Tier, integer AffixBonus ) is integer
+Declare
+Begin
+    // Northern Expansion applies Armor_Magic_Bonus at twice its displayed value.
+    return $LWS_ArmorTierBaseBonus ( Tier ) + ( AffixBonus * 2 );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_EquipmentPower ( string EquipmentType, integer Tier, integer AffixBonus ) is integer
+Declare
+Begin
+    if ( EquipmentType == "Armor" ) return $LWS_ArmorEffectiveBonus ( Tier, AffixBonus );
+    return $LWS_WeaponEffectiveBonus ( Tier, AffixBonus );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Legendary is deliberately excluded: it is assigned only by the future unique-item whitelist.
+Function LWS_EquipmentRarity ( string EquipmentType, integer Tier, integer AffixBonus ) is string
+Declare
+    integer Power;
+Begin
+    Power = $LWS_EquipmentPower ( EquipmentType, Tier, AffixBonus );
+    if ( Power <= 1 ) return "Common";
+    if ( Power <= 3 ) return "Uncommon";
+    if ( Power <= 6 ) return "Rare";
+    return "Epic";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_ConfigureEquipmentDrop ( agent Item, string EquipmentType, string EquipmentFamily,
+                                      integer Tier, integer AffixBonus )
+Declare
+Begin
+    if ( $IsValidGamePiece ( Item ) == FALSE ) return;
+    if ( EquipmentType == "Armor" )
+        Item's "TransferScript" = $LWS_EquipArmorTransfer;
+    else
+        Item's "TransferScript" = $LWS_EquipWeaponTransfer;
+    Item's "LWS_EquipmentType" = EquipmentType;
+    Item's "LWS_EquipmentFamily" = EquipmentFamily;
+    $AddAttribute ( Item, "LWS_EquipmentTier", "integer", Tier );
+    $AddAttribute ( Item, "LWS_EquipmentAffixBonus", "integer", AffixBonus );
+    $AddAttribute ( Item, "LWS_EquipmentRarity", "string", $LWS_EquipmentRarity ( EquipmentType, Tier, AffixBonus ));
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_InitializeWeaponDrop ( agent ThisAgent, string EquipmentFamily )
+Declare
+Begin
+    // Classification is required during BirthScript: hero AI can evaluate a newly spawned
+    // Special_Item before the loot generator has supplied its rolled tier and affix.
+    $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipWeaponTransfer );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentType", "string", "Weapon" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", EquipmentFamily );
+End
+
+Function LWS_InitializeArmorDrop ( agent ThisAgent, string EquipmentFamily )
+Declare
+Begin
+    $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipArmorTransfer );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentType", "string", "Armor" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", EquipmentFamily );
+End
+
+Function LWS_StaffDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeWeaponDrop ( ThisAgent, "Staff" ); End
+Function LWS_AxeclubDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeWeaponDrop ( ThisAgent, "Axeclub" ); End
+Function LWS_DaggerDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeWeaponDrop ( ThisAgent, "Dagger" ); End
+Function LWS_LongswordDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeWeaponDrop ( ThisAgent, "Longsword" ); End
+Function LWS_LongbowDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeWeaponDrop ( ThisAgent, "Longbow" ); End
+Function LWS_CrossbowDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeWeaponDrop ( ThisAgent, "Crossbow" ); End
+Function LWS_MaceDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeWeaponDrop ( ThisAgent, "Mace" ); End
+Function LWS_ChaosWeaponDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeWeaponDrop ( ThisAgent, "Chaos" ); End
+Function LWS_HammerDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeWeaponDrop ( ThisAgent, "Hammer" ); End
+Function LWS_LeatherDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeArmorDrop ( ThisAgent, "Leather" ); End
+Function LWS_ChainDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeArmorDrop ( ThisAgent, "Chain" ); End
+Function LWS_PlateDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeArmorDrop ( ThisAgent, "Plate" ); End
+Function LWS_ChaosArmorDrop_Birth ( agent ThisAgent ) Declare Begin $LWS_InitializeArmorDrop ( ThisAgent, "Chaos" ); End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Northern Expansion equipment families, resolved from M_Characters.xml + MX_Characters.xml.
+Function LWS_HeroWeaponFamily ( agent Hero ) is string
+Declare
+    string Title;
+Begin
+    if ( $IsValidGamePiece ( Hero ) == FALSE ) return "None";
+    Title = Hero's "Title";
+    if ( Title == "Adept" || Title == "Priestess" || Title == "Wizard" ) return "Staff";
+    if ( Title == "Barbarian" ) return "Axeclub";
+    if ( Title == "Cultist" || Title == "Healer" || Title == "Gnome" || Title == "Gnomechamp" ) return "Dagger";
+    if ( Title == "Paladin" || Title == "Warrior" ) return "Longsword";
+    if ( Title == "Ranger" || Title == "Elf" ) return "Longbow";
+    if ( Title == "Rogue" ) return "Crossbow";
+    if ( Title == "Solarus" ) return "Mace";
+    if ( Title == "Warrior_of_Discord" ) return "Chaos";
+    if ( Title == "Dwarf" ) return "Hammer";
+    if ( Title == "Monk" ) return "None";
+    return "None";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_HeroArmorFamily ( agent Hero ) is string
+Declare
+    string Title;
+Begin
+    if ( $IsValidGamePiece ( Hero ) == FALSE ) return "None";
+    Title = Hero's "Title";
+    if ( Title == "Adept" || Title == "Cultist" || Title == "Ranger" || Title == "Rogue" || Title == "Gnomechamp" ) return "Leather";
+    if ( Title == "Paladin" || Title == "Warrior" || Title == "Dwarf" ) return "Plate";
+    if ( Title == "Solarus" || Title == "Elf" ) return "Chain";
+    if ( Title == "Warrior_of_Discord" ) return "Chaos";
+    if ( Title == "Barbarian" || Title == "Healer" || Title == "Monk" || Title == "Priestess" || Title == "Wizard" || Title == "Gnome" ) return "None";
+    return "None";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_IsEquipmentCompatible ( agent Hero, agent Item ) is boolean
+Declare
+Begin
+    if ( $HasAttribute ( "LWS_EquipmentType", Item ) == FALSE ) return FALSE;
+    if ( $HasAttribute ( "LWS_EquipmentFamily", Item ) == FALSE ) return FALSE;
+    if ( Item's "LWS_EquipmentType" == "Armor" )
+        return Item's "LWS_EquipmentFamily" == $LWS_HeroArmorFamily ( Hero );
+    if ( Item's "LWS_EquipmentType" == "Weapon" )
+        return Item's "LWS_EquipmentFamily" == $LWS_HeroWeaponFamily ( Hero );
+    return FALSE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_EnsureWeaponEquipmentState ( agent Hero )
+Declare
+Begin
+    if ( $HasAttribute ( "LWS_WeaponBaseDamage", Hero ) == FALSE )
+        $AddAttribute ( Hero, "LWS_WeaponBaseDamage", "integer", $GetAttribute ( Hero, #ATTRIB_Weapon_Basic_Damage ));
+    if ( $HasAttribute ( "LWS_WeaponTier", Hero ) == FALSE )
+        $AddAttribute ( Hero, "LWS_WeaponTier", "integer", 1 );
+    if ( $HasAttribute ( "LWS_WeaponAffixBonus", Hero ) == FALSE )
+        $AddAttribute ( Hero, "LWS_WeaponAffixBonus", "integer", 0 );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_EnsureArmorEquipmentState ( agent Hero )
+Declare
+Begin
+    if ( $HasAttribute ( "LWS_ArmorTier", Hero ) == FALSE )
+        $AddAttribute ( Hero, "LWS_ArmorTier", "integer", 1 );
+    if ( $HasAttribute ( "LWS_ArmorAffixBonus", Hero ) == FALSE )
+        $AddAttribute ( Hero, "LWS_ArmorAffixBonus", "integer", 0 );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_ShouldRetrieveWeapon ( agent Hero, agent Item ) is boolean
+Declare
+    integer ItemTier, ItemAffix, ItemEffective, CurrentEffective;
+Begin
+    if ( $IsValidGamePiece ( Hero ) == FALSE ) return FALSE;
+    if ( $IsValidGamePiece ( Item ) == FALSE ) return FALSE;
+    if ( $GetAttribute ( Hero, #ATTRIB_WeaponTypeIndex ) <= 0 ) return FALSE;
+    if ( $LWS_IsEquipmentCompatible ( Hero, Item ) == FALSE ) return FALSE;
+    if ( $HasAttribute ( "LWS_EquipmentTier", Item ) == FALSE ) return FALSE;
+    if ( $HasAttribute ( "LWS_EquipmentAffixBonus", Item ) == FALSE ) return FALSE;
+
+    ItemTier = Item's "LWS_EquipmentTier";
+    ItemAffix = Item's "LWS_EquipmentAffixBonus";
+    ItemEffective = $LWS_WeaponEffectiveBonus ( ItemTier, ItemAffix );
+    if ( $HasAttribute ( "LWS_WeaponTier", Hero ))
+        CurrentEffective = $LWS_WeaponEffectiveBonus ( Hero's "LWS_WeaponTier", Hero's "LWS_WeaponAffixBonus" );
+    else
+        CurrentEffective = $GetAttribute ( Hero, #ATTRIB_Weapon_Struct_Bonus );
+    if ( ItemEffective > CurrentEffective ) return TRUE;
+    if ( ItemEffective < CurrentEffective ) return FALSE;
+    // Equal power: keep the larger affix because it retains more value after Blacksmith upgrades.
+    if ( $HasAttribute ( "LWS_WeaponTier", Hero ) == FALSE ) return FALSE;
+    if ( ItemAffix > Hero's "LWS_WeaponAffixBonus" ) return TRUE;
+    if ( ItemAffix < Hero's "LWS_WeaponAffixBonus" ) return FALSE;
+    return ItemTier > Hero's "LWS_WeaponTier";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_ShouldRetrieveArmor ( agent Hero, agent Item ) is boolean
+Declare
+    integer ItemTier, ItemAffix, ItemEffective, CurrentEffective;
+Begin
+    if ( $IsValidGamePiece ( Hero ) == FALSE ) return FALSE;
+    if ( $IsValidGamePiece ( Item ) == FALSE ) return FALSE;
+    if ( $GetAttribute ( Hero, #ATTRIB_ArmorTypeIndex ) <= 0 ) return FALSE;
+    if ( $LWS_IsEquipmentCompatible ( Hero, Item ) == FALSE ) return FALSE;
+    if ( $HasAttribute ( "LWS_EquipmentTier", Item ) == FALSE ) return FALSE;
+    if ( $HasAttribute ( "LWS_EquipmentAffixBonus", Item ) == FALSE ) return FALSE;
+
+    ItemTier = Item's "LWS_EquipmentTier";
+    ItemAffix = Item's "LWS_EquipmentAffixBonus";
+    ItemEffective = $LWS_ArmorEffectiveBonus ( ItemTier, ItemAffix );
+    if ( $HasAttribute ( "LWS_ArmorTier", Hero ))
+        CurrentEffective = $LWS_ArmorEffectiveBonus ( Hero's "LWS_ArmorTier", Hero's "LWS_ArmorAffixBonus" );
+    else
+        CurrentEffective = $GetAttribute ( Hero, #ATTRIB_Armor_Struct_Bonus ) + ( $GetAttribute ( Hero, #ATTRIB_Armor_Magic_Bonus ) * 2 );
+    if ( ItemEffective > CurrentEffective ) return TRUE;
+    if ( ItemEffective < CurrentEffective ) return FALSE;
+    if ( $HasAttribute ( "LWS_ArmorTier", Hero ) == FALSE ) return FALSE;
+    if ( ItemAffix > Hero's "LWS_ArmorAffixBonus" ) return TRUE;
+    if ( ItemAffix < Hero's "LWS_ArmorAffixBonus" ) return FALSE;
+    return ItemTier > Hero's "LWS_ArmorTier";
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_ShouldRetrieveEquipment ( agent Hero, agent Item ) is boolean
+Declare
+Begin
+    if ( $HasAttribute ( "LWS_EquipmentType", Item ) == FALSE ) return FALSE;
+    if ( Item's "LWS_EquipmentType" == "Armor" ) return $LWS_ShouldRetrieveArmor ( Hero, Item );
+    return $LWS_ShouldRetrieveWeapon ( Hero, Item );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Returns the first special item this hero can currently use. Inferior equipment remains available
+// on the ground instead of being consumed by the vanilla retrieve-and-transfer sequence.
+Function LWS_SelectDesiredSpecialItem ( agent Hero, list Items ) is agent
+Declare
+    agent Candidate;
+Begin
+    foreach Candidate in Items do
+        begin
+            if ( Candidate's "Title" == "LWS_HealingPotion" )
+                begin
+                    if ( $GetAttribute ( Hero, #ATTRIB_NumHealingPotions ) < #Max_Heal_Potions )
+                        return Candidate;
+                end
+            else if ( $HasAttribute ( "LWS_LegendaryUnique", Candidate ))
+                begin
+                    if ( $LWS_CanReceiveLegendary ( Hero, Candidate ))
+                        return Candidate;
+                end
+            else if ( $HasAttribute ( "LWS_EquipmentType", Candidate ))
+                begin
+                    if ( $LWS_ShouldRetrieveEquipment ( Hero, Candidate ))
+                        return Candidate;
+                end
+            else
+                return Candidate;
+        end
+
+    return $NullAgent ();
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_EquipArmorTransfer ( agent OldOwnerAgent, agent NewOwnerAgent, integer AttributeID )
+Declare
+    integer ItemTier, ItemAffix, ItemEffective;
+Begin
+    if ( $IsValidGamePiece ( NewOwnerAgent ) == FALSE ) return;
+
+    if ( $LWS_ShouldRetrieveArmor ( NewOwnerAgent, OldOwnerAgent ))
+        begin
+            ItemTier = OldOwnerAgent's "LWS_EquipmentTier";
+            ItemAffix = OldOwnerAgent's "LWS_EquipmentAffixBonus";
+            ItemEffective = $LWS_ArmorEffectiveBonus ( ItemTier, ItemAffix );
+
+            $LWS_EnsureArmorEquipmentState ( NewOwnerAgent );
+            NewOwnerAgent's "LWS_ArmorTier" = ItemTier;
+            NewOwnerAgent's "LWS_ArmorAffixBonus" = ItemAffix;
+            $SetAttribute ( NewOwnerAgent, #ATTRIB_Armor_Struct_Bonus, $LWS_ArmorTierBaseBonus ( ItemTier ));
+            // Northern Expansion treasure armor stores its persistent enchantment here.
+            // Armor_Basic_Damage is engine-managed and can be recalculated after pickup.
+            $SetAttribute ( NewOwnerAgent, #ATTRIB_Armor_Magic_Bonus, ItemAffix );
+            $CreateEffector ( NewOwnerAgent, "got_armor", 0 );
+            $DebugOut ( 911, "LWS EQUIPPED ARMOR", NewOwnerAgent, "TIER", ItemTier, "AFFIX", ItemAffix, "EFFECTIVE", ItemEffective );
+        end
+
+    $DeleteInventoryItem ( AttributeID, NewOwnerAgent );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_EquipWeaponTransfer ( agent OldOwnerAgent, agent NewOwnerAgent, integer AttributeID )
+Declare
+    integer ItemTier, ItemAffix, ItemEffective;
+Begin
+    if ( $IsValidGamePiece ( NewOwnerAgent ) == FALSE ) return;
+
+    if ( $LWS_ShouldRetrieveWeapon ( NewOwnerAgent, OldOwnerAgent ))
+        begin
+            ItemTier = OldOwnerAgent's "LWS_EquipmentTier";
+            ItemAffix = OldOwnerAgent's "LWS_EquipmentAffixBonus";
+            ItemEffective = $LWS_WeaponEffectiveBonus ( ItemTier, ItemAffix );
+
+            $LWS_EnsureWeaponEquipmentState ( NewOwnerAgent );
+            NewOwnerAgent's "LWS_WeaponTier" = ItemTier;
+            NewOwnerAgent's "LWS_WeaponAffixBonus" = ItemAffix;
+            // Keep the native quality field pure so the UI name reflects only the tier.
+            $SetAttribute ( NewOwnerAgent, #ATTRIB_Weapon_Struct_Bonus, $LWS_WeaponTierBaseBonus ( ItemTier ));
+            // The affix augments native base damage and is therefore visible and combat-effective.
+            $SetAttribute ( NewOwnerAgent, #ATTRIB_Weapon_Basic_Damage, NewOwnerAgent's "LWS_WeaponBaseDamage" + ItemAffix );
+            $CreateEffector ( NewOwnerAgent, "got_weapon", 0 );
+            $DebugOut ( 911, "LWS EQUIPPED WEAPON", NewOwnerAgent, "TIER", ItemTier, "AFFIX", ItemAffix, "EFFECTIVE", ItemEffective );
+        end
+
+    // The ground item is only a carrier for the equipped weapon state.
+    $DeleteInventoryItem ( AttributeID, NewOwnerAgent );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_T2LongswordPlus5_Birth ( agent ThisAgent )
+Declare
+Begin
+    $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipWeaponTransfer );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentType", "string", "Weapon" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", "Longsword" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 2 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 5 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentRarity", "string", $LWS_EquipmentRarity ( "Weapon", 2, 5 ));
+End
+
+Function LWS_T2LongswordPlus6_Birth ( agent ThisAgent )
+Declare
+Begin
+    $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipWeaponTransfer );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentType", "string", "Weapon" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", "Longsword" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 2 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 6 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentRarity", "string", $LWS_EquipmentRarity ( "Weapon", 2, 6 ));
+End
+
+Function LWS_T2LongswordPlus7_Birth ( agent ThisAgent )
+Declare
+Begin
+    $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipWeaponTransfer );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentType", "string", "Weapon" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", "Longsword" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 2 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 7 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentRarity", "string", $LWS_EquipmentRarity ( "Weapon", 2, 7 ));
+End
+
+Function LWS_T3LongswordPlus1_Birth ( agent ThisAgent )
+Declare
+Begin
+    $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipWeaponTransfer );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentType", "string", "Weapon" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", "Longsword" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 3 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 1 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentRarity", "string", $LWS_EquipmentRarity ( "Weapon", 3, 1 ));
+End
+
+Function LWS_T2ArmorPlus6_Birth ( agent ThisAgent )
+Declare
+Begin
+    $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipArmorTransfer );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentType", "string", "Armor" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", "Plate" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 2 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 6 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentRarity", "string", $LWS_EquipmentRarity ( "Armor", 2, 6 ));
+End
+
+Function LWS_T3ArmorPlus1_Birth ( agent ThisAgent )
+Declare
+Begin
+    $AddAttribute ( ThisAgent, "TransferScript", "function", $LWS_EquipArmorTransfer );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentType", "string", "Armor" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentFamily", "string", "Plate" );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentTier", "integer", 3 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentAffixBonus", "integer", 1 );
+    $AddAttribute ( ThisAgent, "LWS_EquipmentRarity", "string", $LWS_EquipmentRarity ( "Armor", 3, 1 ));
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Overrides the Northern Expansion Blacksmith decision. Vanilla equipment remains unchanged;
+// only heroes carrying LWS tier metadata use the tier-aware branch.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function BlackSmith_Check ( agent ThisAgent, string Equipment, integer Bonus, list Blacksmiths ) is boolean
+Declare
+    list Potentials;
+    integer Gold_Needed, Tier;
+Begin
+    if ( Equipment == "Armor" && $HasAttribute ( "LWS_ArmorTier", ThisAgent ))
+        begin
+            Tier = ThisAgent's "LWS_ArmorTier";
+            if ( Tier >= 4 ) return FALSE;
+
+            ThisAgent's "Task_Number" = #ATTRIB_Armor_Struct_Bonus;
+            if ( Tier == 1 )
+                begin
+                    Gold_Needed = #Cost_Per_Struct_Upgrade1 * #armor_multiplier;
+                    Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchArmorLevel_2 );
+                end
+            else if ( Tier == 2 )
+                begin
+                    Gold_Needed = #Cost_Per_Struct_Upgrade2 * #armor_multiplier;
+                    Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchArmorLevel_3 );
+                end
+            else
+                begin
+                    Gold_Needed = #Cost_Per_Struct_Upgrade3 * #armor_multiplier;
+                    Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchArmorLevel_4 );
+                end
+
+            if ( $Total_Gold ( ThisAgent ) < Gold_Needed ) return FALSE;
+            if ( $ListSize ( Potentials ) == 0 ) return FALSE;
+            ThisAgent's "Target" = $Loyalty_Mod_Pick_Closest ( ThisAgent, Potentials );
+            ThisAgent's "TaskName" = "visiting";
+            return TRUE;
+        end
+
+    if ( Equipment == "Weapon" && $HasAttribute ( "LWS_WeaponTier", ThisAgent ))
+        begin
+            Tier = ThisAgent's "LWS_WeaponTier";
+            if ( Tier >= 4 ) return FALSE;
+
+            ThisAgent's "Task_Number" = #ATTRIB_Weapon_Struct_Bonus;
+            if ( Tier == 1 )
+                begin
+                    Gold_Needed = #Cost_Per_Struct_Upgrade1;
+                    Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchWeaponLevel_2 );
+                end
+            else if ( Tier == 2 )
+                begin
+                    Gold_Needed = #Cost_Per_Struct_Upgrade2;
+                    Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchWeaponLevel_3 );
+                end
+            else
+                begin
+                    Gold_Needed = #Cost_Per_Struct_Upgrade3;
+                    Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchWeaponLevel_4 );
+                end
+
+            if ( $Total_Gold ( ThisAgent ) < Gold_Needed ) return FALSE;
+            if ( $ListSize ( Potentials ) == 0 ) return FALSE;
+
+            ThisAgent's "Target" = $Loyalty_Mod_Pick_Closest ( ThisAgent, Potentials );
+            ThisAgent's "TaskName" = "visiting";
+            return TRUE;
+        end
+
+    // Original Northern Expansion structural-upgrade behavior for untagged equipment.
+    if ( Bonus >= 3 ) return FALSE;
+    if ( Bonus == 0 ) Gold_Needed = #Cost_Per_Struct_Upgrade1;
+    if ( Bonus == 1 ) Gold_Needed = #Cost_Per_Struct_Upgrade2;
+    if ( Bonus == 2 ) Gold_Needed = #Cost_Per_Struct_Upgrade3;
+    if ( Equipment == "Armor" ) Gold_Needed = Gold_Needed * #armor_multiplier;
+    if ( $Total_Gold ( ThisAgent ) < Gold_Needed ) return FALSE;
+    if ( $ListSize ( Blacksmiths ) == 0 ) return FALSE;
+
+    if ( Equipment == "Armor" )
+        begin
+            ThisAgent's "Task_Number" = #ATTRIB_Armor_Struct_Bonus;
+            if ( Bonus == 0 ) Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchArmorLevel_2 );
+            else if ( Bonus == 1 ) Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchArmorLevel_3 );
+            else Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchArmorLevel_4 );
+        end
+    else
+        begin
+            ThisAgent's "Task_Number" = #ATTRIB_Weapon_Struct_Bonus;
+            if ( Bonus == 0 ) Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchWeaponLevel_2 );
+            else if ( Bonus == 1 ) Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchWeaponLevel_3 );
+            else Potentials = $List_Attribs ( Blacksmiths, #ATTRIB_ResearchWeaponLevel_4 );
+        end
+
+    if ( $ListSize ( Potentials ) == 0 ) return FALSE;
+    ThisAgent's "Target" = $Loyalty_Mod_Pick_Closest ( ThisAgent, Potentials );
+    ThisAgent's "TaskName" = "visiting";
+    return TRUE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Overrides the Northern Expansion Blacksmith transaction. LWS weapons improve one tier per visit
+// and preserve their drop affix; the vanilla path below is unchanged in behavior.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function Obtain_Upgrade ( agent ThisAgent )
+Declare
+    agent ThisBuilding;
+    integer What_To_Upgrade, Total_Gold, Gold, Upgrade, Mult, Tier, AffixBonus;
+Begin
+    ThisBuilding = ThisAgent's "Target";
+    Total_Gold = $Total_Gold ( ThisAgent );
+    What_To_Upgrade = ThisAgent's "Task_Number";
+    $SetThreadInterval ( ThisAgent's "ActiveScript", #Normal_Cycle );
+
+    if ( What_To_Upgrade == #ATTRIB_Weapon_Struct_Bonus && $HasAttribute ( "LWS_WeaponTier", ThisAgent ))
+        begin
+            Tier = ThisAgent's "LWS_WeaponTier";
+            AffixBonus = ThisAgent's "LWS_WeaponAffixBonus";
+
+            if ( Tier == 1 && Total_Gold >= #Cost_Per_Struct_Upgrade1 && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchWeaponLevel_2 ) != 0 )
+                begin
+                    Gold = #Cost_Per_Struct_Upgrade1;
+                    Tier = 2;
+                end
+            else if ( Tier == 2 && Total_Gold >= #Cost_Per_Struct_Upgrade2 && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchWeaponLevel_3 ) != 0 )
+                begin
+                    Gold = #Cost_Per_Struct_Upgrade2;
+                    Tier = 3;
+                end
+            else if ( Tier == 3 && Total_Gold >= #Cost_Per_Struct_Upgrade3 && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchWeaponLevel_4 ) != 0 )
+                begin
+                    Gold = #Cost_Per_Struct_Upgrade3;
+                    Tier = 4;
+                end
+
+            if ( Gold > 0 )
+                begin
+                    $Spend_Gold ( ThisAgent, ThisBuilding, Gold );
+                    ThisAgent's "LWS_WeaponTier" = Tier;
+                    $SetAttribute ( ThisAgent, #ATTRIB_Weapon_Struct_Bonus, $LWS_WeaponTierBaseBonus ( Tier ));
+                    $SetAttribute ( ThisAgent, #ATTRIB_Weapon_Basic_Damage, ThisAgent's "LWS_WeaponBaseDamage" + AffixBonus );
+                    $DebugOut ( 911, "LWS BLACKSMITH WEAPON UPGRADE", ThisAgent, "TIER", Tier, "AFFIX", AffixBonus );
+                end
+
+            ThisAgent's "ActiveScript" = $Done_Enhancing_Equipment;
+            return;
+        end
+
+    if ( What_To_Upgrade == #ATTRIB_Armor_Struct_Bonus && $HasAttribute ( "LWS_ArmorTier", ThisAgent ))
+        begin
+            Tier = ThisAgent's "LWS_ArmorTier";
+            AffixBonus = ThisAgent's "LWS_ArmorAffixBonus";
+            Mult = #armor_multiplier;
+
+            if ( Tier == 1 && Total_Gold >= #Cost_Per_Struct_Upgrade1 * Mult && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchArmorLevel_2 ) != 0 )
+                begin
+                    Gold = #Cost_Per_Struct_Upgrade1 * Mult;
+                    Tier = 2;
+                end
+            else if ( Tier == 2 && Total_Gold >= #Cost_Per_Struct_Upgrade2 * Mult && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchArmorLevel_3 ) != 0 )
+                begin
+                    Gold = #Cost_Per_Struct_Upgrade2 * Mult;
+                    Tier = 3;
+                end
+            else if ( Tier == 3 && Total_Gold >= #Cost_Per_Struct_Upgrade3 * Mult && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchArmorLevel_4 ) != 0 )
+                begin
+                    Gold = #Cost_Per_Struct_Upgrade3 * Mult;
+                    Tier = 4;
+                end
+
+            if ( Gold > 0 )
+                begin
+                    $Spend_Gold ( ThisAgent, ThisBuilding, Gold );
+                    ThisAgent's "LWS_ArmorTier" = Tier;
+                    $SetAttribute ( ThisAgent, #ATTRIB_Armor_Struct_Bonus, $LWS_ArmorTierBaseBonus ( Tier ));
+                    $SetAttribute ( ThisAgent, #ATTRIB_Armor_Magic_Bonus, AffixBonus );
+                    $DebugOut ( 911, "LWS BLACKSMITH ARMOR UPGRADE", ThisAgent, "TIER", Tier, "AFFIX", AffixBonus );
+                end
+
+            ThisAgent's "ActiveScript" = $Done_Enhancing_Equipment;
+            return;
+        end
+
+    Mult = #armor_multiplier;
+    if ( What_To_Upgrade == #ATTRIB_Armor_Struct_Bonus )
+        begin
+            if ( $GetAttribute ( ThisAgent, What_To_Upgrade ) == 0 && Total_Gold >= #Cost_Per_Struct_Upgrade1 * Mult && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchArmorLevel_2 ) != 0 )
+                begin Total_Gold -= #Cost_Per_Struct_Upgrade1 * Mult; Gold += #Cost_Per_Struct_Upgrade1 * Mult; Upgrade = 1; end
+            if ( $GetAttribute ( ThisAgent, What_To_Upgrade ) <= 1 && Total_Gold >= #Cost_Per_Struct_Upgrade2 * Mult && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchArmorLevel_3 ) != 0 )
+                begin Total_Gold -= #Cost_Per_Struct_Upgrade2 * Mult; Gold += #Cost_Per_Struct_Upgrade2 * Mult; Upgrade = 2; end
+            if ( $GetAttribute ( ThisAgent, What_To_Upgrade ) <= 2 && Total_Gold >= #Cost_Per_Struct_Upgrade3 * Mult && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchArmorLevel_4 ) != 0 )
+                begin Gold += #Cost_Per_Struct_Upgrade3 * Mult; Upgrade = 3; end
+        end
+    else
+        begin
+            if ( $GetAttribute ( ThisAgent, What_To_Upgrade ) == 0 && Total_Gold >= #Cost_Per_Struct_Upgrade1 && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchWeaponLevel_2 ) != 0 )
+                begin Total_Gold -= #Cost_Per_Struct_Upgrade1; Gold += #Cost_Per_Struct_Upgrade1; Upgrade = 1; end
+            if ( $GetAttribute ( ThisAgent, What_To_Upgrade ) <= 1 && Total_Gold >= #Cost_Per_Struct_Upgrade2 && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchWeaponLevel_3 ) != 0 )
+                begin Total_Gold -= #Cost_Per_Struct_Upgrade2; Gold += #Cost_Per_Struct_Upgrade2; Upgrade = 2; end
+            if ( $GetAttribute ( ThisAgent, What_To_Upgrade ) <= 2 && Total_Gold >= #Cost_Per_Struct_Upgrade3 && $GetAttribute ( ThisBuilding, #ATTRIB_ResearchWeaponLevel_4 ) != 0 )
+                begin Gold += #Cost_Per_Struct_Upgrade3; Upgrade = 3; end
+        end
+
+    if ( Upgrade > 0 )
+        begin
+            $Spend_Gold ( ThisAgent, ThisBuilding, Gold );
+            $SetAttribute ( ThisAgent, What_To_Upgrade, Upgrade );
+        end
+    ThisAgent's "ActiveScript" = $Done_Enhancing_Equipment;
+End

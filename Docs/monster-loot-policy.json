@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "rarityCodes": {
+    "None": 0,
+    "Common": 1,
+    "Uncommon": 2,
+    "Rare": 3,
+    "Epic": 4,
+    "Legendary": 5
+  },
+  "worldDropLimitPerMonster": 2,
+  "slotItemTypes": [
+    "HealingPotion",
+    "Weapon",
+    "Armor",
+    "FutureConsumable",
+    "FutureSpecialItem",
+    "LegendaryUnique"
+  ],
+  "progressClasses": [
+    { "class": 0, "name": "Special", "minRarity": "None", "maxRarity": "None", "guaranteedEpic": false },
+    { "class": 1, "name": "Starter", "minRarity": "Common", "maxRarity": "Common", "guaranteedEpic": false },
+    { "class": 2, "name": "Low", "minRarity": "Common", "maxRarity": "Uncommon", "guaranteedEpic": false },
+    { "class": 3, "name": "Medium", "minRarity": "Uncommon", "maxRarity": "Rare", "guaranteedEpic": false },
+    { "class": 4, "name": "High", "minRarity": "Rare", "maxRarity": "Epic", "guaranteedEpic": false },
+    { "class": 5, "name": "Brutal", "minRarity": "Epic", "maxRarity": "Legendary", "guaranteedEpic": true }
+  ],
+  "legendary": {
+    "requiresProgressClass": 5,
+    "requiresExplicitSourceWhitelist": true,
+    "sourceAttribute": "LWS_LegendaryLootSource"
+  },
+  "monsterLevelCanChangeRarityCeiling": false,
+  "dropChancesDefined": true,
+  "dropChances": {
+    "HealingPotion": 8,
+    "Weapon": 8,
+    "Armor": 8
+  },
+  "rarityDistributionOnSuccessfulEquipmentDrop": {
+    "class1": { "Common": 100 },
+    "class2": { "Common": 75, "Uncommon": 25 },
+    "class3": { "Uncommon": 75, "Rare": 25 },
+    "class4": { "Rare": 75, "Epic": 25 },
+    "class5": { "Epic": 99, "Legendary": 1 }
+  },
+  "class5GuaranteedEquipmentCandidate": true,
+  "legendaryReplacesGuaranteedEpic": true
+}

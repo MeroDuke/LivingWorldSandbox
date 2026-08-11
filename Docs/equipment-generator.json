@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "weaponFamilies": ["Staff", "Axeclub", "Dagger", "Longsword", "Longbow", "Crossbow", "Mace", "Chaos", "Hammer"],
+  "armorFamilies": ["Leather", "Chain", "Plate", "Chaos"],
+  "staticCatalog": {
+    "weaponPrefix": "LWSDW_",
+    "armorPrefix": "LWSDA_",
+    "weaponEntries": 342,
+    "armorEntries": 80,
+    "totalEntries": 422,
+    "resolver": "LWS_StaticEquipmentDropTitle",
+    "runtimeConstructedPrototypeIds": false
+  },
+  "tierRange": { "minimum": 1, "maximum": 4 },
+  "powerBands": {
+    "Common": { "minimum": 0, "maximum": 1 },
+    "Uncommon": { "minimum": 2, "maximum": 3 },
+    "Rare": { "minimum": 4, "maximum": 6 },
+    "Epic": { "minimum": 7, "maximum": 10 }
+  },
+  "legendaryUsesGenericCarrier": false,
+  "legendaryCatalogPending": false
+}

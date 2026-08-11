@@ -1,0 +1,284 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LivingWorldSandbox - locked exploration-chest recipes and opener-compatible rewards.
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Function LWS_ChestRarity ( integer ChestClass, integer RarityRoll ) is integer
+Declare
+Begin
+    return $LWS_SelectLootRarity ( ChestClass, RarityRoll );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_AddLockedChestEquipment ( agent Chest, integer Slot, string EquipmentType,
+                                       integer Rarity, integer TierRoll, integer PowerRoll )
+Declare
+    integer Tier, AffixBonus;
+Begin
+    Tier = $LWS_GeneratedEquipmentTier ( Rarity, TierRoll );
+    AffixBonus = $LWS_GeneratedEquipmentAffix ( EquipmentType, Rarity, Tier, PowerRoll );
+
+    if ( Slot == 1 )
+        begin
+            $AddAttribute ( Chest, "LWS_ChestSlot1Type", "string", EquipmentType );
+            $AddAttribute ( Chest, "LWS_ChestSlot1Rarity", "integer", Rarity );
+            $AddAttribute ( Chest, "LWS_ChestSlot1Tier", "integer", Tier );
+            $AddAttribute ( Chest, "LWS_ChestSlot1Affix", "integer", AffixBonus );
+        end
+    else
+        begin
+            $AddAttribute ( Chest, "LWS_ChestSlot2Type", "string", EquipmentType );
+            $AddAttribute ( Chest, "LWS_ChestSlot2Rarity", "integer", Rarity );
+            $AddAttribute ( Chest, "LWS_ChestSlot2Tier", "integer", Tier );
+            $AddAttribute ( Chest, "LWS_ChestSlot2Affix", "integer", AffixBonus );
+        end
+End
+
+Function LWS_AddLockedChestSimpleReward ( agent Chest, integer Slot, string RewardType, integer Value )
+Declare
+Begin
+    if ( Slot == 1 )
+        begin
+            $AddAttribute ( Chest, "LWS_ChestSlot1Type", "string", RewardType );
+            if ( RewardType == "Gold" ) $AddAttribute ( Chest, "LWS_ChestSlot1Gold", "integer", Value );
+            if ( RewardType == "Legendary" ) $AddAttribute ( Chest, "LWS_ChestSlot1Legendary", "string", $LWS_RandomLegendaryTitle ( Value ));
+        end
+    else
+        begin
+            $AddAttribute ( Chest, "LWS_ChestSlot2Type", "string", RewardType );
+            if ( RewardType == "Gold" ) $AddAttribute ( Chest, "LWS_ChestSlot2Gold", "integer", Value );
+            if ( RewardType == "Legendary" ) $AddAttribute ( Chest, "LWS_ChestSlot2Legendary", "string", $LWS_RandomLegendaryTitle ( Value ));
+        end
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_ConfigureExplorationChest ( agent Chest, integer ChestClass,
+                                         integer RewardCount, integer Slot1Roll, integer Slot2Roll,
+                                         integer RarityRoll1, integer RarityRoll2,
+                                         integer TierRoll1, integer TierRoll2,
+                                         integer PowerRoll1, integer PowerRoll2 )
+Declare
+    integer Rarity;
+    string EquipmentType;
+Begin
+    if ( $IsValidGamePiece ( Chest ) == FALSE ) return;
+    if ( ChestClass < 1 ) ChestClass = 1;
+    if ( ChestClass > 5 ) ChestClass = 5;
+    if ( RewardCount < 1 ) RewardCount = 1;
+    if ( RewardCount > 2 ) RewardCount = 2;
+
+    $AddAttribute ( Chest, "LWS_ExplorationChest", "boolean", TRUE );
+    $AddAttribute ( Chest, "LWS_ChestClass", "integer", ChestClass );
+    $AddAttribute ( Chest, "LWS_ChestRewardCount", "integer", RewardCount );
+    $SetAttribute ( Chest, #ATTRIB_Gold, 0 );
+
+    // 0=weapon, 1=armor, 2=potion, 3=gold. All strength rolls are locked now.
+    if (( Slot1Roll % 4 ) == 0 || ( Slot1Roll % 4 ) == 1 )
+        begin
+            if (( Slot1Roll % 4 ) == 0 ) EquipmentType = "Weapon";
+            else EquipmentType = "Armor";
+            Rarity = $LWS_ChestRarity ( ChestClass, RarityRoll1 );
+            if ( Rarity == 5 ) Rarity = 4;
+            $LWS_AddLockedChestEquipment ( Chest, 1, EquipmentType, Rarity, TierRoll1, PowerRoll1 );
+        end
+    else if (( Slot1Roll % 4 ) == 2 )
+        $LWS_AddLockedChestSimpleReward ( Chest, 1, "Potion", 0 );
+    else
+        begin
+            $LWS_AddLockedChestSimpleReward ( Chest, 1, "Gold", 25 + ( ChestClass * 25 ) + ( PowerRoll1 % 50 ));
+        end
+
+    if ( RewardCount < 2 ) return;
+    if (( Slot2Roll % 4 ) == 0 || ( Slot2Roll % 4 ) == 1 )
+        begin
+            if (( Slot2Roll % 4 ) == 0 ) EquipmentType = "Weapon";
+            else EquipmentType = "Armor";
+            Rarity = $LWS_ChestRarity ( ChestClass, RarityRoll2 );
+            if ( Rarity == 5 ) Rarity = 4;
+            $LWS_AddLockedChestEquipment ( Chest, 2, EquipmentType, Rarity, TierRoll2, PowerRoll2 );
+        end
+    else if (( Slot2Roll % 4 ) == 2 )
+        $LWS_AddLockedChestSimpleReward ( Chest, 2, "Potion", 0 );
+    else
+        begin
+            $LWS_AddLockedChestSimpleReward ( Chest, 2, "Gold", 25 + ( ChestClass * 25 ) + ( PowerRoll2 % 50 ));
+        end
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_TryGrantHealingPotion ( agent Hero ) is boolean
+Declare
+Begin
+    if ( $GetAttribute ( Hero, #ATTRIB_NumHealingPotions ) >= #Max_Heal_Potions ) return FALSE;
+    $AdjustAttribute ( Hero, #ATTRIB_NumHealingPotions, 1 );
+    return TRUE;
+End
+
+Function LWS_GrantDefaultChestFallback ( agent Hero )
+Declare
+Begin
+    if ( $LWS_TryGrantHealingPotion ( Hero )) return;
+    // Match the Northern Expansion Treasure_Chest_Birth default: 50-149 gold.
+    $Give_Gold ( Hero, #chest_starting_gold + $RandomNumber ( #chest_random_gold ));
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_ApplyLockedWeaponReward ( agent Hero, integer Tier, integer AffixBonus ) is boolean
+Declare
+    integer CurrentPower, NewPower;
+Begin
+    if ( $LWS_HeroWeaponFamily ( Hero ) == "None" ) return FALSE;
+    $LWS_EnsureWeaponEquipmentState ( Hero );
+    CurrentPower = $LWS_WeaponEffectiveBonus ( Hero's "LWS_WeaponTier", Hero's "LWS_WeaponAffixBonus" );
+    NewPower = $LWS_WeaponEffectiveBonus ( Tier, AffixBonus );
+    if ( NewPower < CurrentPower ) return FALSE;
+    if ( NewPower == CurrentPower && AffixBonus <= Hero's "LWS_WeaponAffixBonus" ) return FALSE;
+    Hero's "LWS_WeaponTier" = Tier;
+    Hero's "LWS_WeaponAffixBonus" = AffixBonus;
+    $SetAttribute ( Hero, #ATTRIB_Weapon_Struct_Bonus, $LWS_WeaponTierBaseBonus ( Tier ));
+    $SetAttribute ( Hero, #ATTRIB_Weapon_Basic_Damage, Hero's "LWS_WeaponBaseDamage" + AffixBonus );
+    $CreateEffector ( Hero, "got_weapon", 0 );
+    return TRUE;
+End
+
+Function LWS_ApplyLockedArmorReward ( agent Hero, integer Tier, integer AffixBonus ) is boolean
+Declare
+    integer CurrentPower, NewPower;
+Begin
+    if ( $LWS_HeroArmorFamily ( Hero ) == "None" ) return FALSE;
+    $LWS_EnsureArmorEquipmentState ( Hero );
+    CurrentPower = $LWS_ArmorEffectiveBonus ( Hero's "LWS_ArmorTier", Hero's "LWS_ArmorAffixBonus" );
+    NewPower = $LWS_ArmorEffectiveBonus ( Tier, AffixBonus );
+    if ( NewPower < CurrentPower ) return FALSE;
+    if ( NewPower == CurrentPower && AffixBonus <= Hero's "LWS_ArmorAffixBonus" ) return FALSE;
+    Hero's "LWS_ArmorTier" = Tier;
+    Hero's "LWS_ArmorAffixBonus" = AffixBonus;
+    $SetAttribute ( Hero, #ATTRIB_Armor_Struct_Bonus, $LWS_ArmorTierBaseBonus ( Tier ));
+    $SetAttribute ( Hero, #ATTRIB_Armor_Magic_Bonus, AffixBonus );
+    $CreateEffector ( Hero, "got_armor", 0 );
+    return TRUE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_GrantChestSlot ( agent Hero, agent Chest, integer Slot )
+Declare
+    string RewardType, LegendaryTitle, LegendaryMarker;
+    integer Tier, AffixBonus, Gold;
+Begin
+    if ( Slot == 1 )
+        begin
+            RewardType = Chest's "LWS_ChestSlot1Type";
+            if ( RewardType == "Weapon" || RewardType == "Armor" )
+                begin Tier = Chest's "LWS_ChestSlot1Tier"; AffixBonus = Chest's "LWS_ChestSlot1Affix"; end
+            if ( RewardType == "Gold" ) Gold = Chest's "LWS_ChestSlot1Gold";
+            if ( RewardType == "Legendary" ) LegendaryTitle = Chest's "LWS_ChestSlot1Legendary";
+        end
+    else
+        begin
+            RewardType = Chest's "LWS_ChestSlot2Type";
+            if ( RewardType == "Weapon" || RewardType == "Armor" )
+                begin Tier = Chest's "LWS_ChestSlot2Tier"; AffixBonus = Chest's "LWS_ChestSlot2Affix"; end
+            if ( RewardType == "Gold" ) Gold = Chest's "LWS_ChestSlot2Gold";
+            if ( RewardType == "Legendary" ) LegendaryTitle = Chest's "LWS_ChestSlot2Legendary";
+        end
+
+    if ( RewardType == "Weapon" )
+        begin
+            if ( $LWS_ApplyLockedWeaponReward ( Hero, Tier, AffixBonus ) == FALSE )
+                $LWS_GrantDefaultChestFallback ( Hero );
+        end
+    else if ( RewardType == "Armor" )
+        begin
+            if ( $LWS_ApplyLockedArmorReward ( Hero, Tier, AffixBonus ) == FALSE )
+                $LWS_GrantDefaultChestFallback ( Hero );
+        end
+    else if ( RewardType == "Potion" )
+        begin
+            if ( $LWS_TryGrantHealingPotion ( Hero ) == FALSE )
+                $Give_Gold ( Hero, #chest_starting_gold + $RandomNumber ( #chest_random_gold ));
+        end
+    else if ( RewardType == "Gold" ) $Give_Gold ( Hero, Gold );
+    else if ( RewardType == "Legendary" )
+        begin
+            LegendaryMarker = $LWS_LegendaryMarker ( LegendaryTitle );
+            if ( LegendaryMarker == "" || $HasAttribute ( LegendaryMarker, Hero ))
+                $LWS_GrantDefaultChestFallback ( Hero );
+            else
+                $LWS_GrantLegendaryTitle ( Hero, LegendaryTitle );
+        end
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_CreateLockedMonsterChest ( agent Defender, integer ProgressClass,
+                                        boolean PotionCandidate, boolean WeaponCandidate,
+                                        boolean ArmorCandidate, integer OmitCandidate ) is boolean
+Declare
+    agent Chest, AIRootAgent;
+    integer Slot, Rarity;
+Begin
+    Chest = $SpawnUnit ( Defender, "Treasure_Chest1", "Override", "MaxHP" );
+    if ( $IsValidGamePiece ( Chest ) == FALSE ) return FALSE;
+    $AddAttribute ( Chest, "LWS_ExplorationChest", "boolean", TRUE );
+    $AddAttribute ( Chest, "LWS_ChestClass", "integer", ProgressClass );
+    $SetAttribute ( Chest, #ATTRIB_Gold, 0 );
+    Slot = 0;
+
+    if ( PotionCandidate && OmitCandidate != 0 )
+        begin Slot += 1; $LWS_AddLockedChestSimpleReward ( Chest, Slot, "Potion", 0 ); end
+    if ( WeaponCandidate && OmitCandidate != 1 && Slot < 2 )
+        begin
+            Slot += 1;
+            Rarity = $LWS_SelectLootRarity ( ProgressClass, $RandomNumber ( 100 ));
+            if ( Rarity == 5 && $LWS_IsLegendaryLootSource ( Defender ))
+                $LWS_AddLockedChestSimpleReward ( Chest, Slot, "Legendary", $RandomNumber ( 100 ));
+            else
+                begin
+                    if ( Rarity == 5 ) Rarity = 4;
+                    $LWS_AddLockedChestEquipment ( Chest, Slot, "Weapon", Rarity, $RandomNumber ( 100 ), $RandomNumber ( 100 ));
+                end
+        end
+    if ( ArmorCandidate && OmitCandidate != 2 && Slot < 2 )
+        begin
+            Slot += 1;
+            Rarity = $LWS_SelectLootRarity ( ProgressClass, $RandomNumber ( 100 ));
+            if ( Rarity == 5 && $LWS_IsLegendaryLootSource ( Defender ))
+                $LWS_AddLockedChestSimpleReward ( Chest, Slot, "Legendary", $RandomNumber ( 100 ));
+            else
+                begin
+                    if ( Rarity == 5 ) Rarity = 4;
+                    $LWS_AddLockedChestEquipment ( Chest, Slot, "Armor", Rarity, $RandomNumber ( 100 ), $RandomNumber ( 100 ));
+                end
+        end
+
+    if ( Slot == 0 ) begin $DeleteGamePiece ( Chest ); return FALSE; end
+    $AddAttribute ( Chest, "LWS_ChestRewardCount", "integer", Slot );
+    Defender's "LWS_LootSlotsUsed" = Slot;
+    AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
+    if ( $HasAttribute ( "LWS_DiagnosticLootDrops", AIRootAgent ))
+        AIRootAgent's "LWS_DiagnosticLootDrops" += Slot;
+    return TRUE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_OpenExplorationChest ( agent Hero, agent Chest )
+Declare
+Begin
+    if ( $HasAttribute ( "LWS_ExplorationChest", Chest ) == FALSE ) return;
+    $LWS_GrantChestSlot ( Hero, Chest, 1 );
+    if ( Chest's "LWS_ChestRewardCount" >= 2 ) $LWS_GrantChestSlot ( Hero, Chest, 2 );
+    $DebugOut ( 911, "LWS EXPLORATION CHEST OPENED", Hero, "CLASS", Chest's "LWS_ChestClass",
+                "REWARDS", Chest's "LWS_ChestRewardCount" );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_SpawnExplorationChest ( agent Palace, coordinate Location, integer ChestClass,
+                                     integer RewardCount ) is agent
+Declare
+    agent Chest;
+Begin
+    Chest = $SpawnUnit ( Palace, "Treasure_Chest1", Location, "MaxHP", #Monster_Player );
+    if ( $IsValidGamePiece ( Chest ) == FALSE ) return $NullAgent ();
+    $LWS_ConfigureExplorationChest ( Chest, ChestClass, RewardCount,
+        $RandomNumber ( 100 ), $RandomNumber ( 100 ), $RandomNumber ( 100 ), $RandomNumber ( 100 ),
+        $RandomNumber ( 100 ), $RandomNumber ( 100 ), $RandomNumber ( 100 ), $RandomNumber ( 100 ));
+    return Chest;
+End
