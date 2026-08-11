@@ -5,8 +5,10 @@ $generator = Get-Content -Raw (Join-Path $repositoryRoot 'Docs\equipment-generat
 $compatibility = Get-Content -Raw (Join-Path $repositoryRoot 'Docs\equipment-compatibility.json') | ConvertFrom-Json
 $lootSource = Get-Content -Raw (Join-Path $repositoryRoot 'GPL\LWS_Loot.gpl')
 $equipmentSource = Get-Content -Raw (Join-Path $repositoryRoot 'GPL\LWS_Equipment.gpl')
-$prototypeSource = Get-Content -Raw (Join-Path $repositoryRoot 'GPL\LWS_LootPrototypes.dat')
-$descriptionSource = Get-Content -Raw (Join-Path $repositoryRoot 'Data\LWS_Descriptions.xml')
+$catalogPrototypeSource = Get-Content -Raw (Join-Path $repositoryRoot 'GPL\LWS_EquipmentDropPrototypes.dat')
+$catalogResolverSource = Get-Content -Raw (Join-Path $repositoryRoot 'GPL\LWS_EquipmentDropCatalog.gpl')
+[xml]$catalogDescriptions = Get-Content -Raw (Join-Path $repositoryRoot 'Data\LWS_EquipmentDropDescriptions.xml')
+[xml]$catalogText = Get-Content -Raw (Join-Path $repositoryRoot 'Data\LWS_EquipmentDropText.xml')
 
 $generatedWeaponFamilies = (@($generator.weaponFamilies) | Sort-Object) -join ','
 $compatibleWeaponFamilies = (@($compatibility.weaponFamilies) | Sort-Object) -join ','
@@ -21,11 +23,43 @@ if ($generatedArmorFamilies -ne $compatibleArmorFamilies) {
 if ($generator.legendaryUsesGenericCarrier -ne $false -or $generator.legendaryCatalogPending -ne $false) {
     throw 'Legendary drops must use the completed named Unique catalog.'
 }
-foreach ($type in @('Weapon', 'Armor')) {
-    $prototype = $generator.carrierPrototypes.$type
-    if ($prototypeSource -notmatch [regex]::Escape("[$prototype]") -or $descriptionSource -notmatch ('ID="' + [regex]::Escape($prototype) + '"')) {
-        throw "Missing generic $type carrier: $prototype"
+$prototypeTitles = @([regex]::Matches($catalogPrototypeSource, '(?m)^\[(LWSD[WA]_[^\]\r\n]+)\]\r?$') | ForEach-Object { $_.Groups[1].Value })
+$descriptionRecords = @($catalogDescriptions.Majesty.Description)
+$descriptionIds = @($descriptionRecords | ForEach-Object { $_.ID })
+$textIds = @($catalogText.Majesty.Language.Text | ForEach-Object { $_.id })
+if ($prototypeTitles.Count -ne 422 -or $descriptionIds.Count -ne 422 -or $textIds.Count -ne 422) {
+    throw "Static equipment catalog counts are invalid: prototypes=$($prototypeTitles.Count), descriptions=$($descriptionIds.Count), text=$($textIds.Count)."
+}
+foreach ($title in $prototypeTitles) {
+    $description = @($descriptionRecords | Where-Object { $_.ID -eq $title })
+    if ($description.Count -ne 1 -or $description[0].Name -ne $title) {
+        throw "Static equipment Description must use ID == Name: $title"
     }
+    if (("IDTXT_${title}_HELP") -notin $textIds) {
+        throw "Static equipment help text is missing: $title"
+    }
+    if ($catalogResolverSource -notmatch ('return\s+"' + [regex]::Escape($title) + '"')) {
+        throw "Static equipment resolver literal is missing: $title"
+    }
+}
+
+$birthScripts = @{
+    Staff = 'LWS_StaffDrop_Birth'; Axeclub = 'LWS_AxeclubDrop_Birth'; Dagger = 'LWS_DaggerDrop_Birth'
+    Longsword = 'LWS_LongswordDrop_Birth'; Longbow = 'LWS_LongbowDrop_Birth'; Crossbow = 'LWS_CrossbowDrop_Birth'
+    Mace = 'LWS_MaceDrop_Birth'; ChaosWeapon = 'LWS_ChaosWeaponDrop_Birth'; Hammer = 'LWS_HammerDrop_Birth'
+    Leather = 'LWS_LeatherDrop_Birth'; Chain = 'LWS_ChainDrop_Birth'; Plate = 'LWS_PlateDrop_Birth'; ChaosArmor = 'LWS_ChaosArmorDrop_Birth'
+}
+foreach ($family in @('Staff','Axeclub','Dagger','Longsword','Longbow','Crossbow','Mace','Hammer','Leather','Chain','Plate')) {
+    $expectedCount = if ($family -in @('Leather','Chain','Plate')) { 20 } else { 38 }
+    $actualCount = ([regex]::Matches($catalogPrototypeSource, '\(BirthScript\s+' + $birthScripts[$family] + '\)')).Count
+    if ($actualCount -ne $expectedCount) { throw "Unexpected BirthScript coverage for ${family}: $actualCount" }
+}
+if (([regex]::Matches($catalogPrototypeSource, '\(BirthScript\s+' + $birthScripts.ChaosWeapon + '\)')).Count -ne 38 -or
+    ([regex]::Matches($catalogPrototypeSource, '\(BirthScript\s+' + $birthScripts.ChaosArmor + '\)')).Count -ne 20) {
+    throw 'Weapon and armor Chaos BirthScripts are not separated correctly.'
+}
+if ($catalogPrototypeSource -match 'LWS_Random(?:Weapon|Armor)Drop_Birth') {
+    throw 'A static equipment prototype still uses an unclassified generic BirthScript.'
 }
 
 $tierBase = @(0, 0, 1, 2, 3)
@@ -61,6 +95,7 @@ foreach ($pattern in @(
     'Function\s+LWS_GeneratedEquipmentTier',
     'Function\s+LWS_GeneratedEquipmentAffix',
     'Function\s+LWS_SpawnRandomEquipment',
+    'DropTitle\s*=\s*\$LWS_StaticEquipmentDropTitle',
     'OmitCandidate\s*=\s*\$RandomNumber\s*\(\s*3\s*\)'
 )) {
     if ($lootSource -notmatch $pattern) { throw "Missing random generator pattern: $pattern" }
@@ -68,5 +103,11 @@ foreach ($pattern in @(
 if ($equipmentSource -notmatch 'Function\s+LWS_ConfigureEquipmentDrop') {
     throw 'Runtime equipment carrier configuration is missing.'
 }
-
+if ($equipmentSource -notmatch 'Function\s+LWS_InitializeWeaponDrop' -or
+    $equipmentSource -notmatch 'Function\s+LWS_InitializeArmorDrop') {
+    throw 'Birth-time equipment classification is missing.'
+}
+if ($catalogResolverSource -notmatch 'Function\s+LWS_StaticEquipmentDropTitle') {
+    throw 'Static equipment resolver entry point is missing.'
+}
 Write-Host 'Random equipment generator validation passed.'

@@ -11,6 +11,7 @@ $lootPath = Join-Path $repositoryRoot 'GPL\LWS_Loot.gpl'
 $equipmentPath = Join-Path $repositoryRoot 'GPL\LWS_Equipment.gpl'
 $lootPrototypePath = Join-Path $repositoryRoot 'GPL\LWS_LootPrototypes.dat'
 $descriptionPath = Join-Path $repositoryRoot 'Data\LWS_Descriptions.xml'
+$equipmentDescriptionPath = Join-Path $repositoryRoot 'Data\LWS_EquipmentDropDescriptions.xml'
 $statePath = Join-Path $repositoryRoot 'GPL\LWS_MonsterState.gpl'
 $generatorPath = Join-Path $repositoryRoot 'tools\New-CombatOverride.ps1'
 $itemGeneratorPath = Join-Path $repositoryRoot 'tools\New-ItemEvaluationOverride.ps1'
@@ -36,6 +37,13 @@ $lootSource = Get-Content -LiteralPath $lootPath -Raw
 $equipmentSource = Get-Content -LiteralPath $equipmentPath -Raw
 $lootPrototypeSource = Get-Content -LiteralPath $lootPrototypePath -Raw
 $descriptionSource = Get-Content -LiteralPath $descriptionPath -Raw
+[xml]$descriptionXml = Get-Content -LiteralPath $equipmentDescriptionPath -Raw
+foreach ($itemId in @('LWSDW_U_Longsword_3_1', 'LWSDA_R_Plate_3_1')) {
+    $itemDescription = @($descriptionXml.Majesty.Description | Where-Object { $_.ID -eq $itemId })
+    if ($itemDescription.Count -ne 1 -or $itemDescription[0].Name -ne $itemId) {
+        throw "Custom item Description must repeat its prototype ID in Name: $itemId"
+    }
+}
 $stateSource = Get-Content -LiteralPath $statePath -Raw
 $requiredStatePatterns = @(
     'Function\s+LWS_EnsureMonsterState',
@@ -178,6 +186,15 @@ foreach ($pattern in $requiredCombatPatterns) {
 }
 
 $requiredHookPatterns = @(
+    'Function\s+LWS_RunTwoSlotDiagnostic',
+    'LWS_RandomWeaponFamily\s*\(\s*8\s*\)\s*!=\s*"Hammer"',
+    'LWS_RandomArmorFamily\s*\(\s*3\s*\)\s*!=\s*"Chaos"',
+    'LWS_StaticEquipmentDropTitle\s*\(\s*"Weapon"\s*,\s*"Longsword"\s*,\s*1\s*,\s*7\s*\)\s*!=\s*"LWSDW_E_Longsword_1_7"',
+    'LWS_StaticEquipmentDropTitle\s*\(\s*"Armor"\s*,\s*"Plate"\s*,\s*3\s*,\s*1\s*\)\s*!=\s*"LWSDA_R_Plate_3_1"',
+    'LWS_RandomLegendaryTitle\s*\(\s*5\s*\)\s*!=\s*"LWS_StonebacksShield"',
+    'LWS_LootSlotsUsed"\s*!=\s*2',
+    'LWSDA_R_Plate_3_1',
+    'LWS_WandOfImmolation',
     'Function\s+LWS_EnsurePalacePeasantSpawner',
     'Palace''s\s+"num_peasants"\s*=\s*\$ListSize',
     '\$RunThread\s*\(\s*Palace''s\s+"peasant_spawn"',
@@ -193,28 +210,6 @@ $requiredHookPatterns = @(
     'SpellMonster''s\s+"LWS_Level"\s*!=\s*2',
     'LWS_ResolveMonsterLoot\s*\(\s*NoDropVictim\s*,\s*1\s*,\s*99\s*,\s*99\s*,\s*99\s*\)',
     'LWS_ResolveMonsterLoot\s*\(\s*DropVictim\s*,\s*1\s*,\s*0\s*,\s*99\s*,\s*99\s*\)',
-    'Function\s+LWS_SetupEquipmentArena',
-    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Warriors_Guild"',
-    '\$SpawnUnit\s*\(\s*WarriorsGuild\s*,\s*"Paladin"',
-    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Blacksmith3"',
-    '#ATTRIB_ResearchArmorLevel_2\s*,\s*0',
-    '#ATTRIB_ResearchArmorLevel_3\s*,\s*0',
-    '#ATTRIB_ResearchArmorLevel_4\s*,\s*0',
-    '#ATTRIB_ResearchWeaponLevel_2\s*,\s*0',
-    '#ATTRIB_ResearchWeaponLevel_3\s*,\s*0',
-    '#ATTRIB_ResearchWeaponLevel_4\s*,\s*0',
-    '\$Adopt\s*\(\s*WarriorsGuild\s*,\s*Paladin\s*\)',
-    '\$Advance_To_Level\s*\(\s*Paladin\s*,\s*8\s*\)',
-    '#ATTRIB_Gold\s*,\s*1000',
-    '#ATTRIB_StoredGold\s*,\s*1000',
-    'Upgrade_Weapon_Chance"\s*=\s*100',
-    'Upgrade_Armor_Chance"\s*=\s*100',
-    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_T3_Longsword_Plus1"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_T3_Longsword_Plus1"',
-    '\$SpawnUnit\s*\(\s*Paladin\s*,\s*"LWS_T3_Armor_Plus1"[^;]+"Override"[^;]+\$MakeInventoryAttribute\s*\(\s*"LWS_T3_Armor_Plus1"',
-    'WeakMonsterCount\s*<\s*4',
-    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Giant_Rat"\s*,\s*\$RandomCoord\s*\(\s*Paladin\s*,\s*550\s*,\s*700',
-    '#ATTRIB_MaxHP\s*,\s*10',
-    '#ATTRIB_Strength\s*,\s*1',
     '\$IsValidGamePiece\s*\(\s*ShowcaseMonster\s*\)',
     '#ATTRIB_NumHealingPotions\s*\)\s*!=\s*\(\s*PotionsBefore\s*\+\s*1',
     '\$SpawnUnit\s*\(\s*Palace\s*,\s*"GoblinOverlord"',
@@ -244,8 +239,19 @@ if ($hookSource -match '\$NewThread\s*\(\s*\$LWS_RunCombatDiagnostic') {
 if ($hookSource -match 'EnemyCount\s*<|PotionCount\s*<|PeasantCount\s*<') {
     throw 'Legacy crowd and potion arena setup must remain removed.'
 }
+if ($hookSource -match 'LWS_SetupEquipmentArena|LWS_SpawnExplorationChest') {
+    throw 'The completed visible test arenas must remain removed.'
+}
+if ($hookSource -match '\$SpawnUnit\s*\([^;]+"LWSDW_U_Longsword_3_1"' -or
+    $hookSource -match '\$SpawnUnit\s*\([^;]+"LWSDW_U_Longbow_3_1"' -or
+    $hookSource -match '\$SpawnUnit\s*\([^;]+"LWSDA_R_Plate_3_1"') {
+    throw 'Legacy direct inspection equipment must not be spawned in the chest arena.'
+}
 if ($hookSource -match '\$SpawnUnit\s*\([^;]+"Peasant"') {
     throw 'Diagnostic checks must not spawn real Palace peasants.'
+}
+if ($hookSource -match 'LWS_TestRuntimeEquipmentCarrier|LWS_RunLegendaryCatalogDiagnostic') {
+    throw 'Hidden loot diagnostics must not spawn a roster of real heroes.'
 }
 if ($hookSource -match '\$ListObjects\s*\(\s*Palace\s*,\s*"Monster"\s*,\s*1200') {
     throw 'Diagnostic cleanup must not broadly delete Palace-area monsters or workers.'

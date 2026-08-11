@@ -2,6 +2,9 @@
 
 A Majesty Gold HD / Northern Expansion sandbox quest.
 
+A teljes, folyamatosan frissített feature- és státuszlista:
+[Docs/roadmap.md](Docs/roadmap.md).
+
 The current baseline intentionally contains only:
 
 - one player Palace supplied by the quest template;
@@ -130,7 +133,8 @@ real Palace immediately after spawn, so they do not consume its internal
 worker slots or stop normal builder/repairer spawning.
 
 All monster loot now passes through one fatal-hit resolver with a hard maximum
-of two successfully spawned world items. Potions, weapons, armor, and future
+of two rewards. Successful rewards are locked into one treasure chest, so one
+monster creates at most one world object. Potions, weapons, armor, and future
 consumable or special-item types share those slots. `LWS_ProgressClass` fixes
 the permitted rarity interval: Class 1 Common; Class 2 Common-Uncommon; Class 3
 Uncommon-Rare; Class 4 Rare-Epic; and Class 5 guaranteed Epic with Legendary
@@ -141,10 +145,14 @@ On successful equipment drops, Classes 2-4 select the previous rarity 75% of
 the time and their ceiling 25% of the time. Class 5 guarantees one equipment
 candidate: 99% Epic, or a 1% replacement with a whitelisted Legendary Unique.
 
-Production weapon and armor rolls now create runtime-configured generic world
-items. The generator covers all nine Northern Expansion weapon families and all
-four armor families from the compatibility matrix, then chooses a T1-T4 tier
-and affix whose computed power stays inside the selected rarity band. Armor
+Production weapon and armor rolls now select from 422 statically described
+custom world items. Every generated family, tier, affix, and rarity combination
+has a native prototype whose visible name and help text follow the SDK special
+item schema. An explicit resolver returns compiler-visible prototype literals;
+runtime-constructed prototype IDs and display-name mutation are forbidden. The
+generator covers all nine Northern Expansion weapon families and all four armor
+families from the compatibility matrix, then chooses a T1-T4 tier and affix
+whose computed power stays inside the selected rarity band. Armor
 generation applies the native double magic-affix weight. If potion, weapon, and
 armor all succeed together, one candidate is omitted at random so the hard
 two-item cap has no fixed type-order bias. Named Legendary Unique items remain
@@ -156,6 +164,17 @@ permanent learned ability, and cannot be applied twice to the same hero. Only
 Class 5 Witch King, Liche Queen, Black Phantom, Url Shekk, Dirgo, Rrongol, and
 Lorphus instances receive the Legendary source marker. Original quest-item IDs
 and their campaign flags remain untouched.
+
+The combat diagnostic performs a deterministic runtime sweep of all nine
+weapon-family mappings, all four armor-family mappings, all six Legendary
+catalog mappings, and the hard two-reward cap. The completed temporary chest
+arena has been removed. Production maps now seed twelve one-time exploration
+chests between one quarter and one third of the Palace-to-farthest-corner reach:
+eight Class 1 and four Class 2, capped at Uncommon.
+They remain until opened and never regenerate. Unusable, duplicate, or inferior
+equipment falls back to a Healing Potion; a hero already at the native potion cap
+receives the native 50-149 chest-gold roll instead. See
+`Docs/exploration-chests.md` and `Docs/loot-diagnostic-guide.md`.
 
 ## Tiered equipment diagnostic
 

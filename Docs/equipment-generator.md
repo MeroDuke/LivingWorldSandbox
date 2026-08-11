@@ -1,8 +1,10 @@
 # Random equipment generator
 
-A production monsterdrop két generikus world-item hordozót használ: egy fegyvert
-és egy páncélt. Spawn után a GPL ráírja a konkrét családot, tiert, affixet és
-rarityt. Ez elkerüli több száz statikus prototípus karbantartását.
+A production monsterdrop 422, az SDK SpecialItemsExample sémáját követő statikus
+world-item prototípust használ. Mindegyiknél a Description `ID` és `Name` azonos;
+a látható név és leírás a saját `HelpID` szövegéből érkezik. A resolver kizárólag
+fordításkor látható literál prototípusazonosítókat ad vissza: nincs `SpecifyName`
+és nincs futás közben összefűzött prototípusnév.
 
 A fegyverpool minden használható Northern Expansion családot tartalmaz:
 `Staff`, `Axeclub`, `Dagger`, `Longsword`, `Longbow`, `Crossbow`, `Mace`,
