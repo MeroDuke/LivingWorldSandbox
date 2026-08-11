@@ -188,6 +188,15 @@ Begin
     Paladin's "Upgrade_Armor_Chance" = 100;
     Paladin's "Upgrade_Weapon_Chance" = 100;
 
+    // Start with the guaranteed T3 +1 state. The direct ground item below remains
+    // as an inspection/pickup fallback, but this avoids making the enchant test
+    // depend on autonomous retrieval timing.
+    $LWS_EnsureArmorEquipmentState ( Paladin );
+    Paladin's "LWS_ArmorTier" = 3;
+    Paladin's "LWS_ArmorAffixBonus" = 1;
+    $SetAttribute ( Paladin, #ATTRIB_Armor_Struct_Bonus, $LWS_ArmorTierBaseBonus ( 3 ));
+    $LWS_SyncArmorMagicBonus ( Paladin );
+
     // Guaranteed special-item path: the Paladin can equip this T3 +1 armor first.
     ArmorDrop = $SpawnUnit ( Paladin, "LWS_T3_Armor_Plus1",
                              $RandomCoord ( Paladin, 70, 110 ), "Override",
@@ -207,6 +216,14 @@ Begin
     $AddAttribute ( ArmorChest, "LWS_ChestSlot1Tier", "integer", 2 );
     $AddAttribute ( ArmorChest, "LWS_ChestSlot1Affix", "integer", 6 );
     $SetAttribute ( ArmorChest, #ATTRIB_Gold, 0 );
+
+    // Bypass only the Paladin's random purchase decision. Movement, entering the
+    // building, payment and enchant application all use the native visit pipeline.
+    Paladin's "Task_Number" = #ATTRIB_Armor_Magic_Bonus;
+    Paladin's "Target" = WizardsGuild;
+    Paladin's "TaskName" = "visiting";
+    $SpecifyIntent ( Paladin, #Intent_Enchanting_Wiz_Armor );
+    Paladin's "ActiveScript" = $Use_Building;
     return TRUE;
 End
 
