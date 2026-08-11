@@ -160,6 +160,28 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Runs after hero_birth has started the Paladin's normal decision thread. Calling
+// use_building here avoids the startup race that otherwise restores Paladin_tree.
+Function LWS_ForceWizardEnchantVisit ( agent Paladin )
+Declare
+    agent WizardsGuild;
+    list Buildings, WizardsGuilds;
+Begin
+    if ( $IsValidGamePiece ( Paladin ) == FALSE ) return;
+    $ListObjects ( Paladin, "Building", 1200, Buildings, #MyPlayer );
+    WizardsGuilds = $ListTitles ( Buildings, "Wizards_Guild" );
+    if ( $ListSize ( WizardsGuilds ) == 0 ) return;
+    WizardsGuild = $Loyalty_Mod_Pick_Closest ( Paladin, WizardsGuilds );
+    if ( $IsValidGamePiece ( WizardsGuild ) == FALSE ) return;
+
+    Paladin's "Task_Number" = #ATTRIB_Armor_Magic_Bonus;
+    Paladin's "Target" = WizardsGuild;
+    Paladin's "TaskName" = "visiting";
+    $SpecifyIntent ( Paladin, #Intent_Enchanting_Wiz_Armor );
+    $Use_Building ( Paladin );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Visible, minimal arena for manually verifying Northern Expansion Wizard Guild
 // armor enchantments and their preservation across an LWS armor replacement.
 Function LWS_SetupWizardEnchantArena ( agent Palace ) is boolean
@@ -217,13 +239,10 @@ Begin
     $AddAttribute ( ArmorChest, "LWS_ChestSlot1Affix", "integer", 6 );
     $SetAttribute ( ArmorChest, #ATTRIB_Gold, 0 );
 
-    // Bypass only the Paladin's random purchase decision. Movement, entering the
-    // building, payment and enchant application all use the native visit pipeline.
-    Paladin's "Task_Number" = #ATTRIB_Armor_Magic_Bonus;
-    Paladin's "Target" = WizardsGuild;
-    Paladin's "TaskName" = "visiting";
-    $SpecifyIntent ( Paladin, #Intent_Enchanting_Wiz_Armor );
-    Paladin's "ActiveScript" = $Use_Building;
+    // Bypass only the Paladin's random purchase decision, after hero_birth has
+    // completed. Movement, entry, payment and enchant application remain native.
+    $AddAttribute ( Paladin, "LWS_ForceEnchantScript", "function", $LWS_ForceWizardEnchantVisit );
+    $RunThread ( Paladin's "LWS_ForceEnchantScript", 5000, Paladin );
     return TRUE;
 End
 
