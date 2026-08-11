@@ -15,6 +15,11 @@ $requiredChestPatterns = @(
     'Function\s+LWS_CreateLockedMonsterChest',
     'Function\s+LWS_OpenExplorationChest',
     'Function\s+LWS_GrantChestSlot',
+    'Function\s+LWS_TryGrantHealingPotion',
+    'Function\s+LWS_GrantDefaultChestFallback',
+    'LWS_ApplyLockedWeaponReward\s*\([^;]+\)\s*==\s*FALSE[^}]+LWS_GrantDefaultChestFallback',
+    'LWS_ApplyLockedArmorReward\s*\([^;]+\)\s*==\s*FALSE[^}]+LWS_GrantDefaultChestFallback',
+    'LWS_LegendaryMarker[^}]+LWS_GrantDefaultChestFallback',
     'LWS_ChestRewardCount',
     'if\s*\(\s*RewardCount\s*>\s*2\s*\)\s*RewardCount\s*=\s*2',
     'LWS_HeroWeaponFamily',
@@ -36,11 +41,22 @@ if ($generatorSource -notmatch 'LWS_OpenExplorationChest') {
 if ($buildSource -notmatch 'New-TreasureOverride\.ps1') {
     throw 'Production build does not generate the read-only SDK treasure override.'
 }
-if ($bootstrapSource -match 'LWS_SeedExplorationChests|LWS_SpawnExplorationChest') {
-    throw 'Production bootstrap must not pre-seed exploration chests yet.'
+if ($bootstrapSource -notmatch 'LWS_SeedExplorationChests\s*\(\s*Palace\s*\)') {
+    throw 'Production bootstrap does not seed exploration chests.'
 }
-if ($diagnosticSource -match 'LWS_SetupEquipmentArena|LWS_SpawnExplorationChest|Rangers_Guild') {
-    throw 'Completed visible chest arenas must not remain in the diagnostic map.'
+if ($bootstrapSource -notmatch 'ChestCount\s*<\s*12' -or
+    $bootstrapSource -notmatch 'ChestCount\s*<\s*8' -or
+    $bootstrapSource -notmatch 'FarthestDistance\s*\*\s*3') {
+    throw 'Production exploration chest count, 8/4 class split, or outer-quarter distance rule is missing.'
+}
+if ($chestSource -notmatch '#chest_starting_gold\s*\+\s*\$RandomNumber\s*\(\s*#chest_random_gold\s*\)') {
+    throw 'Full-potion fallback does not use the native 50-149 chest gold formula.'
+}
+if ($diagnosticSource -notmatch 'Function\s+LWS_SetupChestRewardArena' -or
+    $diagnosticSource -notmatch '"Potion"' -or
+    $diagnosticSource -notmatch '"Legendary"' -or
+    $diagnosticSource -notmatch '"Weapon"') {
+    throw 'Temporary focused chest reward arena is missing.'
 }
 
 Write-Host 'Exploration chest validation passed.'

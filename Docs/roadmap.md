@@ -116,14 +116,14 @@ Részletes szabályok:
   az LWS jutalom közvetlenül a cleanup előtt oldódik fel.
 - [x] **Paladin/Ranger proof-of-concept** — ugyanaz a mechanika a Paladinnak
   Longsword/Plate, a Rangernek Longbow/Leather jutalmat adott.
-- [ ] **Exploration chest pályagenerálás** — darabszám, távolság, classeloszlás,
-  újragenerálódás és térképi veszélyesség alapján történő skálázás.
-- [ ] **Chest UI és vizuális classjelzés** — rarity/class megjelenítése úgy, hogy
-  a natív `Treasure_Chest` AI-felismerés ne törjön el.
-- [ ] **Chest életciklus és takarítás** — lejárat, fel nem vett chestek és hosszú
-  játék során keletkező objektumszám kezelése.
-- [ ] **Használhatatlan vagy gyengébb chest-jutalom** — az ideiglenes 50 gold
-  kompenzáció helyett végleges gazdasági szabály szükséges.
+- [x] **Exploration chest pályagenerálás** — egyszeri 12 chest, `8× C1 + 4× C2`,
+  maximum Uncommon rarityvel, a Palace-tól számított külső távolsági zónában.
+- [x] **Chest UI döntés** — egyedi UI nem készül; a natív `Treasure_Chest` cím és
+  objektumtípus megmarad az AI-felismerés biztonsága érdekében.
+- [x] **Chest életciklus és takarítás** — a chest nyitásig megmarad, utána a natív
+  engine törli; nincs utánpótlás, ezért nincs hosszú távú felhalmozódás.
+- [x] **Használhatatlan vagy gyengébb chest-jutalom** — Healing Potion, teljes
+  potionkészletnél pedig a natív 50–149 gold fallback.
 
 Részletek: [exploration-chests.md](exploration-chests.md).
 

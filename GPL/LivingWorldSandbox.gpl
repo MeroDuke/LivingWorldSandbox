@@ -13,6 +13,48 @@ Begin
 
     $LWS_SeedStarterLairs ( Palace );
     $LWS_SeedStarterMonsters ( Palace );
+    $LWS_SeedExplorationChests ( Palace );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_SeedExplorationChests ( agent Palace )
+Declare
+    agent Chest;
+    coordinate BoardExtents, PalaceLocation, SpawnLocation;
+    integer BoardWidth, BoardHeight, PalaceX, PalaceY;
+    integer FarthestX, FarthestY, FarthestDistance, MinimumDistance;
+    integer AttemptCount, ChestCount, ChestClass, RewardCount;
+Begin
+    if ( $IsValidGamePiece ( Palace ) == FALSE ) return;
+
+    BoardExtents = $GetBoardExtents ();
+    PalaceLocation = $LocationOf ( Palace );
+    BoardWidth = $GetX ( BoardExtents );
+    BoardHeight = $GetY ( BoardExtents );
+    PalaceX = $GetX ( PalaceLocation );
+    PalaceY = $GetY ( PalaceLocation );
+
+    FarthestX = PalaceX;
+    if (( BoardWidth - PalaceX ) > FarthestX ) FarthestX = BoardWidth - PalaceX;
+    FarthestY = PalaceY;
+    if (( BoardHeight - PalaceY ) > FarthestY ) FarthestY = BoardHeight - PalaceY;
+    FarthestDistance = $Sqrt (( FarthestX * FarthestX ) + ( FarthestY * FarthestY ));
+    MinimumDistance = ( FarthestDistance * 3 ) / 4;
+
+    AttemptCount = 0;
+    ChestCount = 0;
+    while (( ChestCount < 12 ) && ( AttemptCount < 120 )) do
+        begin
+            SpawnLocation = $RandomCoord ( Palace, MinimumDistance, -1 );
+            if ( ChestCount < 8 ) ChestClass = 1;
+            else ChestClass = 2;
+            RewardCount = 1 + $RandomNumber ( 2 );
+            Chest = $LWS_SpawnExplorationChest ( Palace, SpawnLocation, ChestClass, RewardCount );
+            if ( $IsValidGamePiece ( Chest )) ChestCount += 1;
+            AttemptCount += 1;
+        end
+
+    $DebugOut ( 911, "LWS EXPLORATION CHESTS SEEDED", ChestCount, "MIN DIST", MinimumDistance );
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

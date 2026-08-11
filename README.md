@@ -165,14 +165,16 @@ Class 5 Witch King, Liche Queen, Black Phantom, Url Shekk, Dirgo, Rrongol, and
 Lorphus instances receive the Legendary source marker. Original quest-item IDs
 and their campaign flags remain untouched.
 
-The combat diagnostic now performs an agent-free deterministic runtime sweep of
-all nine weapon-family mappings, all four armor-family mappings, all six
-Legendary catalog mappings, and the hard two-reward cap. It does not spawn a
-hidden hero roster, trigger automatic test housing, or leave a visible smoke arena.
-Production maps do not pre-seed exploration chests yet; the proven chest runtime
-remains available for monster rewards and future map-generation features. See
-`Docs/loot-diagnostic-guide.md`; normal 8% and 1% rolls do not need to be waited
-out during this test.
+The combat diagnostic performs a deterministic runtime sweep of all nine
+weapon-family mappings, all four armor-family mappings, all six Legendary
+catalog mappings, and the hard two-reward cap. Its temporary visible chest arena
+contains only the focused Paladin and Monk opener scenarios documented below.
+Production maps now seed twelve one-time exploration chests in the outer quarter
+of the Palace-to-map reach: eight Class 1 and four Class 2, capped at Uncommon.
+They remain until opened and never regenerate. Unusable, duplicate, or inferior
+equipment falls back to a Healing Potion; a hero already at the native potion cap
+receives the native 50-149 chest-gold roll instead. See
+`Docs/exploration-chests.md` and `Docs/loot-diagnostic-guide.md`.
 
 ## Tiered equipment diagnostic
 

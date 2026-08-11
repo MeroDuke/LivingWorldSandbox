@@ -105,44 +105,63 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function LWS_ApplyLockedWeaponReward ( agent Hero, integer Tier, integer AffixBonus )
+Function LWS_TryGrantHealingPotion ( agent Hero ) is boolean
+Declare
+Begin
+    if ( $GetAttribute ( Hero, #ATTRIB_NumHealingPotions ) >= #Max_Heal_Potions ) return FALSE;
+    $AdjustAttribute ( Hero, #ATTRIB_NumHealingPotions, 1 );
+    return TRUE;
+End
+
+Function LWS_GrantDefaultChestFallback ( agent Hero )
+Declare
+Begin
+    if ( $LWS_TryGrantHealingPotion ( Hero )) return;
+    // Match the Northern Expansion Treasure_Chest_Birth default: 50-149 gold.
+    $Give_Gold ( Hero, #chest_starting_gold + $RandomNumber ( #chest_random_gold ));
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_ApplyLockedWeaponReward ( agent Hero, integer Tier, integer AffixBonus ) is boolean
 Declare
     integer CurrentPower, NewPower;
 Begin
-    if ( $LWS_HeroWeaponFamily ( Hero ) == "None" ) begin $Give_Gold ( Hero, 50 ); return; end
+    if ( $LWS_HeroWeaponFamily ( Hero ) == "None" ) return FALSE;
     $LWS_EnsureWeaponEquipmentState ( Hero );
     CurrentPower = $LWS_WeaponEffectiveBonus ( Hero's "LWS_WeaponTier", Hero's "LWS_WeaponAffixBonus" );
     NewPower = $LWS_WeaponEffectiveBonus ( Tier, AffixBonus );
-    if ( NewPower < CurrentPower ) return;
-    if ( NewPower == CurrentPower && AffixBonus <= Hero's "LWS_WeaponAffixBonus" ) return;
+    if ( NewPower < CurrentPower ) return FALSE;
+    if ( NewPower == CurrentPower && AffixBonus <= Hero's "LWS_WeaponAffixBonus" ) return FALSE;
     Hero's "LWS_WeaponTier" = Tier;
     Hero's "LWS_WeaponAffixBonus" = AffixBonus;
     $SetAttribute ( Hero, #ATTRIB_Weapon_Struct_Bonus, $LWS_WeaponTierBaseBonus ( Tier ));
     $SetAttribute ( Hero, #ATTRIB_Weapon_Basic_Damage, Hero's "LWS_WeaponBaseDamage" + AffixBonus );
     $CreateEffector ( Hero, "got_weapon", 0 );
+    return TRUE;
 End
 
-Function LWS_ApplyLockedArmorReward ( agent Hero, integer Tier, integer AffixBonus )
+Function LWS_ApplyLockedArmorReward ( agent Hero, integer Tier, integer AffixBonus ) is boolean
 Declare
     integer CurrentPower, NewPower;
 Begin
-    if ( $LWS_HeroArmorFamily ( Hero ) == "None" ) begin $Give_Gold ( Hero, 50 ); return; end
+    if ( $LWS_HeroArmorFamily ( Hero ) == "None" ) return FALSE;
     $LWS_EnsureArmorEquipmentState ( Hero );
     CurrentPower = $LWS_ArmorEffectiveBonus ( Hero's "LWS_ArmorTier", Hero's "LWS_ArmorAffixBonus" );
     NewPower = $LWS_ArmorEffectiveBonus ( Tier, AffixBonus );
-    if ( NewPower < CurrentPower ) return;
-    if ( NewPower == CurrentPower && AffixBonus <= Hero's "LWS_ArmorAffixBonus" ) return;
+    if ( NewPower < CurrentPower ) return FALSE;
+    if ( NewPower == CurrentPower && AffixBonus <= Hero's "LWS_ArmorAffixBonus" ) return FALSE;
     Hero's "LWS_ArmorTier" = Tier;
     Hero's "LWS_ArmorAffixBonus" = AffixBonus;
     $SetAttribute ( Hero, #ATTRIB_Armor_Struct_Bonus, $LWS_ArmorTierBaseBonus ( Tier ));
     $SetAttribute ( Hero, #ATTRIB_Armor_Magic_Bonus, AffixBonus );
     $CreateEffector ( Hero, "got_armor", 0 );
+    return TRUE;
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_GrantChestSlot ( agent Hero, agent Chest, integer Slot )
 Declare
-    string RewardType, LegendaryTitle;
+    string RewardType, LegendaryTitle, LegendaryMarker;
     integer Tier, AffixBonus, Gold;
 Begin
     if ( Slot == 1 )
@@ -162,15 +181,30 @@ Begin
             if ( RewardType == "Legendary" ) LegendaryTitle = Chest's "LWS_ChestSlot2Legendary";
         end
 
-    if ( RewardType == "Weapon" ) $LWS_ApplyLockedWeaponReward ( Hero, Tier, AffixBonus );
-    else if ( RewardType == "Armor" ) $LWS_ApplyLockedArmorReward ( Hero, Tier, AffixBonus );
+    if ( RewardType == "Weapon" )
+        begin
+            if ( $LWS_ApplyLockedWeaponReward ( Hero, Tier, AffixBonus ) == FALSE )
+                $LWS_GrantDefaultChestFallback ( Hero );
+        end
+    else if ( RewardType == "Armor" )
+        begin
+            if ( $LWS_ApplyLockedArmorReward ( Hero, Tier, AffixBonus ) == FALSE )
+                $LWS_GrantDefaultChestFallback ( Hero );
+        end
     else if ( RewardType == "Potion" )
         begin
-            if ( $GetAttribute ( Hero, #ATTRIB_NumHealingPotions ) < #Max_Heal_Potions )
-                $AdjustAttribute ( Hero, #ATTRIB_NumHealingPotions, 1 );
+            if ( $LWS_TryGrantHealingPotion ( Hero ) == FALSE )
+                $Give_Gold ( Hero, #chest_starting_gold + $RandomNumber ( #chest_random_gold ));
         end
     else if ( RewardType == "Gold" ) $Give_Gold ( Hero, Gold );
-    else if ( RewardType == "Legendary" ) $LWS_GrantLegendaryTitle ( Hero, LegendaryTitle );
+    else if ( RewardType == "Legendary" )
+        begin
+            LegendaryMarker = $LWS_LegendaryMarker ( LegendaryTitle );
+            if ( LegendaryMarker == "" || $HasAttribute ( LegendaryMarker, Hero ))
+                $LWS_GrantDefaultChestFallback ( Hero );
+            else
+                $LWS_GrantLegendaryTitle ( Hero, LegendaryTitle );
+        end
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
