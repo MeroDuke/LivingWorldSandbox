@@ -1,17 +1,18 @@
 [CmdletBinding()]
-param()
+param(
+    [string]$SdkRoot
+)
 
 $ErrorActionPreference = 'Stop'
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
+$resolvedSdkRoot = if ($SdkRoot) { $SdkRoot } else { Join-Path $repositoryRoot 'SDK' }
 $equipmentPath = Join-Path $repositoryRoot 'GPL\LWS_Equipment.gpl'
 $chestPath = Join-Path $repositoryRoot 'GPL\LWS_Chest.gpl'
-$sdkDecisionPath = Join-Path $repositoryRoot 'SDK\OriginalQuests\GPLMx\DecisionTrees\Modules\mx_Purchase_Equipment.gpl'
-$sdkTaskPath = Join-Path $repositoryRoot 'SDK\OriginalQuests\GPLMx\TaskModules\Buildings\mx_Enchant_Equipment.gpl'
+$sdkDecisionPath = Join-Path $resolvedSdkRoot 'OriginalQuests\GPLMx\DecisionTrees\Modules\mx_Purchase_Equipment.gpl'
+$sdkTaskPath = Join-Path $resolvedSdkRoot 'OriginalQuests\GPLMx\TaskModules\Buildings\mx_Enchant_Equipment.gpl'
 
 $equipment = Get-Content -LiteralPath $equipmentPath -Raw
 $chest = Get-Content -LiteralPath $chestPath -Raw
-$sdkDecision = Get-Content -LiteralPath $sdkDecisionPath -Raw
-$sdkTask = Get-Content -LiteralPath $sdkTaskPath -Raw
 
 $requiredEquipmentPatterns = @(
     'Function\s+LWS_EnsureArmorEquipmentState',
@@ -40,13 +41,22 @@ if ($equipment -match '#ATTRIB_Armor_Magic_Bonus\s*,\s*AffixBonus') {
     throw 'A direct armor-affix write would erase the separate Wizard Guild enchantment.'
 }
 
-foreach ($pattern in @('Function\s+WizGuild_Check', '#Cost_Per_Magic_Enchantment1', '#Cost_Per_Magic_Enchantment2', '#Cost_Per_Magic_Enchantment3')) {
-    if ($sdkDecision -notmatch $pattern) {
-        throw "Northern Expansion Wizard Guild decision contract changed: $pattern"
+if ((Test-Path -LiteralPath $sdkDecisionPath -PathType Leaf) -and
+    (Test-Path -LiteralPath $sdkTaskPath -PathType Leaf)) {
+    $sdkDecision = Get-Content -LiteralPath $sdkDecisionPath -Raw
+    $sdkTask = Get-Content -LiteralPath $sdkTaskPath -Raw
+
+    foreach ($pattern in @('Function\s+WizGuild_Check', '#Cost_Per_Magic_Enchantment1', '#Cost_Per_Magic_Enchantment2', '#Cost_Per_Magic_Enchantment3')) {
+        if ($sdkDecision -notmatch $pattern) {
+            throw "Northern Expansion Wizard Guild decision contract changed: $pattern"
+        }
+    }
+    if ($sdkTask -notmatch 'Function\s+Obtain_Enchantment') {
+        throw 'Northern Expansion Wizard Guild transaction contract changed.'
     }
 }
-if ($sdkTask -notmatch 'Function\s+Obtain_Enchantment') {
-    throw 'Northern Expansion Wizard Guild transaction contract changed.'
+else {
+    Write-Host 'Northern Expansion SDK is unavailable; skipping the optional read-only SDK contract cross-check.'
 }
 
 Write-Host 'Wizard Guild enchant compatibility validation passed.'
