@@ -48,6 +48,12 @@ Begin
                         $LWS_ClassFromLevelXP ( $GetAttribute ( Monster, #ATTRIB_LevelXP )));
     if ( $HasAttribute ( "LWS_Perks", Monster ) == FALSE )
         $AddAttribute ( Monster, "LWS_Perks", "integer", 0 );
+    if ( $HasAttribute ( "LWS_AbilityLevel3", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_AbilityLevel3", "string", "" );
+    if ( $HasAttribute ( "LWS_AbilityLevel6", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_AbilityLevel6", "string", "" );
+    if ( $HasAttribute ( "LWS_AbilityLevel9", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_AbilityLevel9", "string", "" );
     // Only named Northern Expansion Unique Class 5 monsters enter the Legendary source whitelist.
     if ( Monster's "LWS_ProgressClass" == 5 && $HasAttribute ( "LWS_LegendaryLootSource", Monster ) == FALSE )
         if ( Monster's "Title" == "Witch_King" || Monster's "Title" == "Liche_Queen" ||
@@ -55,6 +61,152 @@ Begin
              Monster's "Title" == "Dirgo" || Monster's "Title" == "Rrongol" ||
              Monster's "Title" == "Lorphus" )
             $AddAttribute ( Monster, "LWS_LegendaryLootSource", "boolean", TRUE );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Ability progression is separate from ordinary stat growth. C1 monsters are intentionally excluded.
+Function LWS_HasSurvivalAbility ( agent Monster ) is boolean
+Declare
+Begin
+    if ( $IsSpellAvailable ( Monster, "Speed_Monster", 1 )) return TRUE;
+    if ( $IsSpellAvailable ( Monster, "Damage_Shield", 1 )) return TRUE;
+    if ( $IsSpellAvailable ( Monster, "Resist_Magic", 1 )) return TRUE;
+    if ( $IsSpellAvailable ( Monster, "Flame_Shield", 1 )) return TRUE;
+    if ( $IsSpellAvailable ( Monster, "Monk_Stone_Skin", 1 )) return TRUE;
+    return FALSE;
+End
+
+Function LWS_HasOffensiveAbility ( agent Monster ) is boolean
+Declare
+Begin
+    if ( $IsSpellAvailable ( Monster, "Energy_Blast", 1 )) return TRUE;
+    if ( $IsSpellAvailable ( Monster, "Insect_Swarm", 1 )) return TRUE;
+    if ( $IsSpellAvailable ( Monster, "Power_Shock", 1 )) return TRUE;
+    if ( $IsSpellAvailable ( Monster, "Acid_Bolt", 1 )) return TRUE;
+    if ( $IsSpellAvailable ( Monster, "Electrical_Fury", 1 )) return TRUE;
+    if ( $IsSpellAvailable ( Monster, "Pestilence", 1 )) return TRUE;
+    if ( $IsSpellAvailable ( Monster, "Drain_Life", 1 )) return TRUE;
+    if ( $IsSpellAvailable ( Monster, "Horrify", 1 )) return TRUE;
+    return FALSE;
+End
+
+Function LWS_HasUtilityAbility ( agent Monster ) is boolean
+Declare
+Begin
+    if ( $IsSpellAvailable ( Monster, "Iron_Will", 1 )) return TRUE;
+    if ( $IsSpellAvailable ( Monster, "Hands_of_Steel", 1 )) return TRUE;
+    if ( $IsSpellAvailable ( Monster, "Shield_of_Light", 1 )) return TRUE;
+    if ( $IsSpellAvailable ( Monster, "Vigilance", 1 )) return TRUE;
+    if ( $IsSpellAvailable ( Monster, "Healer_Heal", 1 )) return TRUE;
+    if ( $IsSpellAvailable ( Monster, "Speed_Monster", 1 )) return TRUE;
+    return FALSE;
+End
+
+Function LWS_IsNatureMonster ( agent Monster ) is boolean
+Declare
+Begin
+    if ( Monster's "Subtype" == "Animal" ) return TRUE;
+    if ( Monster's "Subtype" == "Ratman" ) return TRUE;
+    if ( Monster's "Title" == "RatmanShaman" ) return TRUE;
+    return FALSE;
+End
+
+Function LWS_IsUndeadMonster ( agent Monster ) is boolean
+Declare
+Begin
+    return Monster's "Subtype" == "Undead";
+End
+
+Function LWS_IsSupportMonster ( agent Monster ) is boolean
+Declare
+Begin
+    if ( Monster's "Title" == "Goblin_Priest" ) return TRUE;
+    if ( Monster's "Title" == "RatmanShaman" ) return TRUE;
+    return FALSE;
+End
+
+Function LWS_GrantMonsterAbility ( agent Monster, string SpellName, integer SlotLevel )
+Declare
+Begin
+    if ( SpellName == "" ) return;
+    if ( $IsSpellAvailable ( Monster, SpellName, 1 ) == FALSE )
+        $LearnSpell ( Monster, SpellName );
+    if ( SlotLevel == 3 ) Monster's "LWS_AbilityLevel3" = SpellName;
+    else if ( SlotLevel == 6 ) Monster's "LWS_AbilityLevel6" = SpellName;
+    else if ( SlotLevel == 9 ) Monster's "LWS_AbilityLevel9" = SpellName;
+End
+
+Function LWS_ApplyAbilityMilestone ( agent Monster, integer NewLevel )
+Declare
+    integer ProgressClass;
+    string SpellName;
+Begin
+    ProgressClass = Monster's "LWS_ProgressClass";
+    if ( ProgressClass <= 1 ) return;
+
+    if ( NewLevel == 3 )
+        begin
+            if ( Monster's "LWS_AbilityLevel3" != "" ) return;
+            if ( $LWS_HasSurvivalAbility ( Monster )) return;
+            if ( ProgressClass == 2 )
+                begin
+                    if ( $LWS_IsNatureMonster ( Monster )) SpellName = "Speed_Monster";
+                    else SpellName = "Damage_Shield";
+                end
+            else if ( ProgressClass == 3 )
+                begin
+                    if ( $LWS_IsUndeadMonster ( Monster )) SpellName = "Resist_Magic";
+                    else SpellName = "Flame_Shield";
+                end
+            else SpellName = "Monk_Stone_Skin";
+            $LWS_GrantMonsterAbility ( Monster, SpellName, 3 );
+            return;
+        end
+
+    if ( NewLevel == 6 )
+        begin
+            if ( Monster's "LWS_AbilityLevel6" != "" ) return;
+            if ( $LWS_HasOffensiveAbility ( Monster )) return;
+            if ( ProgressClass == 2 )
+                begin
+                    if ( $LWS_IsNatureMonster ( Monster )) SpellName = "Insect_Swarm";
+                    else SpellName = "Energy_Blast";
+                end
+            else if ( ProgressClass == 3 )
+                begin
+                    if ( $LWS_IsNatureMonster ( Monster )) SpellName = "Acid_Bolt";
+                    else SpellName = "Electrical_Fury";
+                end
+            else if ( ProgressClass == 4 )
+                begin
+                    if ( $LWS_IsUndeadMonster ( Monster )) SpellName = "Horrify";
+                    else if ( $LWS_IsNatureMonster ( Monster )) SpellName = "Pestilence";
+                    else SpellName = "Acid_Bolt";
+                end
+            else
+                begin
+                    if ( $LWS_IsUndeadMonster ( Monster )) SpellName = "Drain_Life";
+                    else SpellName = "Horrify";
+                end
+            $LWS_GrantMonsterAbility ( Monster, SpellName, 6 );
+            return;
+        end
+
+    if ( NewLevel == 9 )
+        begin
+            if ( Monster's "LWS_AbilityLevel9" != "" ) return;
+            if ( $LWS_HasUtilityAbility ( Monster )) return;
+            if ( $LWS_IsSupportMonster ( Monster )) SpellName = "Speed_Monster";
+            else if ( ProgressClass == 2 ) SpellName = "Resist_Magic";
+            else if ( ProgressClass == 3 ) SpellName = "Iron_Will";
+            else if ( ProgressClass == 4 )
+                begin
+                    if ( $LWS_IsUndeadMonster ( Monster )) SpellName = "Iron_Will";
+                    else SpellName = "Shield_of_Light";
+                end
+            else SpellName = "Vigilance";
+            $LWS_GrantMonsterAbility ( Monster, SpellName, 9 );
+        end
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -150,6 +302,7 @@ Begin
             Monster's "LWS_Level" += 1;
             $SetAttribute ( Monster, #ATTRIB_ExperienceLevel, Monster's "LWS_Level" );
             $LWS_ApplyLevelGrowth ( Monster, Monster's "LWS_Level" );
+            $LWS_ApplyAbilityMilestone ( Monster, Monster's "LWS_Level" );
             $CreateEffector ( Monster, "level_up", 0 );
             $DebugOut ( 911, "LWS monster reached level", Monster's "LWS_Level" );
         end

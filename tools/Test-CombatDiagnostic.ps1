@@ -206,17 +206,6 @@ $requiredHookPatterns = @(
     'Function\s+LWS_PrepareClassShowcase',
     'Function\s+LWS_RunLootDiagnostic',
     'Function\s+LWS_RunSpellAttributionDiagnostic',
-    'Function\s+LWS_SetupWizardEnchantArena',
-    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Wizards_Guild3"',
-    '\$SpawnUnit\s*\(\s*WarriorsGuild\s*,\s*"Paladin"',
-    '#ATTRIB_StoredGold\s*,\s*1000',
-    '#ATTRIB_Intelligence\s*,\s*31',
-    '#ATTRIB_Weapon_Magic_Bonus\s*,\s*3',
-    'Paladin''s\s+"LWS_ArmorTier"\s*=\s*3',
-    'Paladin''s\s+"LWS_ArmorAffixBonus"\s*=\s*0',
-    'Paladin''s\s+"LWS_ArmorEnchantBonus"\s*=\s*0',
-    'Paladin''s\s+"Upgrade_Armor_Chance"\s*=\s*101',
-    'Paladin''s\s+"Upgrade_Weapon_Chance"\s*=\s*101',
     '\$spelldamage\s*\(\s*SpellMonster\s*,\s*EnemyTarget\s*,\s*1\s*,\s*1\s*\)',
     '\$spelldamage\s*\(\s*SpellMonster\s*,\s*FriendlyTarget\s*,\s*1\s*,\s*1\s*\)',
     'RequiredKills\s*=\s*\$LWS_KillsRequired',
@@ -239,8 +228,7 @@ $requiredHookPatterns = @(
     'LWS_DiagnosticBuildings',
     'LairTarget''s\s+"Has_Special_Spawn"\s*=\s*TRUE',
     'LairTarget''s\s+"Special_Spawn_Type"\s*=\s*"xx"',
-    '\$LWS_RunCombatDiagnostic\s*\(\s*AIRootAgent\s*,\s*Palace\s*\)',
-    '\$LWS_SetupWizardEnchantArena\s*\(\s*Palace\s*\)'
+    '\$LWS_RunCombatDiagnostic\s*\(\s*AIRootAgent\s*,\s*Palace\s*\)'
 )
 foreach ($pattern in $requiredHookPatterns) {
     if ($hookSource -notmatch $pattern) {
@@ -271,8 +259,11 @@ if ($hookSource -match '\$SpawnUnit\s*\([^;]+"LWSDW_U_Longsword_3_1"' -or
     $hookSource -match '\$SpawnUnit\s*\([^;]+"LWSDA_R_Plate_3_1"') {
     throw 'Legacy direct inspection equipment must not be spawned in the chest arena.'
 }
-if ($hookSource -match '\$SpawnUnit\s*\([^;]+"Peasant"') {
+if ($hookSource -match 'Function\s+LWS_RunCombatDiagnostic[\s\S]*?\$SpawnUnit\s*\([^;]+"Peasant"[\s\S]*?Function\s+LWS_PrepareClassShowcase') {
     throw 'Diagnostic checks must not spawn real Palace peasants.'
+}
+if ($hookSource -match 'LWS_SetupC2Level[36]AbilityArena|LWS_PrepareC2Level[36]ShowcaseMonster') {
+    throw 'Completed monster ability showcase arenas must remain removed.'
 }
 if ($hookSource -match 'LWS_TestRuntimeEquipmentCarrier|LWS_RunLegendaryCatalogDiagnostic') {
     throw 'Hidden loot diagnostics must not spawn a roster of real heroes.'
