@@ -495,9 +495,6 @@ Begin
     if ( $LWS_RunSpellAttributionDiagnostic ( Palace, TestLocation ) == FALSE )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
-    if ( $LWS_SetupWizardEnchantArena ( Palace ) == FALSE )
-        AIRootAgent's "LWS_DiagnosticFailures" += 1;
-
     if ( AIRootAgent's "LWS_DiagnosticFailures" == 0 )
         begin
             AIRootAgent's "LWS_DiagnosticPassed" = TRUE;

@@ -48,9 +48,12 @@ megoldást, és hivatkozni kell az ellenőrzésre vagy a részletes designra.
   monster lair és normál unit kill nem.
 - [x] **Permanent stat perkek** — 35% production esély; combat, defense és magic
   ág; monsterenként legfeljebb három perk, statcapekkel.
-- [ ] **Monster-safe ability perkek — külön feature** — előbb SDK-audit és célzott
-  aréna kell. Csak olyan meglévő ability használható, amelyet a Northern Expansion
-  monster AI valóban aktiválni és kezelni tud. Nem része a jelenlegi loot-ágnak.
+- [x] **Monster-safe ability perkek** — C2–C5 monster classonként és témakörönként
+  level 3/6/9 mérföldköveken kap Northern Expansion SDK-képességeket. A rendszer
+  kizárja a C1 mobokat, az exact és szerepkör szerinti duplikációkat, valamint a
+  lore-idegen kiosztást. A célzott arénák igazolták az aktiválást, majd vissza lettek
+  bontva; a további immersziós finomhangolás csak valós játékbeli balanszigény esetén
+  szükséges.
 
 ## Equipment modell
 
@@ -164,6 +167,15 @@ Rögzített kezdőszabályok:
   shopban vásárolható ideiglenes buffok purchase/transfer/effector mintáját kell
   feltérképezni és biztonságosan újrahasználni. A buff időtartama, halmozódása,
   újravásárlása és halál utáni viselkedése még nincs eldöntve.
+- [ ] **Kézzel készített buff/effect infrastruktúra** — a Potion of Luck feature
+  részeként vizsgáljuk és tervezzük meg a saját `Begin`/`End` wrapperből, effectorból
+  és időzített attribútummódosításból álló hatásokat. Az SDK-audit igazolta, hogy a
+  Dirgo Strength natív mintája monster agenten is alkalmazható, de a teljes
+  `Strength_Potion_Effect` inventoryt töröl és spellt felejt, ezért közvetlenül nem
+  újrahasználható. Külön meg kell oldani a vizuális effectort, az időtartamot, az
+  automatikus visszavonást, a stack/újraalkalmazás védelmét, a halál/törlés alatti
+  cleanupot, valamint a hős- és monster-kompatibilitást. Ezt a témát nem a jelenlegi
+  monster ability feature-ben valósítjuk meg.
 - [ ] **Marketplace és Trading Post UI-audit** — meg kell vizsgálni, hogy az új
   vásárlási elem adatból bővíthető-e, generált GPL/UI override szükséges-e, vagy
   a kezelőfelület engine/BCD korlátba ütközik.
