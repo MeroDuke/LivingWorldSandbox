@@ -80,7 +80,9 @@ Példa:
 
 Ebben az esetben a hős lecseréli a `T3 +2` páncélt a `T2 +6` páncélra, mert `7 > 4`.
 
-Az azonos összértékű tárgyak közötti döntés, valamint a structural és magical bónuszok későbbi súlyozása külön design-döntés lesz.
+Az azonos összértékű tárgyaknál az affix, majd a tier dönt. A Wizard Guild
+enchant nem része a földi tárgy saját értékének, ezért nem akadályozhatja meg egy
+valóban jobb tier+affix kombináció felszerelését.
 
 ## Blacksmith-fejlesztés
 
@@ -121,14 +123,14 @@ A Majesty eredetileg nem teljes értékű, különálló felszerelési tárgyké
 EquipmentType
 EquipmentTier
 EquipmentAffixBonus
-EquipmentMagicBonus
+ArmorEnchantBonus
 ```
 
 A vanilla harcrendszerrel használt attribútumokat ebből kell kiszámítani és szinkronizálni. A tier kizárólag a structural mezőbe kerül, mert az eredeti Northern Expansion UI ebből képezi a fegyver minőségi nevét. Az affix a hős eredeti alap fegyversebzéséhez adódik:
 
 ```text
 Armor_Struct_Bonus
-Armor_Magic_Bonus
+Armor_Magic_Bonus = EquipmentAffixBonus + ArmorEnchantBonus
 Weapon_Struct_Bonus
 Weapon_Magic_Bonus
 WeaponBasicDamage = OriginalWeaponBasicDamage + EquipmentAffixBonus
@@ -143,14 +145,16 @@ A hős kasztja továbbra is meghatározza a használható alap felszereléstípu
 - A Blacksmith látogatását a tier motiválja, nem a teljes bónusz.
 - A Blacksmith-fejlesztés javítja a tiert, de megtartja az affixet.
 - A hagyományos tiersorrend a játék kutatási szintjeit követi: `T2 -> T3 -> T4`.
-- A mágikus bónusz külön dimenzió marad.
+- Nem készül külön generált mágikus loot-dimenzió.
+- A Wizard Guild enchant külön, `0..3` közötti fejlesztési réteg.
+- Armornál a natív magic mező az affix és a Wizard Guild enchant összege.
+- A Blacksmith és az armorcsere megtartja a már megvásárolt enchantot.
 - A további tárgyak és drop listák erre a modellre épülnek.
 
 ## Később eldöntendő kérdések
 
 - A fegyverek és páncélok pontos tiernevei.
 - Az affixek lehetséges minimuma, maximuma és eloszlása.
-- A structural és magical értékek súlyozása tárgycserénél.
 - Döntetlen értékű tárgyak kezelése.
 - A lecserélt felszerelés sorsa: eldobás, eladás, tárolás vagy megsemmisítés.
 - Artifact tárgyak és a hagyományos `T4` fölötti kategóriák.

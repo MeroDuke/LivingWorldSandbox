@@ -46,10 +46,17 @@ if ($bootstrapSource -notmatch 'LWS_SeedExplorationChests\s*\(\s*Palace\s*\)') {
 }
 if ($bootstrapSource -notmatch 'ChestCount\s*<\s*12' -or
     $bootstrapSource -notmatch 'ChestCount\s*<\s*8' -or
-    $bootstrapSource -notmatch 'MinimumDistance\s*=\s*FarthestDistance\s*/\s*4' -or
-    $bootstrapSource -notmatch 'MaximumDistance\s*=\s*FarthestDistance\s*/\s*3' -or
+    $bootstrapSource -notmatch 'LWS_SkipExplorationChests' -or
+    $bootstrapSource -notmatch 'MinimumDistance\s*=\s*FarthestDistance\s*/\s*3' -or
+    $bootstrapSource -notmatch 'MaximumDistance\s*=\s*\(\s*FarthestDistance\s*\*\s*2\s*\)\s*/\s*3' -or
     $bootstrapSource -notmatch 'RandomCoord\s*\(\s*Palace\s*,\s*MinimumDistance\s*,\s*MaximumDistance') {
-    throw 'Production exploration chest count, 8/4 class split, or 1/4-1/3 distance band is missing.'
+    throw 'Production exploration chest count, 8/4 class split, diagnostic guard, or 1/3-2/3 distance band is missing.'
+}
+if ($diagnosticSource -notmatch 'LWS_SkipExplorationChests[^}]+\$LivingWorldSandbox\s*\(\s*\)') {
+    throw 'Combat diagnostic must disable production exploration chests before running the shared bootstrap.'
+}
+if ($bootstrapSource -match '\$IsValidGamePiece\s*\(\s*AIRootAgent\s*\)[\s\S]{0,160}LWS_SkipExplorationChests') {
+    throw 'GPLAIRoot has no game piece; the diagnostic exploration-chest guard must use its attribute directly.'
 }
 if ($chestSource -notmatch '#chest_starting_gold\s*\+\s*\$RandomNumber\s*\(\s*#chest_random_gold\s*\)') {
     throw 'Full-potion fallback does not use the native 50-149 chest gold formula.'

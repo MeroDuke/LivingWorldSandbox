@@ -19,13 +19,18 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_SeedExplorationChests ( agent Palace )
 Declare
-    agent Chest;
+    agent Chest, AIRootAgent;
     coordinate BoardExtents, PalaceLocation, SpawnLocation;
     integer BoardWidth, BoardHeight, PalaceX, PalaceY;
     integer FarthestX, FarthestY, FarthestDistance, MinimumDistance, MaximumDistance;
     integer AttemptCount, ChestCount, ChestClass, RewardCount;
 Begin
     if ( $IsValidGamePiece ( Palace ) == FALSE ) return;
+    AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
+    // GPLAIRoot owns quest state but deliberately has no unit/game piece.
+    // HasAttribute is therefore the correct guard for the diagnostic skip flag.
+    if ( $HasAttribute ( "LWS_SkipExplorationChests", AIRootAgent ))
+        if ( AIRootAgent's "LWS_SkipExplorationChests" ) return;
 
     BoardExtents = $GetBoardExtents ();
     PalaceLocation = $LocationOf ( Palace );
@@ -39,8 +44,10 @@ Begin
     FarthestY = PalaceY;
     if (( BoardHeight - PalaceY ) > FarthestY ) FarthestY = BoardHeight - PalaceY;
     FarthestDistance = $Sqrt (( FarthestX * FarthestX ) + ( FarthestY * FarthestY ));
-    MinimumDistance = FarthestDistance / 4;
-    MaximumDistance = FarthestDistance / 3;
+    // Use a broad middle-map band. The former 1/4-1/3 annulus packed all
+    // twelve chests into one visible ring around the Palace.
+    MinimumDistance = FarthestDistance / 3;
+    MaximumDistance = ( FarthestDistance * 2 ) / 3;
 
     AttemptCount = 0;
     ChestCount = 0;

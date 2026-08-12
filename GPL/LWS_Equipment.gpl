@@ -34,6 +34,25 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_TierFromStructBonus ( integer StructBonus ) is integer
+Declare
+Begin
+    if ( StructBonus >= 3 ) return 4;
+    if ( StructBonus == 2 ) return 3;
+    if ( StructBonus == 1 ) return 2;
+    return 1;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_ClampWizardEnchantBonus ( integer EnchantBonus ) is integer
+Declare
+Begin
+    if ( EnchantBonus < 0 ) return 0;
+    if ( EnchantBonus > 3 ) return 3;
+    return EnchantBonus;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_EquipmentPower ( string EquipmentType, integer Tier, integer AffixBonus ) is integer
 Declare
 Begin
@@ -160,7 +179,8 @@ Begin
     if ( $HasAttribute ( "LWS_WeaponBaseDamage", Hero ) == FALSE )
         $AddAttribute ( Hero, "LWS_WeaponBaseDamage", "integer", $GetAttribute ( Hero, #ATTRIB_Weapon_Basic_Damage ));
     if ( $HasAttribute ( "LWS_WeaponTier", Hero ) == FALSE )
-        $AddAttribute ( Hero, "LWS_WeaponTier", "integer", 1 );
+        $AddAttribute ( Hero, "LWS_WeaponTier", "integer",
+                        $LWS_TierFromStructBonus ( $GetAttribute ( Hero, #ATTRIB_Weapon_Struct_Bonus )));
     if ( $HasAttribute ( "LWS_WeaponAffixBonus", Hero ) == FALSE )
         $AddAttribute ( Hero, "LWS_WeaponAffixBonus", "integer", 0 );
 End
@@ -168,11 +188,33 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_EnsureArmorEquipmentState ( agent Hero )
 Declare
+    integer NativeMagicBonus;
 Begin
+    NativeMagicBonus = $GetAttribute ( Hero, #ATTRIB_Armor_Magic_Bonus );
+
     if ( $HasAttribute ( "LWS_ArmorTier", Hero ) == FALSE )
-        $AddAttribute ( Hero, "LWS_ArmorTier", "integer", 1 );
+        $AddAttribute ( Hero, "LWS_ArmorTier", "integer",
+                        $LWS_TierFromStructBonus ( $GetAttribute ( Hero, #ATTRIB_Armor_Struct_Bonus )));
     if ( $HasAttribute ( "LWS_ArmorAffixBonus", Hero ) == FALSE )
         $AddAttribute ( Hero, "LWS_ArmorAffixBonus", "integer", 0 );
+    if ( $HasAttribute ( "LWS_ArmorEnchantBonus", Hero ) == FALSE )
+        $AddAttribute ( Hero, "LWS_ArmorEnchantBonus", "integer",
+                        $LWS_ClampWizardEnchantBonus ( NativeMagicBonus ));
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Function LWS_SyncArmorMagicBonus ( agent Hero )
+Declare
+    integer NativeEnchant;
+Begin
+    $LWS_EnsureArmorEquipmentState ( Hero );
+    // The native field belongs exclusively to the Northern Expansion Wizard Guild
+    // and must remain in its supported 0..3 range. LWS affixes are applied only by
+    // the generated combat override.
+    NativeEnchant = $LWS_ClampWizardEnchantBonus (
+        $GetAttribute ( Hero, #ATTRIB_Armor_Magic_Bonus ));
+    $SetAttribute ( Hero, #ATTRIB_Armor_Magic_Bonus, NativeEnchant );
+    Hero's "LWS_ArmorEnchantBonus" = NativeEnchant;
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -287,9 +329,9 @@ Begin
             NewOwnerAgent's "LWS_ArmorTier" = ItemTier;
             NewOwnerAgent's "LWS_ArmorAffixBonus" = ItemAffix;
             $SetAttribute ( NewOwnerAgent, #ATTRIB_Armor_Struct_Bonus, $LWS_ArmorTierBaseBonus ( ItemTier ));
-            // Northern Expansion treasure armor stores its persistent enchantment here.
-            // Armor_Basic_Damage is engine-managed and can be recalculated after pickup.
-            $SetAttribute ( NewOwnerAgent, #ATTRIB_Armor_Magic_Bonus, ItemAffix );
+            // Drop affix and Wizard Guild enchantment are independent layers.
+            // The native field carries their combat-effective sum.
+            $LWS_SyncArmorMagicBonus ( NewOwnerAgent );
             $CreateEffector ( NewOwnerAgent, "got_armor", 0 );
             $DebugOut ( 911, "LWS EQUIPPED ARMOR", NewOwnerAgent, "TIER", ItemTier, "AFFIX", ItemAffix, "EFFECTIVE", ItemEffective );
         end
@@ -406,7 +448,6 @@ Begin
             Tier = ThisAgent's "LWS_ArmorTier";
             if ( Tier >= 4 ) return FALSE;
 
-            ThisAgent's "Task_Number" = #ATTRIB_Armor_Struct_Bonus;
             if ( Tier == 1 )
                 begin
                     Gold_Needed = #Cost_Per_Struct_Upgrade1 * #armor_multiplier;
@@ -425,6 +466,7 @@ Begin
 
             if ( $Total_Gold ( ThisAgent ) < Gold_Needed ) return FALSE;
             if ( $ListSize ( Potentials ) == 0 ) return FALSE;
+            ThisAgent's "Task_Number" = #ATTRIB_Armor_Struct_Bonus;
             ThisAgent's "Target" = $Loyalty_Mod_Pick_Closest ( ThisAgent, Potentials );
             ThisAgent's "TaskName" = "visiting";
             return TRUE;
@@ -435,7 +477,6 @@ Begin
             Tier = ThisAgent's "LWS_WeaponTier";
             if ( Tier >= 4 ) return FALSE;
 
-            ThisAgent's "Task_Number" = #ATTRIB_Weapon_Struct_Bonus;
             if ( Tier == 1 )
                 begin
                     Gold_Needed = #Cost_Per_Struct_Upgrade1;
@@ -455,6 +496,7 @@ Begin
             if ( $Total_Gold ( ThisAgent ) < Gold_Needed ) return FALSE;
             if ( $ListSize ( Potentials ) == 0 ) return FALSE;
 
+            ThisAgent's "Task_Number" = #ATTRIB_Weapon_Struct_Bonus;
             ThisAgent's "Target" = $Loyalty_Mod_Pick_Closest ( ThisAgent, Potentials );
             ThisAgent's "TaskName" = "visiting";
             return TRUE;
@@ -565,7 +607,7 @@ Begin
                     $Spend_Gold ( ThisAgent, ThisBuilding, Gold );
                     ThisAgent's "LWS_ArmorTier" = Tier;
                     $SetAttribute ( ThisAgent, #ATTRIB_Armor_Struct_Bonus, $LWS_ArmorTierBaseBonus ( Tier ));
-                    $SetAttribute ( ThisAgent, #ATTRIB_Armor_Magic_Bonus, AffixBonus );
+                    $LWS_SyncArmorMagicBonus ( ThisAgent );
                     $DebugOut ( 911, "LWS BLACKSMITH ARMOR UPGRADE", ThisAgent, "TIER", Tier, "AFFIX", AffixBonus );
                 end
 

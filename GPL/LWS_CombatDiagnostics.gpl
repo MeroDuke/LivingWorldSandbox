@@ -8,12 +8,15 @@ Declare
     agent AIRootAgent, Palace;
     list Palaces;
 Begin
+    AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
+    $AddAttribute ( AIRootAgent, "LWS_SkipExplorationChests", "boolean", TRUE );
+
     // Keep the known-good production bootstrap in the diagnostic quest.
+    // The targeted arena supplies its own single deterministic chest.
     $LivingWorldSandbox ();
 
     Palaces = $ListPalaces ();
     Palace = $ListMember ( Palaces, 1 );
-    AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
 
     $AddAttribute ( AIRootAgent, "LWS_DiagnosticPassed", "boolean", FALSE );
     $AddAttribute ( AIRootAgent, "LWS_DiagnosticFailures", "integer", 0 );
@@ -156,6 +159,54 @@ Begin
 
     $DeleteGamePiece ( FriendlyTarget );
     $DeleteGamePiece ( SpellMonster );
+    return TRUE;
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Visible, minimal arena for manually verifying Northern Expansion Wizard Guild
+// armor enchantments. Replacement/preservation testing stays disabled until the
+// completely native purchase and building-visit path is proven in game.
+Function LWS_SetupWizardEnchantArena ( agent Palace ) is boolean
+Declare
+    agent WarriorsGuild, WizardsGuild, Paladin;
+    coordinate ArenaLocation;
+Begin
+    ArenaLocation = $RandomCoord ( Palace, 350, 500 );
+    WarriorsGuild = $SpawnUnit ( Palace, "Warriors_Guild", ArenaLocation, "MaxHP", #Player_1 );
+    if ( $IsValidGamePiece ( WarriorsGuild ) == FALSE ) return FALSE;
+
+    WizardsGuild = $SpawnUnit ( Palace, "Wizards_Guild3",
+                                $RandomCoord ( WarriorsGuild, 180, 240 ), "MaxHP", #Player_1 );
+    if ( $IsValidGamePiece ( WizardsGuild ) == FALSE ) return FALSE;
+
+    Paladin = $SpawnUnit ( WarriorsGuild, "Paladin",
+                           $RandomCoord ( WarriorsGuild, 40, 80 ), #Player_1 );
+    if ( $IsValidGamePiece ( Paladin ) == FALSE ) return FALSE;
+    if ( Paladin's "home" == $NullAgent ()) $Adopt ( WarriorsGuild, Paladin );
+
+    $Advance_To_Level ( Paladin, 8 );
+    $SetAttribute ( Paladin, #ATTRIB_HP, $GetAttribute ( Paladin, #ATTRIB_MaxHP ));
+    $SetAttribute ( Paladin, #ATTRIB_Gold, 0 );
+    $SetAttribute ( Paladin, #ATTRIB_StoredGold, 1000 );
+    $SetAttribute ( Paladin, #ATTRIB_Intelligence, 31 );
+    $SetAttribute ( Paladin, #ATTRIB_Weapon_Magic_Bonus, 3 );
+    $SetAttribute ( Paladin, #ATTRIB_Armor_Magic_Bonus, 0 );
+    Paladin's "Upgrade_Armor_Chance" = 101;
+    Paladin's "Upgrade_Weapon_Chance" = 101;
+
+    // Start with native-compatible T3 armor and no generated affix. This A/B arena
+    // isolates the untouched Northern Expansion Wizard Guild path.
+    $LWS_EnsureArmorEquipmentState ( Paladin );
+    Paladin's "LWS_ArmorTier" = 3;
+    Paladin's "LWS_ArmorAffixBonus" = 0;
+    Paladin's "LWS_ArmorEnchantBonus" = 0;
+    $SetAttribute ( Paladin, #ATTRIB_Armor_Struct_Bonus, $LWS_ArmorTierBaseBonus ( 3 ));
+    $LWS_SyncArmorMagicBonus ( Paladin );
+
+    // Do not call a decision-tree module from the quest bootstrap. The SDK only
+    // invokes Purchase_Equipment from the hero's own recurring Paladin_tree.
+    // The deterministic chance, intelligence and money values make that native
+    // decision select the Wizard Guild without a competing controller.
     return TRUE;
 End
 
@@ -442,6 +493,9 @@ Begin
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
     if ( $LWS_RunSpellAttributionDiagnostic ( Palace, TestLocation ) == FALSE )
+        AIRootAgent's "LWS_DiagnosticFailures" += 1;
+
+    if ( $LWS_SetupWizardEnchantArena ( Palace ) == FALSE )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
 
     if ( AIRootAgent's "LWS_DiagnosticFailures" == 0 )

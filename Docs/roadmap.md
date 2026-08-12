@@ -65,10 +65,12 @@ megoldást, és hivatkozni kell az ellenőrzésre vagy a részletes designra.
   A hős vásárlási döntését nem blokkolja egy nagy affix.
 - [x] **Jobb equipment kiválasztása** — effektív power, majd döntetlennél affix
   és tier alapján történik.
-- [ ] **Mágikus equipment-dimenzió — külön feature** — azt jelentené, hogy egy
-  tárgy fizikai/structural és mágikus ereje két külön generált tulajdonságként
-  szerepelne az egyetlen összesített power helyett. A szükségességéről és pontos
-  designjáról külön feature-ben döntünk; nem része a jelenlegi loot-ágnak.
+- [x] **Wizard Guild enchant kompatibilitás** — nem vezetünk be második, generált
+  mágikus loot-dimenziót. Az armor affixe és a Wizard Guild natív `+1..+3`
+  enchantja külön tárolódik, a motor `Armor_Magic_Bonus` mezőjében pedig ezek
+  összege érvényesül. Armorcsere és Blacksmith-upgrade megtartja az enchantot;
+  a tárgyválasztás továbbra is csak a tárgy saját tier+affix értékét hasonlítja.
+  A szerződést a `tools/Test-WizardEnchantCompatibility.ps1` ellenőrzi.
 - [ ] **Lecserélt vagy gyengébb equipment sorsa — külön feature** — eladás, salvage,
   tárolás vagy hősönkénti ignore-memory. A Potion of Luck megvalósíthatósági
   vizsgálata után térünk vissza rá; nem része a jelenlegi loot-ágnak.

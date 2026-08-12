@@ -1,0 +1,79 @@
+[CmdletBinding()]
+param(
+    [string]$SdkRoot
+)
+
+$ErrorActionPreference = 'Stop'
+$repositoryRoot = Split-Path -Parent $PSScriptRoot
+$resolvedSdkRoot = if ($SdkRoot) { $SdkRoot } else { Join-Path $repositoryRoot 'SDK' }
+$equipmentPath = Join-Path $repositoryRoot 'GPL\LWS_Equipment.gpl'
+$chestPath = Join-Path $repositoryRoot 'GPL\LWS_Chest.gpl'
+$combatGeneratorPath = Join-Path $repositoryRoot 'tools\New-CombatOverride.ps1'
+$sdkDecisionPath = Join-Path $resolvedSdkRoot 'OriginalQuests\GPLMx\DecisionTrees\Modules\mx_Purchase_Equipment.gpl'
+$sdkTaskPath = Join-Path $resolvedSdkRoot 'OriginalQuests\GPLMx\TaskModules\Buildings\mx_Enchant_Equipment.gpl'
+
+$equipment = Get-Content -LiteralPath $equipmentPath -Raw
+$chest = Get-Content -LiteralPath $chestPath -Raw
+$combatGenerator = Get-Content -LiteralPath $combatGeneratorPath -Raw
+
+$requiredEquipmentPatterns = @(
+    'Function\s+LWS_TierFromStructBonus',
+    'Function\s+LWS_ClampWizardEnchantBonus',
+    'Function\s+LWS_EnsureArmorEquipmentState',
+    'LWS_ArmorEnchantBonus',
+    'Function\s+LWS_SyncArmorMagicBonus',
+    'NativeEnchant\s*=\s*\$LWS_ClampWizardEnchantBonus',
+    '#ATTRIB_Armor_Magic_Bonus\s*,\s*NativeEnchant',
+    'Hero''s\s+"LWS_ArmorEnchantBonus"\s*=\s*NativeEnchant',
+    'Function\s+Obtain_Upgrade[\s\S]+?What_To_Upgrade\s*==\s*#ATTRIB_Armor_Struct_Bonus[\s\S]+?\$LWS_SyncArmorMagicBonus\s*\(\s*ThisAgent\s*\)',
+    'Function\s+LWS_EquipArmorTransfer[\s\S]+?\$LWS_SyncArmorMagicBonus\s*\(\s*NewOwnerAgent\s*\)'
+)
+foreach ($pattern in $requiredEquipmentPatterns) {
+    if ($equipment -notmatch $pattern) {
+        throw "Missing Wizard Guild compatibility pattern: $pattern"
+    }
+}
+
+if ($equipment -match 'Function\s+WizGuild_Check' -or
+    $equipment -match 'Function\s+Obtain_Enchantment' -or
+    $equipment -match 'Function\s+LWS_ExperimentalWizGuildCheck' -or
+    $equipment -match 'Function\s+LWS_ExperimentalObtainEnchantment') {
+    throw 'LWS must use the untouched Northern Expansion Wizard Guild functions.'
+}
+
+if ($chest -notmatch 'Function\s+LWS_ApplyLockedArmorReward[\s\S]+?\$LWS_SyncArmorMagicBonus\s*\(\s*Hero\s*\)') {
+    throw 'Chest armor rewards do not preserve and recompute the Wizard Guild enchantment.'
+}
+
+if ($equipment -match '#ATTRIB_Armor_Magic_Bonus\s*,\s*AffixBonus') {
+    throw 'A direct armor-affix write would erase the separate Wizard Guild enchantment.'
+}
+
+foreach ($pattern in @(
+    'LWS_ArmorAffixBonus.*dmg_stopped',
+    'LWS_ArmorAffixBonus.*#armor_magic_mult'
+)) {
+    if ($combatGenerator -notmatch $pattern) {
+        throw "Generated combat override does not apply the separate armor affix: $pattern"
+    }
+}
+
+if ((Test-Path -LiteralPath $sdkDecisionPath -PathType Leaf) -and
+    (Test-Path -LiteralPath $sdkTaskPath -PathType Leaf)) {
+    $sdkDecision = Get-Content -LiteralPath $sdkDecisionPath -Raw
+    $sdkTask = Get-Content -LiteralPath $sdkTaskPath -Raw
+
+    foreach ($pattern in @('Function\s+WizGuild_Check', '#Cost_Per_Magic_Enchantment1', '#Cost_Per_Magic_Enchantment2', '#Cost_Per_Magic_Enchantment3')) {
+        if ($sdkDecision -notmatch $pattern) {
+            throw "Northern Expansion Wizard Guild decision contract changed: $pattern"
+        }
+    }
+    if ($sdkTask -notmatch 'Function\s+Obtain_Enchantment') {
+        throw 'Northern Expansion Wizard Guild transaction contract changed.'
+    }
+}
+else {
+    Write-Host 'Northern Expansion SDK is unavailable; skipping the optional read-only SDK contract cross-check.'
+}
+
+Write-Host 'Wizard Guild enchant compatibility validation passed.'

@@ -140,15 +140,17 @@ $requiredEquipmentPatterns = @(
     'LWS_WeaponBaseDamage',
     'LWS_ArmorTier',
     'LWS_ArmorAffixBonus',
+    'LWS_ArmorEnchantBonus',
     'LWS_EquipmentFamily',
     'Function\s+BlackSmith_Check',
     'Function\s+Obtain_Upgrade',
+    'Function\s+LWS_SyncArmorMagicBonus',
     'Tier\s*==\s*2[^}]+Tier\s*=\s*3',
     'Tier\s*==\s*3[^}]+Tier\s*=\s*4',
     '#ATTRIB_Weapon_Struct_Bonus\s*,\s*\$LWS_WeaponTierBaseBonus\s*\(\s*Tier',
     '#ATTRIB_Weapon_Basic_Damage\s*,\s*ThisAgent''s\s+"LWS_WeaponBaseDamage"\s*\+\s*AffixBonus',
     '#ATTRIB_Armor_Struct_Bonus\s*,\s*\$LWS_ArmorTierBaseBonus\s*\(\s*Tier',
-    '#ATTRIB_Armor_Magic_Bonus\s*,\s*AffixBonus'
+    '#ATTRIB_Armor_Magic_Bonus\s*,\s*NativeEnchant'
 )
 foreach ($pattern in $requiredEquipmentPatterns) {
     if ($equipmentSource -notmatch $pattern) {
@@ -204,6 +206,17 @@ $requiredHookPatterns = @(
     'Function\s+LWS_PrepareClassShowcase',
     'Function\s+LWS_RunLootDiagnostic',
     'Function\s+LWS_RunSpellAttributionDiagnostic',
+    'Function\s+LWS_SetupWizardEnchantArena',
+    '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Wizards_Guild3"',
+    '\$SpawnUnit\s*\(\s*WarriorsGuild\s*,\s*"Paladin"',
+    '#ATTRIB_StoredGold\s*,\s*1000',
+    '#ATTRIB_Intelligence\s*,\s*31',
+    '#ATTRIB_Weapon_Magic_Bonus\s*,\s*3',
+    'Paladin''s\s+"LWS_ArmorTier"\s*=\s*3',
+    'Paladin''s\s+"LWS_ArmorAffixBonus"\s*=\s*0',
+    'Paladin''s\s+"LWS_ArmorEnchantBonus"\s*=\s*0',
+    'Paladin''s\s+"Upgrade_Armor_Chance"\s*=\s*101',
+    'Paladin''s\s+"Upgrade_Weapon_Chance"\s*=\s*101',
     '\$spelldamage\s*\(\s*SpellMonster\s*,\s*EnemyTarget\s*,\s*1\s*,\s*1\s*\)',
     '\$spelldamage\s*\(\s*SpellMonster\s*,\s*FriendlyTarget\s*,\s*1\s*,\s*1\s*\)',
     'RequiredKills\s*=\s*\$LWS_KillsRequired',
@@ -226,7 +239,8 @@ $requiredHookPatterns = @(
     'LWS_DiagnosticBuildings',
     'LairTarget''s\s+"Has_Special_Spawn"\s*=\s*TRUE',
     'LairTarget''s\s+"Special_Spawn_Type"\s*=\s*"xx"',
-    '\$LWS_RunCombatDiagnostic\s*\(\s*AIRootAgent\s*,\s*Palace\s*\)'
+    '\$LWS_RunCombatDiagnostic\s*\(\s*AIRootAgent\s*,\s*Palace\s*\)',
+    '\$LWS_SetupWizardEnchantArena\s*\(\s*Palace\s*\)'
 )
 foreach ($pattern in $requiredHookPatterns) {
     if ($hookSource -notmatch $pattern) {
@@ -235,6 +249,16 @@ foreach ($pattern in $requiredHookPatterns) {
 }
 if ($hookSource -match '\$NewThread\s*\(\s*\$LWS_RunCombatDiagnostic') {
     throw 'Diagnostic callback must not be passed directly to NewThread.'
+}
+if ($hookSource -match 'Function\s+LWS_ForceWizardEnchantVisit' -or
+    $hookSource -match '\$Use_Building\s*\(\s*Paladin\s*\)' -or
+    $hookSource -match '\$Purchase_Equipment\s*\(\s*Paladin\s*\)' -or
+    $hookSource -match 'LWS_ForceEnchantScript' -or
+    $hookSource -match 'LWS_EnchantObserverScript') {
+    throw 'Wizard arena must not invoke hero decision modules outside the Paladin AI thread.'
+}
+if ($hookSource -match '\$SpawnUnit\s*\([^;]+"LWS_T3_Armor_Plus1"') {
+    throw 'Wizard arena must remain item-free until the native enchant transaction completes.'
 }
 if ($hookSource -match 'EnemyCount\s*<|PotionCount\s*<|PeasantCount\s*<') {
     throw 'Legacy crowd and potion arena setup must remain removed.'

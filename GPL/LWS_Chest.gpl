@@ -153,7 +153,7 @@ Begin
     Hero's "LWS_ArmorTier" = Tier;
     Hero's "LWS_ArmorAffixBonus" = AffixBonus;
     $SetAttribute ( Hero, #ATTRIB_Armor_Struct_Bonus, $LWS_ArmorTierBaseBonus ( Tier ));
-    $SetAttribute ( Hero, #ATTRIB_Armor_Magic_Bonus, AffixBonus );
+    $LWS_SyncArmorMagicBonus ( Hero );
     $CreateEffector ( Hero, "got_armor", 0 );
     return TRUE;
 End

@@ -44,9 +44,10 @@ chest:
 - nincs utánpótlás vagy újragenerálás.
 
 A generátor futásidőben kiolvassa a pálya kiterjedését és a Palace helyét. A
-chesteket a Palace-tól a legtávolabbi sarok távolságának 1/4–1/3 része közötti
-sávban szórja szét. Így a kezdő jutalmakért kell felfedezni, de nem kerülnek a
-pálya legtávolabbi pontjaira. Az érvénytelen vagy foglalt terepet legfeljebb 120
+chesteket a Palace-tól a legtávolabbi sarok távolságának 1/3–2/3 része közötti,
+széles középső sávban szórja szét. Így nem alkotnak egyetlen sűrű gyűrűt a Palace
+körül, a jutalmakért fel kell fedezni, de nem kerülnek kizárólag a pálya
+legtávolabbi pontjaira. Az érvénytelen vagy foglalt terepet legfeljebb 120
 próbálkozással kerüli el.
 
 A chest nyitásig a pályán marad. Nyitás után a gyári `Open_Chest` kezeli az
