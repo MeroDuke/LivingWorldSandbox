@@ -48,9 +48,12 @@ megoldást, és hivatkozni kell az ellenőrzésre vagy a részletes designra.
   monster lair és normál unit kill nem.
 - [x] **Permanent stat perkek** — 35% production esély; combat, defense és magic
   ág; monsterenként legfeljebb három perk, statcapekkel.
-- [ ] **Monster-safe ability perkek — külön feature** — előbb SDK-audit és célzott
-  aréna kell. Csak olyan meglévő ability használható, amelyet a Northern Expansion
-  monster AI valóban aktiválni és kezelni tud. Nem része a jelenlegi loot-ágnak.
+- [x] **Monster-safe ability perkek** — C2–C5 monster classonként és témakörönként
+  level 3/6/9 mérföldköveken kap Northern Expansion SDK-képességeket. A rendszer
+  kizárja a C1 mobokat, az exact és szerepkör szerinti duplikációkat, valamint a
+  lore-idegen kiosztást. A célzott arénák igazolták az aktiválást, majd vissza lettek
+  bontva; a további immersziós finomhangolás csak valós játékbeli balanszigény esetén
+  szükséges.
 
 ## Equipment modell
 
