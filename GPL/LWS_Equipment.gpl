@@ -649,7 +649,10 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Northern Expansion Wizard Guild compatibility. LWS armor keeps its generated
 // affix separate from the guild's native 0-3 enchantment progression.
-Function WizGuild_Check ( agent ThisAgent, string Equipment, integer Bonus, list WizGuilds ) is boolean
+// A/B diagnostic implementation retained for reference, but deliberately not named
+// WizGuild_Check. Purchase_Equipment therefore resolves to the Northern Expansion
+// SDK implementation while we isolate the persistent Thinking state.
+Function LWS_ExperimentalWizGuildCheck ( agent ThisAgent, string Equipment, integer Bonus, list WizGuilds ) is boolean
 Declare
     agent WizGuild;
     list Potentials;
@@ -685,7 +688,9 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-Function Obtain_Enchantment ( agent ThisAgent )
+// Not registered as Obtain_Enchantment during the A/B test. Wizards Guild buildings
+// consequently execute the unmodified Northern Expansion transaction function.
+Function LWS_ExperimentalObtainEnchantment ( agent ThisAgent )
 Declare
     agent ThisBuilding, BuildingContainer;
     integer What_To_Upgrade, CurrentBonus, Total_Gold, Gold, Upgrade, Bldg_Level;

@@ -194,11 +194,11 @@ Begin
     Paladin's "Upgrade_Armor_Chance" = 101;
     Paladin's "Upgrade_Weapon_Chance" = 101;
 
-    // Start directly with T3 +1. No item or chest exists yet: Purchase_Equipment
-    // gets an uninterrupted native route to the level-three Wizard Guild.
+    // Start with native-compatible T3 armor and no generated affix. This A/B arena
+    // isolates the untouched Northern Expansion Wizard Guild path.
     $LWS_EnsureArmorEquipmentState ( Paladin );
     Paladin's "LWS_ArmorTier" = 3;
-    Paladin's "LWS_ArmorAffixBonus" = 1;
+    Paladin's "LWS_ArmorAffixBonus" = 0;
     Paladin's "LWS_ArmorEnchantBonus" = 0;
     $SetAttribute ( Paladin, #ATTRIB_Armor_Struct_Bonus, $LWS_ArmorTierBaseBonus ( 3 ));
     $LWS_SyncArmorMagicBonus ( Paladin );

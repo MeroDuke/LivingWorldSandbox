@@ -24,9 +24,9 @@ $requiredEquipmentPatterns = @(
     'LWS_ArmorEnchantBonus',
     'Function\s+LWS_SyncArmorMagicBonus',
     '#ATTRIB_Armor_Magic_Bonus\s*,\s*Hero''s\s+"LWS_ArmorAffixBonus"\s*\+\s*Hero''s\s+"LWS_ArmorEnchantBonus"',
-    'Function\s+WizGuild_Check',
+    'Function\s+LWS_ExperimentalWizGuildCheck',
     'Bonus\s*=\s*ThisAgent''s\s+"LWS_ArmorEnchantBonus"',
-    'Function\s+Obtain_Enchantment',
+    'Function\s+LWS_ExperimentalObtainEnchantment',
     '\$IsValidGamePiece\s*\(\s*ThisBuilding\s*\)\s*==\s*FALSE',
     'What_To_Upgrade\s*!=\s*#ATTRIB_Weapon_Magic_Bonus',
     'What_To_Upgrade\s*!=\s*#ATTRIB_Armor_Magic_Bonus',
@@ -43,6 +43,11 @@ foreach ($pattern in $requiredEquipmentPatterns) {
     if ($equipment -notmatch $pattern) {
         throw "Missing Wizard Guild compatibility pattern: $pattern"
     }
+}
+
+if ($equipment -match 'Function\s+WizGuild_Check' -or
+    $equipment -match 'Function\s+Obtain_Enchantment') {
+    throw 'The A/B build must use the untouched Northern Expansion Wizard Guild functions.'
 }
 
 if ($chest -notmatch 'Function\s+LWS_ApplyLockedArmorReward[\s\S]+?\$LWS_SyncArmorMagicBonus\s*\(\s*Hero\s*\)') {
