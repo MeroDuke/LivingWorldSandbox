@@ -144,15 +144,13 @@ $requiredEquipmentPatterns = @(
     'LWS_EquipmentFamily',
     'Function\s+BlackSmith_Check',
     'Function\s+Obtain_Upgrade',
-    'Function\s+LWS_ExperimentalWizGuildCheck',
-    'Function\s+LWS_ExperimentalObtainEnchantment',
     'Function\s+LWS_SyncArmorMagicBonus',
     'Tier\s*==\s*2[^}]+Tier\s*=\s*3',
     'Tier\s*==\s*3[^}]+Tier\s*=\s*4',
     '#ATTRIB_Weapon_Struct_Bonus\s*,\s*\$LWS_WeaponTierBaseBonus\s*\(\s*Tier',
     '#ATTRIB_Weapon_Basic_Damage\s*,\s*ThisAgent''s\s+"LWS_WeaponBaseDamage"\s*\+\s*AffixBonus',
     '#ATTRIB_Armor_Struct_Bonus\s*,\s*\$LWS_ArmorTierBaseBonus\s*\(\s*Tier',
-    'Hero''s\s+"LWS_ArmorAffixBonus"\s*\+\s*Hero''s\s+"LWS_ArmorEnchantBonus"'
+    '#ATTRIB_Armor_Magic_Bonus\s*,\s*NativeEnchant'
 )
 foreach ($pattern in $requiredEquipmentPatterns) {
     if ($equipmentSource -notmatch $pattern) {

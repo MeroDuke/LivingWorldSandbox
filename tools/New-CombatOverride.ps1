@@ -82,15 +82,42 @@ function Add-CombatCreditHook {
     $FunctionLines.Insert($insertionIndex, "$indent`$LWS_CombatCredit ( attacker, defender, dmg );")
 }
 
+function Add-ArmorAffixHooks {
+    param([System.Collections.Generic.List[string]]$FunctionLines, [string]$Name)
+
+    $physicalNeedle = 'dmg_stopped += $GetAttribute ( defender, #ATTRIB_armor_magic_bonus );'
+    $spellNeedle = 'dmg -= $getattribute(defender,#ATTRIB_armor_magic_bonus) * #armor_magic_mult;'
+    $physicalCount = 0
+    $spellCount = 0
+
+    for ($index = $FunctionLines.Count - 1; $index -ge 0; $index -= 1) {
+        $trimmed = $FunctionLines[$index].Trim()
+        $indent = ($FunctionLines[$index] -replace '^(\s*).*$', '$1')
+        if ($trimmed -eq $physicalNeedle) {
+            $FunctionLines.Insert($index + 1, "$indent" + 'if ($HasAttribute ("LWS_ArmorAffixBonus", defender)) dmg_stopped += defender''s "LWS_ArmorAffixBonus";')
+            $physicalCount += 1
+        }
+        elseif ($trimmed -eq $spellNeedle) {
+            $FunctionLines.Insert($index + 1, "$indent" + 'if ($HasAttribute ("LWS_ArmorAffixBonus", defender)) dmg -= defender''s "LWS_ArmorAffixBonus" * #armor_magic_mult;')
+            $spellCount += 1
+        }
+    }
+
+    if ($Name -eq 'damage' -and $physicalCount -ne 1) { throw "Expected one physical armor hook in $Name(); found $physicalCount." }
+    if ($Name -eq 'spelldamage' -and $spellCount -ne 1) { throw "Expected one spell armor hook in $Name(); found $spellCount." }
+}
+
 $damageFunction = Get-GplFunction -Name 'damage' -SignaturePattern '^\s*function\s+damage\s*\(\s*agent\s+attacker\s*,\s*agent\s+defender\s*\)\s*$'
 $spellDamageFunction = Get-GplFunction -Name 'spelldamage' -SignaturePattern '^\s*function\s+spelldamage\s*\(\s*agent\s+attacker\s*,\s*agent\s+defender\s*,\s*integer\s+damage\s*,\s*integer\s+damage_minimum\s*\)\s*$'
 Add-CombatCreditHook -FunctionLines $damageFunction -Name 'damage'
 Add-CombatCreditHook -FunctionLines $spellDamageFunction -Name 'spelldamage'
+Add-ArmorAffixHooks -FunctionLines $damageFunction -Name 'damage'
+Add-ArmorAffixHooks -FunctionLines $spellDamageFunction -Name 'spelldamage'
 
 $header = @(
     '// GENERATED FILE - DO NOT EDIT OR COMMIT.',
     '// Derived at build time from the locally installed Northern Expansion SDK.',
-    '// The only behavioral change is the LWS_CombatCredit hook before direct and spell HP adjustments.',
+    '// LWS changes: combat-credit hooks plus a separate armor-affix contribution.',
     ''
 )
 

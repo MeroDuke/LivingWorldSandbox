@@ -188,36 +188,33 @@ End
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_EnsureArmorEquipmentState ( agent Hero )
 Declare
-    boolean HadTier, HadAffix;
-    integer NativeMagicBonus, EnchantBonus;
+    integer NativeMagicBonus;
 Begin
-    HadTier = $HasAttribute ( "LWS_ArmorTier", Hero );
-    HadAffix = $HasAttribute ( "LWS_ArmorAffixBonus", Hero );
     NativeMagicBonus = $GetAttribute ( Hero, #ATTRIB_Armor_Magic_Bonus );
 
-    if ( HadTier == FALSE )
+    if ( $HasAttribute ( "LWS_ArmorTier", Hero ) == FALSE )
         $AddAttribute ( Hero, "LWS_ArmorTier", "integer",
                         $LWS_TierFromStructBonus ( $GetAttribute ( Hero, #ATTRIB_Armor_Struct_Bonus )));
-    if ( HadAffix == FALSE )
+    if ( $HasAttribute ( "LWS_ArmorAffixBonus", Hero ) == FALSE )
         $AddAttribute ( Hero, "LWS_ArmorAffixBonus", "integer", 0 );
     if ( $HasAttribute ( "LWS_ArmorEnchantBonus", Hero ) == FALSE )
-        begin
-            EnchantBonus = NativeMagicBonus;
-            // A pre-existing LWS state stored the affix in the native aggregate.
-            // Subtract it during migration so Sync cannot count it twice.
-            if ( HadTier || HadAffix ) EnchantBonus -= Hero's "LWS_ArmorAffixBonus";
-            EnchantBonus = $LWS_ClampWizardEnchantBonus ( EnchantBonus );
-            $AddAttribute ( Hero, "LWS_ArmorEnchantBonus", "integer", EnchantBonus );
-        end
+        $AddAttribute ( Hero, "LWS_ArmorEnchantBonus", "integer",
+                        $LWS_ClampWizardEnchantBonus ( NativeMagicBonus ));
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_SyncArmorMagicBonus ( agent Hero )
 Declare
+    integer NativeEnchant;
 Begin
     $LWS_EnsureArmorEquipmentState ( Hero );
-    $SetAttribute ( Hero, #ATTRIB_Armor_Magic_Bonus,
-                    Hero's "LWS_ArmorAffixBonus" + Hero's "LWS_ArmorEnchantBonus" );
+    // The native field belongs exclusively to the Northern Expansion Wizard Guild
+    // and must remain in its supported 0..3 range. LWS affixes are applied only by
+    // the generated combat override.
+    NativeEnchant = $LWS_ClampWizardEnchantBonus (
+        $GetAttribute ( Hero, #ATTRIB_Armor_Magic_Bonus ));
+    $SetAttribute ( Hero, #ATTRIB_Armor_Magic_Bonus, NativeEnchant );
+    Hero's "LWS_ArmorEnchantBonus" = NativeEnchant;
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -643,122 +640,5 @@ Begin
             $Spend_Gold ( ThisAgent, ThisBuilding, Gold );
             $SetAttribute ( ThisAgent, What_To_Upgrade, Upgrade );
         end
-    ThisAgent's "ActiveScript" = $Done_Enhancing_Equipment;
-End
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Northern Expansion Wizard Guild compatibility. LWS armor keeps its generated
-// affix separate from the guild's native 0-3 enchantment progression.
-// A/B diagnostic implementation retained for reference, but deliberately not named
-// WizGuild_Check. Purchase_Equipment therefore resolves to the Northern Expansion
-// SDK implementation while we isolate the persistent Thinking state.
-Function LWS_ExperimentalWizGuildCheck ( agent ThisAgent, string Equipment, integer Bonus, list WizGuilds ) is boolean
-Declare
-    agent WizGuild;
-    list Potentials;
-    integer Intel_Roll, Gold_Needed;
-Begin
-    if ( Equipment == "Armor" && $HasAttribute ( "LWS_ArmorTier", ThisAgent ))
-        begin
-            $LWS_EnsureArmorEquipmentState ( ThisAgent );
-            Bonus = ThisAgent's "LWS_ArmorEnchantBonus";
-        end
-
-    if ( Bonus >= 3 ) return FALSE;
-    if ( Bonus == 0 ) Gold_Needed = #Cost_Per_Magic_Enchantment1;
-    if ( Bonus == 1 ) Gold_Needed = #Cost_Per_Magic_Enchantment2;
-    if ( Bonus == 2 ) Gold_Needed = #Cost_Per_Magic_Enchantment3;
-    if ( $Total_Gold ( ThisAgent ) < Gold_Needed ) return FALSE;
-    if ( $ListSize ( WizGuilds ) == 0 ) return FALSE;
-
-    foreach WizGuild in WizGuilds do
-        begin
-            if ( WizGuild's "Level" > Bonus ) Potentials << WizGuild;
-        end
-    if ( $ListSize ( Potentials ) == 0 ) return FALSE;
-
-    Intel_Roll = $RandomNumber ( 30 ) + 1;
-    if ( $GetAttribute ( ThisAgent, #ATTRIB_Intelligence ) <= Intel_Roll ) return FALSE;
-
-    if ( Equipment == "Weapon" ) ThisAgent's "Task_Number" = #ATTRIB_Weapon_Magic_Bonus;
-    else ThisAgent's "Task_Number" = #ATTRIB_Armor_Magic_Bonus;
-    ThisAgent's "Target" = $Loyalty_Mod_Pick_Closest ( ThisAgent, Potentials );
-    ThisAgent's "TaskName" = "visiting";
-    return TRUE;
-End
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Not registered as Obtain_Enchantment during the A/B test. Wizards Guild buildings
-// consequently execute the unmodified Northern Expansion transaction function.
-Function LWS_ExperimentalObtainEnchantment ( agent ThisAgent )
-Declare
-    agent ThisBuilding, BuildingContainer;
-    integer What_To_Upgrade, CurrentBonus, Total_Gold, Gold, Upgrade, Bldg_Level;
-Begin
-    ThisBuilding = ThisAgent's "Target";
-    What_To_Upgrade = ThisAgent's "Task_Number";
-    if ( $IsValidGamePiece ( ThisBuilding ) == FALSE ||
-         ( What_To_Upgrade != #ATTRIB_Weapon_Magic_Bonus &&
-           What_To_Upgrade != #ATTRIB_Armor_Magic_Bonus ))
-        begin
-            ThisAgent's "Task_Number" = 0;
-            $DebugOut ( 911, "LWS WIZARD GUILD ENCHANT ABORTED: INVALID TARGET OR TASK", ThisAgent );
-            if ( $InsideBuilding ( ThisAgent ))
-                begin
-                    BuildingContainer = $GetBuildingContainer ( ThisAgent );
-                    if ( $IsValidGamePiece ( BuildingContainer ))
-                        $Exit_Building ( ThisAgent, BuildingContainer );
-                    else
-                        $Reset_Tasks ( ThisAgent );
-                end
-            else
-                $Reset_Tasks ( ThisAgent );
-            return;
-        end
-
-    Total_Gold = $Total_Gold ( ThisAgent );
-    ThisAgent's "Task_Number" = 0;
-    $SetThreadInterval ( ThisAgent's "ActiveScript", #Normal_Cycle );
-    Bldg_Level = ThisBuilding's "Level";
-
-    CurrentBonus = $GetAttribute ( ThisAgent, What_To_Upgrade );
-    if ( What_To_Upgrade == #ATTRIB_Armor_Magic_Bonus && $HasAttribute ( "LWS_ArmorTier", ThisAgent ))
-        begin
-            $LWS_EnsureArmorEquipmentState ( ThisAgent );
-            CurrentBonus = ThisAgent's "LWS_ArmorEnchantBonus";
-        end
-
-    if ( CurrentBonus == 0 && Total_Gold >= #Cost_Per_Magic_Enchantment1 )
-        begin
-            Total_Gold -= #Cost_Per_Magic_Enchantment1;
-            Gold += #Cost_Per_Magic_Enchantment1;
-            Upgrade = 1;
-        end
-    if ( CurrentBonus <= 1 && Total_Gold >= #Cost_Per_Magic_Enchantment2 && Bldg_Level > 1 )
-        begin
-            Total_Gold -= #Cost_Per_Magic_Enchantment2;
-            Gold += #Cost_Per_Magic_Enchantment2;
-            Upgrade = 2;
-        end
-    if ( CurrentBonus <= 2 && Total_Gold >= #Cost_Per_Magic_Enchantment3 && Bldg_Level > 2 )
-        begin
-            Total_Gold -= #Cost_Per_Magic_Enchantment3;
-            Gold += #Cost_Per_Magic_Enchantment3;
-            Upgrade = 3;
-        end
-
-    if ( Upgrade > 0 )
-        begin
-            $Spend_Gold ( ThisAgent, ThisBuilding, Gold );
-            if ( What_To_Upgrade == #ATTRIB_Armor_Magic_Bonus && $HasAttribute ( "LWS_ArmorTier", ThisAgent ))
-                begin
-                    ThisAgent's "LWS_ArmorEnchantBonus" = Upgrade;
-                    $LWS_SyncArmorMagicBonus ( ThisAgent );
-                end
-            else
-                $SetAttribute ( ThisAgent, What_To_Upgrade, Upgrade );
-            $DebugOut ( 911, "LWS WIZARD GUILD ENCHANT", ThisAgent, What_To_Upgrade, "LEVEL", Upgrade );
-        end
-
     ThisAgent's "ActiveScript" = $Done_Enhancing_Equipment;
 End
