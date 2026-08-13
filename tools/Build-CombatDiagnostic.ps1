@@ -10,6 +10,7 @@ $dataDirectory = Join-Path $repositoryRoot 'Data'
 $temporaryBytecode = Join-Path $gplDirectory 'LWSCombatDiagnostic.bcd'
 $targetBytecode = Join-Path $dataDirectory 'LWSCombatDiagnostic.bcd'
 
+& (Join-Path $PSScriptRoot 'New-VeteranNameCatalog.ps1')
 & (Join-Path $PSScriptRoot 'New-CombatOverride.ps1') -SdkPath $SdkPath
 & (Join-Path $PSScriptRoot 'New-ItemEvaluationOverride.ps1') -SdkPath $SdkPath
 & (Join-Path $PSScriptRoot 'New-TreasureOverride.ps1') -SdkPath $SdkPath

@@ -198,6 +198,35 @@ Az implementáció előtt külön designbeszélgetés és célzott tesztaréna s
 - [ ] **Hosszú játék balanszteszt** — lootmennyiség, veterán monster erő,
   gazdaság, pályaszemét és teljesítmény többnapos játékmenetben.
 
+### Generált veterán monsternevek
+
+- [x] **Szintküszöbhöz kötött egyedi név** — egy monster a kijelölt veteránszint
+  elérésekor egyszer kapjon egyedi megjelenített nevet. Az engine által kiírt
+  szintjelzés maradjon meg, például: `Mickey Destroyer of Cheese (5)`.
+- [x] **Kombinált névgenerátor** — a változatosság érdekében ne kizárólag kész teljes
+  nevekből válasszunk. Fajhoz és témához illő előtagokból, tulajdonnevekből és
+  címekből állítsunk elő kombinációkat, amelyeket buildidőben text-table kulcsokká
+  generálunk a `$SpecifyName` számára.
+- [x] **Kanonikus névkészletek** — külön névelem-pool készüljön legalább faj vagy
+  monstercsalád szerint, hogy egy Giant Rat, Skeleton vagy Troll neve hangulatában
+  is az adott lényhez illeszkedjen.
+- [x] **Gameplay-identitás megőrzése** — kizárólag a példány megjelenített neve
+  változhat. A monster `Title` értékét tilos átírni, mert arra épül az AI, a loot
+  class, a képességkiosztás és az SDK több típusszűrése.
+- [x] **Perzisztencia és ismétlésvédelem** — az egyszer kiosztott név mentés/betöltés
+  után is maradjon meg, ugyanaz a monster ne kapjon új nevet minden további
+  szintlépéskor. A 700 elemű katalógus alacsonyan tartja a véletlen
+  névduplikáció esélyét anélkül, hogy globális névfoglalási állapotot vezetnénk.
+- [x] **Célzott UI-aréna** — ellenőrizni kell a névadási küszöböt, az `(x)`
+  szintjelzés megtartását, a mentés/betöltést és azt, hogy milyen névhossznál vágja
+  le a játék a világ- vagy információs panel feliratát.
+
+Az SDK-audit alapján a feature támogatott: a `$SpecifyName(agent, textKey)` egy
+konkrét példány display nevét módosítja, miközben az `ExperienceLevel` által rajzolt
+szint és a gameplay `Title` külön adat marad. A GPL futás közben nem tetszőleges
+összefűzött szöveget, hanem scenario text-table kulcsot ad át, ezért a kombinációkat
+a build során kell előállítani és XML-be írni.
+
 ## Tesztelési és release-szabályok
 
 - [x] A diagnosztika PASS esetén továbbra is `+7777` treasury goldot ad.

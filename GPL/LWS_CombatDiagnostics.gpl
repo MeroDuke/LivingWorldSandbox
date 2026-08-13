@@ -486,6 +486,7 @@ Begin
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
     if ( $IsValidGamePiece ( ShowcaseMonster )) $DeleteGamePiece ( ShowcaseMonster );
 
+
     if ( $LWS_RunLootDiagnostic ( AIRootAgent, Palace, TestLocation ) == FALSE )
         AIRootAgent's "LWS_DiagnosticFailures" += 1;
 

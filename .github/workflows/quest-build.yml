@@ -20,6 +20,9 @@ jobs:
       - name: Validate Phase 0 combat diagnostic
         shell: powershell
         run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Test-CombatDiagnostic.ps1
+      - name: Validate veteran monster names
+        shell: powershell
+        run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Test-VeteranMonsterNames.ps1
       - name: Assemble and validate ready-to-copy packages
         shell: powershell
         run: |

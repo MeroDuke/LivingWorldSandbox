@@ -20,6 +20,46 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Display-name families are deliberately separate from gameplay Title values.
+Function LWS_VeteranNameFamily ( agent Monster ) is integer
+Declare
+Begin
+    if ( Monster's "Subtype" == "Ratman" || Monster's "Title" == "Giant_Rat" ||
+         Monster's "Title" == "Ratman" || Monster's "Title" == "RatmanShaman" ) return 1;
+    if ( Monster's "Subtype" == "Undead" ) return 2;
+    if ( Monster's "Title" == "Goblin_Fighter" || Monster's "Title" == "Goblin_Priest" ||
+         Monster's "Title" == "GoblinOverlord" || Monster's "Title" == "Goblin" ) return 3;
+    if ( Monster's "Subtype" == "Animal" ) return 4;
+    if ( Monster's "Title" == "Troll" || Monster's "Title" == "Ogre" ||
+         Monster's "Title" == "Rock_Golem" || Monster's "Title" == "Yeti" ||
+         Monster's "Title" == "Minotaur" ) return 5;
+    if ( Monster's "Subtype" == "Demon" || Monster's "Subtype" == "Elemental" ||
+         Monster's "Title" == "Black_Phantom" || Monster's "Title" == "Witch_King" ) return 6;
+    return 7;
+End
+
+Function LWS_AssignVeteranName ( agent Monster )
+Declare
+    integer NameFamily, NameCount, NameRoll;
+    string NameKey;
+Begin
+    if ( $IsValidGamePiece ( Monster ) == FALSE ) return;
+    if ( Monster's "LWS_Level" < 5 ) return;
+    if ( Monster's "LWS_VeteranNameKey" != "" ) return;
+
+    NameFamily = $LWS_VeteranNameFamily ( Monster );
+    NameCount = $LWS_VeteranNameCount ( NameFamily );
+    if ( NameCount <= 0 ) return;
+    NameRoll = $RandomNumber ( NameCount - 1 );
+    NameKey = $LWS_VeteranNameKey ( NameFamily, NameRoll );
+    if ( NameKey == "" ) return;
+
+    Monster's "LWS_VeteranNameFamily" = NameFamily;
+    Monster's "LWS_VeteranNameKey" = NameKey;
+    $SpecifyName ( Monster, NameKey );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_EnsureMonsterState ( agent Monster )
 Declare
 Begin
@@ -54,6 +94,15 @@ Begin
         $AddAttribute ( Monster, "LWS_AbilityLevel6", "string", "" );
     if ( $HasAttribute ( "LWS_AbilityLevel9", Monster ) == FALSE )
         $AddAttribute ( Monster, "LWS_AbilityLevel9", "string", "" );
+    if ( $HasAttribute ( "LWS_VeteranNameFamily", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_VeteranNameFamily", "integer", 0 );
+    if ( $HasAttribute ( "LWS_VeteranNameKey", Monster ) == FALSE )
+        $AddAttribute ( Monster, "LWS_VeteranNameKey", "string", "" );
+    // Reapply persisted display names after load; migrate already-veteran agents lazily.
+    if ( Monster's "LWS_VeteranNameKey" != "" )
+        $SpecifyName ( Monster, Monster's "LWS_VeteranNameKey" );
+    else if ( Monster's "LWS_Level" >= 5 )
+        $LWS_AssignVeteranName ( Monster );
     // Only named Northern Expansion Unique Class 5 monsters enter the Legendary source whitelist.
     if ( Monster's "LWS_ProgressClass" == 5 && $HasAttribute ( "LWS_LegendaryLootSource", Monster ) == FALSE )
         if ( Monster's "Title" == "Witch_King" || Monster's "Title" == "Liche_Queen" ||
@@ -303,6 +352,7 @@ Begin
             $SetAttribute ( Monster, #ATTRIB_ExperienceLevel, Monster's "LWS_Level" );
             $LWS_ApplyLevelGrowth ( Monster, Monster's "LWS_Level" );
             $LWS_ApplyAbilityMilestone ( Monster, Monster's "LWS_Level" );
+            $LWS_AssignVeteranName ( Monster );
             $CreateEffector ( Monster, "level_up", 0 );
             $DebugOut ( 911, "LWS monster reached level", Monster's "LWS_Level" );
         end

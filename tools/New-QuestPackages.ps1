@@ -15,6 +15,7 @@ if ($Build) {
 
 & (Join-Path $PSScriptRoot 'Test-QuestBaseline.ps1')
 & (Join-Path $PSScriptRoot 'Test-CombatDiagnostic.ps1')
+& (Join-Path $PSScriptRoot 'Test-VeteranMonsterNames.ps1')
 
 $packages = @(
     [pscustomobject]@{
@@ -25,6 +26,7 @@ $packages = @(
             'Data\LWS_Descriptions.xml'
             'Data\LWS_EquipmentDropDescriptions.xml'
             'Data\LWS_Text.xml'
+            'Data\LWS_VeteranNames.xml'
             'Data\LWS_EquipmentDropText.xml'
             'Quests\LivingWorldSandbox.q'
         )
@@ -37,6 +39,7 @@ $packages = @(
             'Data\LWS_Descriptions.xml'
             'Data\LWS_EquipmentDropDescriptions.xml'
             'Data\LWS_Text.xml'
+            'Data\LWS_VeteranNames.xml'
             'Data\LWS_EquipmentDropText.xml'
             'Quests\LivingWorldSandbox.q'
         )

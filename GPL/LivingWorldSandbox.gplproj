@@ -1,4 +1,5 @@
 source="LWS_MonsterState.gpl"
+source="Generated/LWS_VeteranNames.gpl"
 source="LWS_BuildingRewards.gpl"
 source="LWS_Equipment.gpl"
 source="LWS_EquipmentDropCatalog.gpl"

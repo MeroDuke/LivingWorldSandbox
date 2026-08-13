@@ -19,6 +19,7 @@
           <Descriptions>Data/LWS_Descriptions.xml</Descriptions>
           <Descriptions>Data/LWS_EquipmentDropDescriptions.xml</Descriptions>
           <Strings>Data/LWS_Text.xml</Strings>
+          <Strings>Data/LWS_VeteranNames.xml</Strings>
           <Strings>Data/LWS_EquipmentDropText.xml</Strings>
           <Template>Quests/LivingWorldSandbox.q</Template>
         </Load>
