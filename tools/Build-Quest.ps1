@@ -11,6 +11,7 @@ $projectFile = Join-Path $gplDirectory 'LivingWorldSandbox.gplproj'
 $temporaryBytecode = Join-Path $gplDirectory 'LivingWorldSandbox.bcd'
 $targetBytecode = Join-Path $dataDirectory 'LivingWorldSandbox.bcd'
 
+& (Join-Path $PSScriptRoot 'New-VeteranNameCatalog.ps1')
 & (Join-Path $PSScriptRoot 'New-CombatOverride.ps1') -SdkPath $SdkPath
 & (Join-Path $PSScriptRoot 'New-ItemEvaluationOverride.ps1') -SdkPath $SdkPath
 & (Join-Path $PSScriptRoot 'New-TreasureOverride.ps1') -SdkPath $SdkPath
