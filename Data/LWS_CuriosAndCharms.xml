@@ -1,0 +1,23 @@
+<Majesty>
+  <Description type="Unit" subType="Building" ID="LC01" Name="Curios_And_Charms" Description="Curios and Charms runtime art proof-of-concept">
+    <Engine version="1">
+      <Info value="Directionless"/>
+      <Info value="BlockGround"/>
+      <Info value="BlockFlying"/>
+      <Info value="ModifyTerrainTextureOnPlacement"/>
+      <Info value="ModifyTerrainHeightOnPlacement"/>
+      <CanUse value="HumanPlayer"/>
+      <Menu value="2"/>
+      <ImageIDBase value="BCc1"/>
+      <DefaultSound value="Magic_Bazaar"/>
+    </Engine>
+    <Game version="1">
+      <DialogID value="APa5"/>
+      <MaxHP value="500"/>
+      <Gold value="0"/>
+      <Flags value="NotBuildable"/>
+      <Flags value="HasHPBar"/>
+      <HelpID value="h201"/>
+    </Game>
+  </Description>
+</Majesty>

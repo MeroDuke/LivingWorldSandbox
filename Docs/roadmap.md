@@ -143,6 +143,12 @@ Részletek: [exploration-chests.md](exploration-chests.md).
   rarity-, tier- és affixeloszlásokat, valamint a monster class rarity-plafonját
   nem módosíthatja.
 
+- [x] **Fortune Shop előzetes SDK- és kompatibilitási audit** — az új building
+  adatoldalon támogatott, a Magic Bazaar `MX02` panelje a legjobb shop-PoC alap,
+  de a custom CAM provider sandbox/Freestyle stabilitása még bizonyítandó. A
+  clean-room követelményeket, stop/go kapukat és célzott ellenőrzéseket külön
+  dokumentáció rögzíti. Ez az audit nem jelenti a Fortune Shop implementációját.
+
 Rögzített kezdőszabályok:
 
 | Potion | Csatornánkénti alap drop chance | Buffolt drop chance csatornánként |
@@ -186,6 +192,12 @@ Rögzített kezdőszabályok:
   csomagolja; a rarity/tier/affix rollok százalékai változatlanok maradnak.
 
 Az implementáció előtt külön designbeszélgetés és célzott tesztaréna szükséges.
+
+Kutatási és PoC dokumentumok:
+
+- [fortune-shop-research.md](fortune-shop-research.md)
+- [custom-building-clean-room-plan.md](custom-building-clean-room-plan.md)
+- [fortune-shop-poc-checklist.md](fortune-shop-poc-checklist.md)
 
 ## Sandbox világ és hosszú távú feature-ök
 

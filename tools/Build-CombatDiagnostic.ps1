@@ -9,6 +9,19 @@ $gplDirectory = Join-Path $repositoryRoot 'GPL'
 $dataDirectory = Join-Path $repositoryRoot 'Data'
 $temporaryBytecode = Join-Path $gplDirectory 'LWSCombatDiagnostic.bcd'
 $targetBytecode = Join-Path $dataDirectory 'LWSCombatDiagnostic.bcd'
+$curiosBuilder = Join-Path $PSScriptRoot 'Build-CuriosAndCharmsCam.py'
+$curiosSource = Join-Path $repositoryRoot 'Assets\CuriosAndCharms\preview\curios-and-charms-l1-192-v3.png'
+$curiosCam = Join-Path $dataDirectory 'LWS_CuriosAndCharms.cam'
+$sdkExampleCam = Join-Path $repositoryRoot 'Sdk\Example\Data\WrathOfKrolm_maindata.cam'
+
+$pythonCommand = Get-Command python -ErrorAction SilentlyContinue
+if (-not $pythonCommand) {
+    throw 'Python was not found on PATH; it is required to build the Curios and Charms CAM PoC.'
+}
+& $pythonCommand.Source $curiosBuilder $curiosSource $sdkExampleCam $curiosCam
+if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $curiosCam -PathType Leaf)) {
+    throw 'Curios and Charms CAM generation failed.'
+}
 
 & (Join-Path $PSScriptRoot 'New-VeteranNameCatalog.ps1')
 & (Join-Path $PSScriptRoot 'New-CombatOverride.ps1') -SdkPath $SdkPath

@@ -271,6 +271,22 @@ if ($hookSource -match 'LWS_TestRuntimeEquipmentCarrier|LWS_RunLegendaryCatalogD
 if ($hookSource -match '\$ListObjects\s*\(\s*Palace\s*,\s*"Monster"\s*,\s*1200') {
     throw 'Diagnostic cleanup must not broadly delete Palace-area monsters or workers.'
 }
+if ($hookSource -notmatch '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Curios_And_Charms"') {
+    throw 'Curios and Charms runtime PoC spawn is missing.'
+}
+
+$curiosDescription = Join-Path $repositoryRoot 'Data\LWS_CuriosAndCharms.xml'
+$curiosCam = Join-Path $repositoryRoot 'Data\LWS_CuriosAndCharms.cam'
+if (-not (Test-Path -LiteralPath $curiosDescription -PathType Leaf)) {
+    throw 'Curios and Charms diagnostic building description is missing.'
+}
+if (-not (Test-Path -LiteralPath $curiosCam -PathType Leaf) -or
+    (Get-Item -LiteralPath $curiosCam).Length -eq 0) {
+    throw 'Curios and Charms diagnostic CAM is missing or empty.'
+}
+if ($quest.DataConfiguration.Dataset.Load.CAM -notcontains 'Data/LWS_CuriosAndCharms.cam') {
+    throw 'Diagnostic manifest does not load the Curios and Charms CAM.'
+}
 
 $generatorSource = Get-Content -LiteralPath $generatorPath -Raw
 if ($generatorSource -notmatch 'OriginalQuests\\GPLMx\\TaskModules\\Subtasks\\mx_make_attack\.gpl') {

@@ -43,7 +43,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\New-QuestPackage
 
 Add `-Build` (and optionally `-SdkPath`) to compile both bytecode targets before
 packaging. Copy the complete contents of the required package directory into the
-Majesty quest directory; do not copy individual files from the source tree:
+Majesty `Quests` directory; do not copy individual files from the source tree:
 
 - `output/LivingWorldSandbox/` - normal playable sandbox;
 - `output/LWSCombatDiagnostic/` - isolated Phase 0 diagnostic.
