@@ -108,6 +108,72 @@ A BGR sorrend hibás kékes/csíkos renderelést okozott; a bizonyított sorrend
 ```powershell
 python tools/Test-MajestyCamTileRoundTrip.py
 powershell -ExecutionPolicy Bypass -File tools/Test-CuriosAndCharmsCam.ps1
+
+## Build-menu icon and Palace dependency
+
+The Palace icon is not an independent image hook. It is part of the complete
+buildable-building IMAG lifecycle. `ABQ1Temple, Fervus1` contains 43 actions,
+including placement, construction, damage, destruction, profile and the
+`0x3EA` Palace build-list action. The Krolm altar contains only 14 actions, so
+adding the icon action to it produced an incomplete and unstable hybrid.
+
+The verified Phantom-style diagnostic therefore works in this order:
+
+1. clone the complete Fervus level-1 IMAG;
+2. retain the stock payload of every TILE reachable from that IMAG; an empty
+   record in this custom building provider renders as a transparent frame and
+   does not reliably fall back to the identically numbered stock TILE;
+3. append the custom profile and build-list icon after the installed global
+   TILE table (currently slots 17224 and 17225);
+4. remap only the original Fervus profile/icon references 1509/1510 to those
+   appended slots;
+5. retain every palette used by the reachable stock frames, then preserve each
+   stock type-1 UI TILE header and quantize against its actual stock UI palette.
+6. once that baseline is stable, replace the finished states in isolation: the
+   placement preview uses action `0x50` / TILE 1502; the completed building's
+   shared visual is TILE 1505; action `0xC0` / TILE 1506 is its separate active
+   variant. Preview and completed states use separate appended custom TILEs so
+   each preserves the correct stock hotspot.
+7. replace the six construction frames only after placement and completion are
+   proven stable. Fervus action `0x10000C0` references TILEs 1511-1516 at action
+   offsets 96, 104, 112, 120, 128 and 136. Curios appends six bottom-up reveal
+   stages and remaps exactly those references; leaving them stock is why the
+   building temporarily turned into the Fervus temple while peasants worked.
+8. the engine also visits actions `0x51` / TILE 1503 and `0x52` / TILE 1504
+   during construction. They are separate base phases, not members of the
+   six-frame construction animation. Both must receive their own appended
+   Curios reveal TILE; otherwise two brief Fervus transformations remain even
+   after all six animation frames have been replaced.
+
+The stock profile is 100x100 and uses SPLT 102. The stock Palace list icon is
+25x25 and uses SPLT 103. Palette 560 belongs to the Fervus world sprites, not
+these UI frames; using it for the icon caused the earlier incorrect colours.
+
+Custom world art is introduced one lifecycle group at a time. The finished
+Curios image is encoded with the Phantom native-size type-3 row-RLE recipe,
+quantized against Fervus world palette 560, horizontally centred and
+bottom-aligned using the corresponding stock hotspot. Construction uses six
+separately encoded progressive reveal frames with the same recipe. Damage and
+ruin remain stock until they are replaced separately. Replacing all Fervus
+references with one finished-building TILE destroys placement and build states
+and can crash when BUILD is pressed.
+
+Building text has three distinct roles: `Name` is the internal prototype title,
+`Description` is the visible building name, and `HelpID` points to the long
+flavour/help string. Putting prose or a string key in `Description` renames the
+unit everywhere, including the Palace build list.
+
+Build availability is provided through `DATA/BDEP`. Because Majesty replaces
+that payload as a whole, `Build-CuriosAndCharmsBdep.py` reads the installed
+`Data/miscdata.cam`, preserves every stock rule, and appends only:
+
+```text
+LC01 : ABJ1 ABJ2 NOT NOT ABJ3 NOT NOT || ||
+```
+
+This is the stock Marketplace Palace-1-or-better expression with the custom
+building ID. The generated provider is diagnostic output and is never copied
+from the read-only SDK into source control.
 powershell -ExecutionPolicy Bypass -File tools/Build-CombatDiagnostic.ps1
 powershell -ExecutionPolicy Bypass -File tools/Test-CombatDiagnostic.ps1
 powershell -ExecutionPolicy Bypass -File tools/New-QuestPackages.ps1
@@ -138,4 +204,3 @@ output/LWSCombatDiagnostic
 - árnyék és footprint végleges illesztése;
 - L2/L3 grafika;
 - save/load és több egymást követő runtime-start regresszió.
-

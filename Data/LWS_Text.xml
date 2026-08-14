@@ -1,5 +1,6 @@
 <Majesty>
   <Language id="en_US">
+    <Text id="IDTXT_LWS_CURIOS_AND_CHARMS_HELP">Curios and Charms[newline]A shadowed shop of fortunate draughts, curious relics, and uncommon charms.</Text>
     <Text id="IDTXT_LWS_WAND_IMMOLATION_HELP">Legendary: Wand of Immolation[newline]Teaches its bearer the Immolation damage shield.</Text>
     <Text id="IDTXT_LWS_BELT_REFLECTION_HELP">Legendary: Belt of Reflection[newline]Teaches its bearer to reflect hostile magic.</Text>
     <Text id="IDTXT_LWS_TEEVUS_WAND_HELP">Legendary: Teevus' Wand[newline]Teaches its bearer the devastating Vortex spell.</Text>

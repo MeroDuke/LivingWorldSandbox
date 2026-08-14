@@ -5,7 +5,7 @@
 
 Function LWSCombatDiagnostic ()
 Declare
-    agent AIRootAgent, Palace, CuriosAndCharms;
+    agent AIRootAgent, Palace;
     list Palaces;
 Begin
     AIRootAgent = $RetrieveAgent ( "GplAIRoot" );
@@ -17,11 +17,6 @@ Begin
 
     Palaces = $ListPalaces ();
     Palace = $ListMember ( Palaces, 1 );
-
-    // Isolated runtime-art PoC. This building is intentionally non-buildable
-    // and has no shop behavior; the diagnostic only proves CAM/IMAG loading.
-    CuriosAndCharms = $SpawnUnit ( Palace, "Curios_And_Charms",
-                                  $RandomCoord ( Palace, 260, 340 ), "MaxHP", #Player_1 );
 
     $AddAttribute ( AIRootAgent, "LWS_DiagnosticPassed", "boolean", FALSE );
     $AddAttribute ( AIRootAgent, "LWS_DiagnosticFailures", "integer", 0 );

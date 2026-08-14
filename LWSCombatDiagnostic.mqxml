@@ -23,6 +23,7 @@
           <Strings>Data/LWS_VeteranNames.xml</Strings>
           <Strings>Data/LWS_EquipmentDropText.xml</Strings>
           <CAM>Data/LWS_CuriosAndCharms.cam</CAM>
+          <CAM>Data/LWS_CuriosAndCharms_miscdata.cam</CAM>
           <Template>Quests/LivingWorldSandbox.q</Template>
         </Load>
       </Dataset>

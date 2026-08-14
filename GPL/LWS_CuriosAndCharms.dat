@@ -1,0 +1,15 @@
+[Curios_And_Charms]
+	{Building
+		(type 			building)
+		(subtype 		Shop)
+		(title 			Curios_And_Charms)
+		(Level			1)
+		(RevenueScript		Revenue_adjuster)
+		(Revenue_Amount		40)
+		(Revenue_Time		30000)
+		(Visited_Script		Shop_Visited)
+		(birthscript		basic_birth)
+		(birthScript2		Building_Birth)
+		(IGdeathscript		building_death)
+	}
+[end]

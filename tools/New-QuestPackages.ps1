@@ -38,6 +38,7 @@ $packages = @(
             'Data\LWSCombatDiagnostic.bcd'
             'Data\LWS_CuriosAndCharms.xml'
             'Data\LWS_CuriosAndCharms.cam'
+            'Data\LWS_CuriosAndCharms_miscdata.cam'
             'Data\LWS_Descriptions.xml'
             'Data\LWS_EquipmentDropDescriptions.xml'
             'Data\LWS_Text.xml'

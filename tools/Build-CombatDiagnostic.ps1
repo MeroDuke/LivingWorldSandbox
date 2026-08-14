@@ -11,16 +11,34 @@ $temporaryBytecode = Join-Path $gplDirectory 'LWSCombatDiagnostic.bcd'
 $targetBytecode = Join-Path $dataDirectory 'LWSCombatDiagnostic.bcd'
 $curiosBuilder = Join-Path $PSScriptRoot 'Build-CuriosAndCharmsCam.py'
 $curiosSource = Join-Path $repositoryRoot 'Assets\CuriosAndCharms\preview\curios-and-charms-l1-192-v3.png'
+$curiosIcon = Join-Path $repositoryRoot 'Assets\CuriosAndCharms\curios-and-charms-build-icon.png'
 $curiosCam = Join-Path $dataDirectory 'LWS_CuriosAndCharms.cam'
+$curiosMiscdata = Join-Path $dataDirectory 'LWS_CuriosAndCharms_miscdata.cam'
 $sdkExampleCam = Join-Path $repositoryRoot 'Sdk\Example\Data\WrathOfKrolm_maindata.cam'
+$gameMiscdataCandidates = @(
+    $env:MAJESTY_GAME,
+    'J:\SteamLibrary\steamapps\common\Majesty HD'
+) | Where-Object { $_ } | ForEach-Object { Join-Path $_ 'Data\miscdata.cam' }
+$gameMiscdata = $gameMiscdataCandidates | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } | Select-Object -First 1
+if (-not $gameMiscdata) {
+    throw 'Installed Majesty Data\miscdata.cam was not found. Set MAJESTY_GAME to the game directory.'
+}
+$gameMainData = Join-Path (Split-Path -Parent $gameMiscdata) 'maindata.cam'
+if (-not (Test-Path -LiteralPath $gameMainData -PathType Leaf)) {
+    throw 'Installed Majesty Data\maindata.cam was not found.'
+}
 
 $pythonCommand = Get-Command python -ErrorAction SilentlyContinue
 if (-not $pythonCommand) {
     throw 'Python was not found on PATH; it is required to build the Curios and Charms CAM PoC.'
 }
-& $pythonCommand.Source $curiosBuilder $curiosSource $sdkExampleCam $curiosCam
+& $pythonCommand.Source $curiosBuilder $curiosSource $curiosIcon $sdkExampleCam $gameMainData $curiosCam
 if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $curiosCam -PathType Leaf)) {
     throw 'Curios and Charms CAM generation failed.'
+}
+& $pythonCommand.Source (Join-Path $PSScriptRoot 'Build-CuriosAndCharmsBdep.py') $gameMiscdata $curiosMiscdata
+if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $curiosMiscdata -PathType Leaf)) {
+    throw 'Curios and Charms BDEP generation failed.'
 }
 
 & (Join-Path $PSScriptRoot 'New-VeteranNameCatalog.ps1')

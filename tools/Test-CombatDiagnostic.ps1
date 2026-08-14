@@ -271,12 +271,13 @@ if ($hookSource -match 'LWS_TestRuntimeEquipmentCarrier|LWS_RunLegendaryCatalogD
 if ($hookSource -match '\$ListObjects\s*\(\s*Palace\s*,\s*"Monster"\s*,\s*1200') {
     throw 'Diagnostic cleanup must not broadly delete Palace-area monsters or workers.'
 }
-if ($hookSource -notmatch '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Curios_And_Charms"') {
-    throw 'Curios and Charms runtime PoC spawn is missing.'
+if ($hookSource -match '\$SpawnUnit\s*\(\s*Palace\s*,\s*"Curios_And_Charms"') {
+    throw 'Curios and Charms must be tested through Palace construction, not a runtime PoC spawn.'
 }
 
 $curiosDescription = Join-Path $repositoryRoot 'Data\LWS_CuriosAndCharms.xml'
 $curiosCam = Join-Path $repositoryRoot 'Data\LWS_CuriosAndCharms.cam'
+$curiosMiscdata = Join-Path $repositoryRoot 'Data\LWS_CuriosAndCharms_miscdata.cam'
 if (-not (Test-Path -LiteralPath $curiosDescription -PathType Leaf)) {
     throw 'Curios and Charms diagnostic building description is missing.'
 }
@@ -286,6 +287,26 @@ if (-not (Test-Path -LiteralPath $curiosCam -PathType Leaf) -or
 }
 if ($quest.DataConfiguration.Dataset.Load.CAM -notcontains 'Data/LWS_CuriosAndCharms.cam') {
     throw 'Diagnostic manifest does not load the Curios and Charms CAM.'
+}
+if (-not (Test-Path -LiteralPath $curiosMiscdata -PathType Leaf) -or
+    (Get-Item -LiteralPath $curiosMiscdata).Length -eq 0) {
+    throw 'Curios and Charms BDEP provider is missing or empty.'
+}
+if ($quest.DataConfiguration.Dataset.Load.CAM -notcontains 'Data/LWS_CuriosAndCharms_miscdata.cam') {
+    throw 'Diagnostic manifest does not load the Curios and Charms BDEP provider.'
+}
+$curiosXml = [xml](Get-Content -LiteralPath $curiosDescription -Raw)
+$curiosGame = $curiosXml.Majesty.Description.Game
+if ([int]$curiosGame.Cost.value -ne 1200 -or [int]$curiosGame.MaxHP.value -ne 150) {
+    throw 'Curios and Charms building balance does not match the approved 1200 gold / 150 HP baseline.'
+}
+if (@($curiosGame.Flags | ForEach-Object value) -contains 'NotBuildable') {
+    throw 'Curios and Charms must be buildable in the Palace diagnostic.'
+}
+if ($curiosXml.Majesty.Description.Name -ne 'Curios_And_Charms' -or
+    $curiosXml.Majesty.Description.Description -ne 'Curios and Charms' -or
+    $curiosGame.HelpID.value -ne 'IDTXT_LWS_CURIOS_AND_CHARMS_HELP') {
+    throw 'Curios and Charms name and help text must use separate display fields.'
 }
 
 $generatorSource = Get-Content -LiteralPath $generatorPath -Raw

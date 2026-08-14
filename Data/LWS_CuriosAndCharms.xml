@@ -1,5 +1,5 @@
 <Majesty>
-  <Description type="Unit" subType="Building" ID="LC01" Name="Curios_And_Charms" Description="Curios and Charms runtime art proof-of-concept">
+  <Description type="Unit" subType="Building" ID="LC01" Name="Curios_And_Charms" Description="Curios and Charms">
     <Engine version="1">
       <Info value="Directionless"/>
       <Info value="BlockGround"/>
@@ -13,11 +13,16 @@
     </Engine>
     <Game version="1">
       <DialogID value="APa5"/>
-      <MaxHP value="500"/>
+      <Cost value="1200"/>
+      <Multiplier value="1.5"/>
+      <IncomeType value="2"/>
+      <IncomeAmount value="40"/>
+      <SightRange value="100"/>
+      <MaxHP value="150"/>
       <Gold value="0"/>
-      <Flags value="NotBuildable"/>
       <Flags value="HasHPBar"/>
-      <HelpID value="h201"/>
+      <Flags value="HasGoldToolTip"/>
+      <HelpID value="IDTXT_LWS_CURIOS_AND_CHARMS_HELP"/>
     </Game>
   </Description>
 </Majesty>
