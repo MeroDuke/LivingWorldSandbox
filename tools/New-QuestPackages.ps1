@@ -16,6 +16,7 @@ if ($Build) {
 & (Join-Path $PSScriptRoot 'Test-QuestBaseline.ps1')
 & (Join-Path $PSScriptRoot 'Test-CombatDiagnostic.ps1')
 & (Join-Path $PSScriptRoot 'Test-VeteranMonsterNames.ps1')
+& (Join-Path $PSScriptRoot 'Test-MonsterLevelDisplay.ps1')
 
 $packages = @(
     [pscustomobject]@{

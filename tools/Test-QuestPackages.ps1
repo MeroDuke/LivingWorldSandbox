@@ -19,6 +19,9 @@ $expectedPackages = @{
     LWSCombatDiagnostic = @(
         'LWSCombatDiagnostic.mqxml'
         'Data\LWSCombatDiagnostic.bcd'
+        'Data\LWS_CuriosAndCharms.xml'
+        'Data\LWS_CuriosAndCharms.cam'
+        'Data\LWS_CuriosAndCharms_miscdata.cam'
         'Data\LWS_Descriptions.xml'
         'Data\LWS_EquipmentDropDescriptions.xml'
         'Data\LWS_Text.xml'
@@ -62,3 +65,4 @@ Write-Host 'Ready-to-copy quest package validation passed.'
 & (Join-Path $PSScriptRoot 'Test-ExplorationChests.ps1')
 & (Join-Path $PSScriptRoot 'Test-WizardEnchantCompatibility.ps1')
 & (Join-Path $PSScriptRoot 'Test-VeteranMonsterNames.ps1')
+& (Join-Path $PSScriptRoot 'Test-MonsterLevelDisplay.ps1')

@@ -60,6 +60,19 @@ Begin
 End
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+// The engine renders the number below a monster's HP bar from ExperienceLevel,
+// while LWS_Level remains the authoritative progression value. Reapply the
+// mirror whenever state is restored so save/load and display-name changes cannot
+// silently remove the visible level.
+Function LWS_SyncMonsterDisplayLevel ( agent Monster )
+Declare
+Begin
+    if ( $IsValidGamePiece ( Monster ) == FALSE ) return;
+    if ( $HasAttribute ( "LWS_Level", Monster ) == FALSE ) return;
+    $SetAttribute ( Monster, #ATTRIB_ExperienceLevel, Monster's "LWS_Level" );
+End
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function LWS_EnsureMonsterState ( agent Monster )
 Declare
 Begin
@@ -103,6 +116,7 @@ Begin
         $SpecifyName ( Monster, Monster's "LWS_VeteranNameKey" );
     else if ( Monster's "LWS_Level" >= 5 )
         $LWS_AssignVeteranName ( Monster );
+    $LWS_SyncMonsterDisplayLevel ( Monster );
     // Only named Northern Expansion Unique Class 5 monsters enter the Legendary source whitelist.
     if ( Monster's "LWS_ProgressClass" == 5 && $HasAttribute ( "LWS_LegendaryLootSource", Monster ) == FALSE )
         if ( Monster's "Title" == "Witch_King" || Monster's "Title" == "Liche_Queen" ||
@@ -349,7 +363,7 @@ Begin
         begin
             Monster's "LWS_KillsThisLevel" -= KillsRequired;
             Monster's "LWS_Level" += 1;
-            $SetAttribute ( Monster, #ATTRIB_ExperienceLevel, Monster's "LWS_Level" );
+            $LWS_SyncMonsterDisplayLevel ( Monster );
             $LWS_ApplyLevelGrowth ( Monster, Monster's "LWS_Level" );
             $LWS_ApplyAbilityMilestone ( Monster, Monster's "LWS_Level" );
             $LWS_AssignVeteranName ( Monster );
